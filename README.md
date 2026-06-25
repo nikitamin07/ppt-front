@@ -1,2 +1,2 @@
 # ppt-front
-Frontend developing for ппт.бел
+Frontend Next.js developing for ппт.бел
