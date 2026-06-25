@@ -1,0 +1,110 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "../css/fonts.css";
+
+:root {
+  --background: #191919;
+  --foreground: #212121;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-lighten: #303030;
+  --color-primary: #EDEDED;
+  --color-secondary: #5A5A5A;
+  --color-hovered: #737373;
+  --color-black: #1E1E1E;
+  --color-active: #42D9FF;
+  --color-red: #E7606E;
+  --color-border-dark: #2F2F2F;
+  
+  /* ---------- Типографика ---------- */
+  --font-involve: 'Involve', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-inter: Inter, sans-serif;
+  --text-xs: 0.875rem;
+  --text-sm: 1.125rem;
+  --text-md: 1.375rem;
+  --text-lg: 2.125rem;
+  --text-xl: 3.125rem;
+  --text-xs-mobile: 0.875rem;
+  --text-sm-mobile: 1rem;
+  --text-md-mobile: 1.25rem;
+  --text-lg-mobile: 1.25rem;
+  --text-xl-mobile: 2rem;
+
+  /* ---------- Брейкпоинты ---------- */
+  --breakpoint-xs: 36rem;
+  --breakpoint-sm: 45rem;
+  --breakpoint-md: 55rem;
+  --breakpoint-lg: 64rem;
+  --breakpoint-xl: 90rem;
+  --breakpoint-2xl: 96rem;
+
+   /* --- НАСТРОЙКА КОНТЕЙНЕРА --- */
+  --container-center: true;
+
+  --container-padding-sm: 1rem;
+  --container-padding-md: 2rem;
+  --container-padding-xl: 4rem;
+}
+
+/* @media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+} */
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: var(--background);
+    color: var(--color-primary);
+    overflow-x: hidden;
+    white-space: pre-line;
+  }
+
+  /* Улучшаем UX при фокусе с клавиатуры (доступность/Accessibility) */
+  :focus-visible {
+    outline: 2px solid var(--color-active);
+    outline-offset: 2px;
+  }
+
+  /* Защищаем интерактивные элементы от случайного выделения текста пользователем */
+  button, 
+  .clickable {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  a, button, input, textarea {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Поведение картинок по умолчанию (чтобы они не ломали контейнеры) */
+  img, svg {
+    display: inline-block;
+    vertical-align: middle;
+    max-width: 100%;
+    height: auto;
+  }
+  
+  section + section {
+    margin-top: 7.5rem;
+  }
+  
+  @media (width <= theme(--breakpoint-xs)) {
+    section + section {
+      margin-top: 4rem;
+    }
+  }
+}
+
+@import "../css/custom-utilities.css";
