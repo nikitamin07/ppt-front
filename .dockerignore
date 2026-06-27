@@ -1,0 +1,22 @@
+# Исключаем локальные папки зависимостей и сборки
+node_modules
+.next
+out
+build
+
+# Исключаем логи ошибок npm
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Исключаем скрытую историю Git
+.git
+.gitignore
+
+# Исключаем файлы локальных настроек редактора
+.vscode
+.idea
+
+# Исключаем локальные секретные переменные
+.env*.local
