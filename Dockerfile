@@ -1,6 +1,7 @@
 # === STAGE 1 ===
 FROM node:24-alpine3.21 AS deps
 WORKDIR /app
+RUN apk add --no-cache libc6-compat
 COPY package*.json ./
 RUN npm ci
 
