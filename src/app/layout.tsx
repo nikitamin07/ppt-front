@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Geist } from "next/font/google"
 import "./globals.css";
 import { cn } from "@/shared/lib/utils";
+import CustomCursor from "@/shared/ui/CustomCursor";
 
 const geistHeading = Geist({subsets:['latin'],variable:'--font-heading'});
 
@@ -26,7 +27,10 @@ export default function RootLayout({
       lang="en"
       className={cn("h-full", "antialiased", inter.variable, geistHeading.variable)}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <CustomCursor />
+        {children}
+      </body>
     </html>
   );
 }
