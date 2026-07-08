@@ -2,11 +2,18 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { cn } from "@/shared/lib/utils";
 
-export function CatalogSearchInput() {
+interface CatalogSearchInputProps {
+  className?: string;
+  placeholder?: string;
+  autoFocus?: boolean;
+}
+
+export function CatalogSearchInput({ className, placeholder = "Поиск по каталогу", autoFocus }: CatalogSearchInputProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [query, setQuery] = useState(searchParams.get("query") ?? "");
+  const [query, setQuery] = useState(searchParams?.get("query") ?? "");
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -14,16 +21,17 @@ export function CatalogSearchInput() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex gap-2">
+    <form onSubmit={handleSubmit} className={cn("flex gap-2", className)}>
       <input
-        placeholder="Поиск по каталогу"
+        placeholder={placeholder}
         value={query}
+        autoFocus={autoFocus}
         onChange={(e) => setQuery(e.target.value)}
-        className="w-full rounded-lg border border-zinc-200 px-3 py-2 text-sm dark:border-zinc-800 dark:bg-zinc-900"
+        className="w-full border border-line bg-paper px-3.5 py-2 text-sm text-ink outline-none placeholder:text-muted-foreground focus:border-safety"
       />
       <button
         type="submit"
-        className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white dark:bg-zinc-50 dark:text-zinc-900"
+        className="shrink-0 bg-ink px-4 py-2 text-sm font-medium text-paper transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-[0_10px_24px_-10px_rgba(27,27,24,0.5)] active:translate-y-0 active:scale-[0.97]"
       >
         Найти
       </button>

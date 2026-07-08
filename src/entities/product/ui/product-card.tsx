@@ -12,26 +12,31 @@ export function ProductCard({ product, categorySlug }: ProductCardProps) {
   return (
     <Link
       href={`/catalog/${categorySlug}/${product.slug}`}
-      className="group flex flex-col overflow-hidden rounded-xl border border-zinc-100 bg-zinc-50/50 transition-colors hover:border-zinc-200 dark:border-zinc-800 dark:bg-zinc-900/50 dark:hover:border-zinc-700"
+      className="group relative flex flex-col overflow-hidden border border-line bg-card transition-all duration-300 hover:-translate-y-1 hover:border-safety hover:shadow-[0_16px_32px_-20px_rgba(27,27,24,0.25)]"
     >
+      {hasDiscount ? (
+        <span className="absolute left-3 top-3 z-10 bg-safety px-2 py-0.5 font-label text-xs font-semibold text-white">
+          Скидка
+        </span>
+      ) : null}
       {product.image_url ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={product.image_url} alt={product.name} className="aspect-square w-full object-cover" />
       ) : null}
       <div className="p-4">
-        <h3 className="font-semibold text-zinc-900 dark:text-zinc-50">{product.name}</h3>
-        <div className="mt-2 flex items-baseline gap-2">
+        <h3 className="font-heading font-semibold text-ink">{product.name}</h3>
+        <div className="mt-2 flex items-baseline gap-2 tabular-nums">
           {hasDiscount ? (
             <>
-              <span className="text-sm text-zinc-400 line-through">
+              <span className="text-sm text-muted-foreground line-through">
                 {product.price} {product.price_unit}
               </span>
-              <span className="font-semibold text-zinc-900 dark:text-zinc-50">
+              <span className="font-semibold text-safety">
                 {product.discount_price} {product.price_unit}
               </span>
             </>
           ) : (
-            <span className="font-semibold text-zinc-900 dark:text-zinc-50">
+            <span className="font-semibold text-ink">
               {product.price} {product.price_unit}
             </span>
           )}

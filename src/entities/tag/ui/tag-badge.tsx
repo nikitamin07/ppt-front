@@ -9,7 +9,7 @@ export function TagBadge({ tag }: TagBadgeProps) {
   return (
     <Link
       href={`/blog?tag=${tag.slug}`}
-      className="inline-flex items-center rounded-full bg-zinc-100 px-3 py-1 text-xs font-medium text-zinc-700 transition-colors hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
+      className="inline-flex items-center border border-line bg-paper px-2.5 py-1 font-label text-xs font-medium text-ink transition-colors hover:border-safety hover:text-safety"
     >
       {tag.name}
     </Link>

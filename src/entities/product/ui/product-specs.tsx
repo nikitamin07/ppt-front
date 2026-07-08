@@ -8,27 +8,27 @@ export function ProductSpecs({ attributes }: ProductSpecsProps) {
   if (!attributes || attributes.length === 0) return null;
 
   return (
-    <div className="w-full rounded-xl border border-zinc-100 bg-zinc-50/50 p-6 dark:border-zinc-800 dark:bg-zinc-900/50">
-      <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50 mb-4">
+    <div className="w-full border border-line bg-card p-6">
+      <h3 className="mb-4 font-heading text-lg font-semibold text-ink">
         Технические характеристики
       </h3>
-      
+
       <div className="space-y-3">
         {attributes.map((attr) => (
-          <div 
-            key={attr.attribute_id} 
-            className="flex flex-col sm:flex-row sm:items-baseline justify-between py-2 border-b border-zinc-100 dark:border-zinc-800 last:border-0"
+          <div
+            key={attr.attribute_id}
+            className="flex flex-col justify-between border-b border-line py-2 last:border-0 sm:flex-row sm:items-baseline"
           >
             {/* Левая часть — Название характеристики (Ключ) */}
-            <span className="text-sm text-zinc-500 dark:text-zinc-400 sm:pr-4">
+            <span className="text-sm text-muted-foreground sm:pr-4">
               {attr.name}
             </span>
-            
+
             {/* Точки-заполнители для больших экранов (опционально, для красоты) */}
-            <div className="hidden sm:block grow border-b border-dotted border-zinc-200 dark:border-zinc-700 mx-2" />
-            
+            <div className="mx-2 hidden grow border-b border-dotted border-line sm:block" />
+
             {/* Правая часть — Индивидуальное значение товара */}
-            <span className="text-sm font-semibold text-zinc-800 dark:text-zinc-200 mt-1 sm:mt-0 text-right">
+            <span className="mt-1 text-right text-sm font-semibold tabular-nums text-ink sm:mt-0">
               {attr.value}
             </span>
           </div>

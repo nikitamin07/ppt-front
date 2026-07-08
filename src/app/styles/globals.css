@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "../shared/lib/fonts.css";
+@import "../../shared/lib/fonts.css";
 
 @theme inline {
   /* --- SHADCN --- */
@@ -44,6 +44,15 @@
   --color-primary: var(--primary);
   --color-foreground: var(--foreground);
   --color-background: var(--background);
+
+  /* --- Фирменная индустриальная палитра --- */
+  --color-ink: var(--color-ink);
+  --color-paper: var(--color-paper);
+  --color-line: var(--color-line);
+  --color-safety: var(--color-safety);
+  --color-safety-ink: var(--color-safety-ink);
+  --font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --font-label: var(--font-oswald), ui-sans-serif, system-ui, sans-serif;
 }
 
 @layer base {
@@ -70,10 +79,28 @@
   }
 
   /* Защищаем интерактивные элементы от случайного выделения текста пользователем */
-  button, 
+  button,
   .clickable {
     user-select: none;
     -webkit-user-select: none;
+  }
+
+  /* Курсор-указатель на всех интерактивных элементах */
+  a,
+  button:not(:disabled),
+  [role="button"],
+  input[type="submit"],
+  input[type="button"],
+  label[for],
+  select,
+  summary,
+  .clickable {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  [aria-disabled="true"] {
+    cursor: not-allowed;
   }
 
   a, button, input, textarea {
@@ -88,13 +115,13 @@
     height: auto;
   }
 
-  section + section {
-    margin-top: 7.5rem;
+  section + section, div + section, section + div {
+    margin-top: 6rem;
   }
 
-  @media (width <= --breakpoint-sm) {
-    section + section {
-      margin-top: 4rem;
+  @media (width >= --breakpoint-sm) {
+    section + section, div + section, section + div {
+      margin-top: 10rem;
     }
   }
   * {
@@ -127,7 +154,7 @@
     width: 48px;
     height: 48px;
     transform: scale(0.2);
-    background: var(--color-active);
+    background: var(--ring);
     border-radius: 50%;
     transition: transform 0.25s ease-in-out, opacity 0.1s;
   }
@@ -250,22 +277,33 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.147 0.004 49.25);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.147 0.004 49.25);
-  --primary: oklch(0.511 0.096 186.391);
-  --primary-foreground: oklch(0.984 0.014 180.72);
-  --secondary: oklch(0.967 0.001 286.375);
-  --secondary-foreground: oklch(0.21 0.006 285.885);
-  --muted: oklch(0.97 0.001 106.424);
-  --muted-foreground: oklch(0.553 0.013 58.071);
-  --accent: oklch(0.511 0.096 186.391);
-  --accent-foreground: oklch(0.984 0.014 180.72);
+  --font-involve: 'Involve', ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-involve);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* Индустриальная палитра: бетон/крафт + графит + строительный оранжевый */
+  --color-ink: #1b1b18;
+  --color-paper: #f2f0ea;
+  --color-line: #ddd9cd;
+  --color-safety: #ff5a1f;
+  --color-safety-ink: #2a1200;
+
+  --card: #ffffff;
+  --card-foreground: #1b1b18;
+  --popover: #ffffff;
+  --popover-foreground: #1b1b18;
+  --primary: #ff5a1f;
+  --primary-foreground: #ffffff;
+  --secondary: #ece8de;
+  --secondary-foreground: #1b1b18;
+  --muted: #ece8de;
+  --muted-foreground: #6b6860;
+  --accent: #ff5a1f;
+  --accent-foreground: #ffffff;
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.923 0.003 48.717);
-  --input: oklch(0.923 0.003 48.717);
-  --ring: oklch(0.709 0.01 56.259);
+  --border: #ddd9cd;
+  --input: #ddd9cd;
+  --ring: #ff5a1f;
   --chart-1: oklch(0.865 0.127 207.078);
   --chart-2: oklch(0.715 0.143 215.221);
   --chart-3: oklch(0.609 0.126 221.723);
@@ -280,8 +318,8 @@
   --sidebar-accent-foreground: oklch(0.216 0.006 56.043);
   --sidebar-border: oklch(0.923 0.003 48.717);
   --sidebar-ring: oklch(0.709 0.01 56.259);
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.147 0.004 49.25);
+  --background: #f2f0ea;
+  --foreground: #1b1b18;
 }
 
 .dark {

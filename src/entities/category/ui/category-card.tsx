@@ -10,16 +10,16 @@ export function CategoryCard({ category, imageUrl }: CategoryCardProps) {
   return (
     <Link
       href={`/catalog/${category.slug}`}
-      className="group flex flex-col overflow-hidden rounded-xl border border-zinc-100 bg-zinc-50/50 transition-colors hover:border-zinc-200 dark:border-zinc-800 dark:bg-zinc-900/50 dark:hover:border-zinc-700"
+      className="group flex flex-col overflow-hidden border border-line bg-card transition-all duration-300 hover:-translate-y-1 hover:border-safety hover:shadow-[0_16px_32px_-20px_rgba(27,27,24,0.25)]"
     >
       {imageUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={imageUrl} alt={category.name} className="aspect-video w-full object-cover" />
       ) : null}
       <div className="p-4">
-        <h3 className="font-semibold text-zinc-900 dark:text-zinc-50">{category.name}</h3>
+        <h3 className="font-heading font-semibold text-ink">{category.name}</h3>
         {category.description ? (
-          <p className="mt-1 line-clamp-2 text-sm text-zinc-500 dark:text-zinc-400">{category.description}</p>
+          <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{category.description}</p>
         ) : null}
       </div>
     </Link>
