@@ -12,7 +12,7 @@ interface BlogListProps {
   viewAllHref?: string;
 }
 
-export function BlogList({ title = "Из блога", limit = 3, viewAllHref = "/blog" }: BlogListProps) {
+export function BlogList({ title = "Полезная информация", limit = 3, viewAllHref = "/blog" }: BlogListProps) {
   const posts = PLACEHOLDER_POSTS.slice(0, limit);
   const gridRef = useStaggerReveal<HTMLDivElement>();
 

@@ -20,9 +20,9 @@ import { InsulationDiagram } from "./insulation-diagram";
 gsap.registerPlugin(ScrollTrigger);
 
 const STATS = [
-  { value: 87, suffix: "+", label: "позиций в каталоге" },
-  { value: 3, suffix: "", label: "категории материалов" },
-  { value: 1, suffix: " день", label: "средний срок доставки" },
+  { value: 50, suffix: "+", label: "позиций в каталоге" },
+  { value: 10, suffix: "", label: "категорий материалов" },
+  { value: 48, suffix: " часов", label: "средний срок доставки" },
 ] as const;
 
 export function Hero() {
@@ -128,8 +128,8 @@ export function Hero() {
   }, []);
 
   return (
-    <section ref={rootRef} className="relative flex min-h-[calc(100vh-102px)] flex-col bg-paper">
-      <div className="mx-auto h-min w-full max-w-7xl px-6 pt-12 pb-25 sm:pb-35 lg:px-8">
+    <section ref={rootRef} className="relative flex flex-col bg-paper pt-12 pb-42 sm:pb-46 md:pb-55 xl:pb-60 min-h-[calc(100vh-105px)]">
+      <div className="mx-auto w-full max-w-7xl px-6 lg:px-8">
         <div className="grid gap-12 lg:grid-cols-[1.35fr_0.65fr] lg:items-center lg:gap-8">
           <div>
             <p data-hero-eyebrow className="font-label text-xs lg:text-sm font-semibold uppercase tracking-[0.2em] text-safety">
@@ -140,10 +140,9 @@ export function Hero() {
               <span data-hero-line className="block">и утепления — в наличии</span>
             </h1>
             <p data-hero-sub className="mt-6 max-w-full text-base leading-relaxed text-muted-foreground sm:text-lg">
-              Доставка строительных материалов по всей Беларуси. Работаем напрямую с производителями, поэтому
-              цены и сроки поставки всегда актуальны.{"\n"}
-              Оставьте заявку, и мы поможем подобрать оптимальный вариант
-              с учётом особенностей и бюджета объекта.
+              Доставка строительных материалов по всей территории республики Беларусь. {"\n"}
+              Работаем напрямую от производителей, что позволяет поддерживать низкие цены и быструю доставку. Оставьте заявку, и наши сотрудники помогут подобрать оптимальный вариант
+              с учётом особенностей объекта и бюджета.
             </p>
             <div className="mt-9 flex flex-col items-start gap-3 sm:flex-row">
               <Link
@@ -178,7 +177,7 @@ export function Hero() {
       </div>
 
       {/* Рулетка на нижней кромке hero — см. второй useEffect выше */}
-      <div className="absolute inset-x-0 bottom-0 flex flex-col gap-6 pb-8">
+      <div className="absolute inset-x-0 bottom-0 flex flex-col gap-3 pb-3 md:gap-6 md:pb-6 overflow-hidden">
         <TapeRuler caseWrapRef={caseWrapRef} clipRectRef={clipRectRef} />
         <p
           ref={captionRef}

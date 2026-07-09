@@ -23,7 +23,7 @@ interface TapeRulerProps {
 export function TapeRuler({ caseWrapRef, clipRectRef }: TapeRulerProps) {
   return (
     <div className="relative w-full">
-      <svg viewBox="0 0 1000 140" preserveAspectRatio="none" className="block h-24 w-full sm:h-35" aria-hidden>
+      <svg viewBox="0 0 1000 140" preserveAspectRatio="none" className="block w-full h-22 sm:h-26 md:h-30 xl:h-35" aria-hidden>
         <defs>
           <clipPath id="ruler-clip">
             <rect ref={clipRectRef} x="0" y="20" width="0" height="120" />
@@ -31,7 +31,7 @@ export function TapeRuler({ caseWrapRef, clipRectRef }: TapeRulerProps) {
         </defs>
 
         {/* Постоянная серая линия — продолжение нижней границы hero */}
-        <line x1="0" y1="140" x2={SCREEN_WIDTH} y2="140" stroke="var(--color-line)" strokeWidth="1" />
+        <line x1="0" y1="139" x2={SCREEN_WIDTH} y2="139" stroke="var(--color-line)" strokeWidth="1" />
 
         {/* Штрихи линейки — раскрываются через clip-path вслед за корпусом */}
         <g clipPath="url(#ruler-clip)">
@@ -53,10 +53,10 @@ export function TapeRuler({ caseWrapRef, clipRectRef }: TapeRulerProps) {
       {/* Рулетка — отдельный SVG со своим viewBox, чтобы контур оставался неискажённым. */}
       <div
         ref={caseWrapRef}
-        className="absolute bottom-0 w-24 sm:-bottom-1 sm:w-40"
+        className="absolute bottom-0 w-24 sm:w-30 md:w-34 xl:w-40"
         style={{ left: CASE_OFF_LEFT, aspectRatio: "510 / 505" }}
       >
-        <svg viewBox="220 0 420 410" className="h-full w-full overflow-visible" aria-hidden>
+        <svg viewBox="220 0 420 400" className="h-full w-full overflow-visible" aria-hidden>
           <g fill="none" stroke="var(--color-safety)" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round">
             {/* Корпус */}
             <path

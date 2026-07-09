@@ -5,6 +5,7 @@ import { cn } from "@/shared/lib/utils";
 
 interface CountingAnimationProps {
   value: number;
+  prefix?: string;
   suffix?: string;
   duration?: number;
   className?: string;
@@ -17,7 +18,7 @@ interface CountingAnimationProps {
 }
 
 /** Число считает от 0 до value. Разово, с cleanup, уважает prefers-reduced-motion. */
-export function CountingAnimation({ value, suffix, duration = 1400, className, active }: CountingAnimationProps) {
+export function CountingAnimation({ value, prefix, suffix, duration = 1400, className, active }: CountingAnimationProps) {
   const ref = useRef<HTMLSpanElement | null>(null);
   const [display, setDisplay] = useState(0);
 
@@ -81,6 +82,7 @@ export function CountingAnimation({ value, suffix, duration = 1400, className, a
 
   return (
     <span ref={ref} className={cn("tabular-nums", className)}>
+      {prefix}
       {display.toLocaleString("ru-RU")}
       {suffix}
     </span>

@@ -13,14 +13,19 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-paper/95 backdrop-blur-sm">
-      {/* Технический топ-бар: контакты и режим работы */}
       <div className="hidden border-b border-line/70 bg-ink text-paper/80 md:block">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-1.5 text-xs tabular-nums lg:px-8">
-          <a href="tel:+375291234567" className="flex items-center gap-1.5 transition-colors hover:text-safety">
-            <PhoneIcon className="size-3.5" />
-            +375 (29) 123-45-67
-          </a>
-          <span>г. Минск, ул. Строителей 12 &nbsp;·&nbsp; Пн–Сб 9:00–19:00</span>
+          <div className="flex max-w-sm items-center gap-8">
+            <a href="tel:+375296918417" className="flex items-center gap-1.5 transition-colors hover:text-safety">
+              <PhoneIcon className="size-3.5" />
+              +375 (29) 691-84-17
+            </a>
+            <a href="tel:+375259264845" className="flex items-center gap-1.5 transition-colors hover:text-safety">
+              <PhoneIcon className="size-3.5" />
+              +375 (25) 926-48-45
+            </a>
+          </div>
+          <span>г. Минск, ул. Кнорина 50А &nbsp;·&nbsp; Пн–Пт 9:00–19:00</span>
         </div>
       </div>
 

@@ -6,13 +6,16 @@ import { useScrollReveal } from "@/shared/lib/react";
 
 const POINTS = [
   "Собственный склад — материалы в наличии",
+  "Честные цены и гибкая система скидок",
+  "Компетентный персонал",
+  "Принимаем заявки 24/7",
   "Прямые поставки от производителей",
   "Контроль качества каждой партии",
 ] as const;
 
 const BADGES = [
-  { icon: FlaskConicalIcon, label: "Контроль состава" },
-  { icon: TruckIcon, label: "Своя логистика" },
+  { icon: FlaskConicalIcon, label: "Контроль качества каждого товара" },
+  { icon: TruckIcon, label: "Быстрая доставка на объект" },
   { icon: HandshakeIcon, label: "Индивидуальный подход" },
 ] as const;
 
@@ -38,16 +41,15 @@ export function AboutTeaser() {
         </div>
         <div>
           <h2 className="font-heading text-2xl font-semibold text-ink sm:text-3xl">
-            Работаем на рынке стройматериалов Беларуси
+            ЧП «РешениеСтройДизайн» – надежный поставщик строительных материалов
           </h2>
           <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
-            Продаем пенопласт, минеральную вату и сухие смеси собственного и партнерского
-            производства. Держим склад в наличии, поэтому отгружаем без задержек и
-            подтверждаем точный состав каждой партии.
+            Реализуем все виды утеплителей, строительных и отделочных материалов партнерского
+            производства. Держим широкий ассортимент в наличии на складе. Отгружаем в минимальные сроки и только проверенный материал.
           </p>
           <ul className="mt-7 grid grid-cols-1 gap-4 sm:grid-cols-3">
             {BADGES.map(({ icon: Icon, label }) => (
-              <li key={label} className="flex flex-col gap-3 border border-line bg-paper p-4">
+              <li key={label} className="flex items-center sm:items-start sm:flex-col gap-3 border border-line bg-paper p-4">
                 <Icon className="size-8 text-safety" />
                 <span className="text-sm text-ink">{label}</span>
               </li>

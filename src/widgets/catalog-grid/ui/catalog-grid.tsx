@@ -26,7 +26,7 @@ export function CatalogGrid({ title = "Популярные товары", limit
         </AnimatedLink>
       </div>
 
-      <div ref={gridRef} className="mt-8 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
+      <div ref={gridRef} className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
         {products.map((product) => (
           <ProductCard key={product.id} product={product} categorySlug={product.category_slug} />
         ))}

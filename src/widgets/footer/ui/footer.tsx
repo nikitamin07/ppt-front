@@ -1,4 +1,4 @@
-import { MapPinIcon, PhoneIcon, MailIcon } from "lucide-react";
+import { MapPinIcon, PhoneIcon, MailIcon, Link } from "lucide-react";
 import { Logo } from "@/shared/ui/logo";
 import { AnimatedLink } from "@/shared/ui/animated-link";
 import { OrderCallbackForm } from "@/features/order-callback";
@@ -54,8 +54,9 @@ export function Footer() {
 
       <div className="border-t border-white/10">
         <div className="mx-auto flex max-w-7xl flex-col gap-2 px-6 py-5 text-xs tabular-nums text-paper/40 sm:flex-row sm:items-center sm:justify-between lg:px-8">
+          <span>УНП 791217541</span>
           <span>© {new Date().getFullYear()} ППТ.бел. Все права защищены.</span>
-          <span>УНП 000000000</span>
+          <span>Разработано <AnimatedLink href="https://t.me/nikbtw07" className="text-paper/40">Nikita Minchukou</AnimatedLink></span>
         </div>
       </div>
     </footer>

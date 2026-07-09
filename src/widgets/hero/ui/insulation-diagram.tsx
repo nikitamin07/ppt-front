@@ -1,5 +1,5 @@
 const LAYERS = [
-  { x: 10, width: 34, fill: "var(--color-line)", label: "Кладка", hatch: true },
+  { x: 10, width: 34, fill: "var(--color-line)", label: "Стена", hatch: true },
   { x: 44, width: 58, fill: "var(--color-safety)", label: "Утеплитель", hatch: false },
   { x: 102, width: 14, fill: "var(--color-line)", label: "Штукатурка", hatch: true },
 ] as const;
@@ -45,7 +45,7 @@ export function InsulationDiagram() {
           />
           <text
             x={layer.x + layer.width / 2}
-            y={182 + i * 16}
+            y={184 + i * 16}
             textAnchor="middle"
             className="font-label"
             fontSize="8"
@@ -62,7 +62,7 @@ export function InsulationDiagram() {
         <line x1="44" y1="4" x2="44" y2="12" stroke="var(--color-safety)" strokeWidth="1.5" />
         <line x1="102" y1="4" x2="102" y2="12" stroke="var(--color-safety)" strokeWidth="1.5" />
         <text x="73" y="3" textAnchor="middle" className="font-label" fontSize="9" fontWeight="600" fill="var(--color-safety)">
-          150 мм
+          100 мм
         </text>
       </g>
     </svg>
