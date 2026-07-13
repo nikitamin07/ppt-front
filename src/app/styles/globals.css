@@ -55,6 +55,10 @@
   --font-label: var(--font-oswald), ui-sans-serif, system-ui, sans-serif;
 }
 
+@utility container {
+  @apply mx-auto max-w-7xl px-6 lg:px-8;
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
@@ -115,13 +119,13 @@
     height: auto;
   }
 
-  section + section, div + section, section + div {
-    margin-top: 6rem;
+  .container + .container, section + section {
+    margin-top: 4rem;
   }
 
-  @media (width >= --breakpoint-sm) {
-    section + section, div + section, section + div {
-      margin-top: 10rem;
+  @media (width >= theme(--breakpoint-sm)) {
+    .container + .container, section + section {
+      margin-top: 6rem;
     }
   }
   * {

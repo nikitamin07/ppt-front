@@ -9,7 +9,7 @@ import { useState } from "react";
 const POINTS = [
   { icon: TruckIcon, text: "Доставка по всей Беларуси" },
   { icon: ClockIcon, text: "От 1 до 3 рабочих дней" },
-  { icon: PackageCheckIcon, text: "Погрузка и упаковка включены" },
+  { icon: PackageCheckIcon, text: "Погрузка товаров включена" },
 ] as const;
 
 export function DeliveryTeaser() {
@@ -17,23 +17,23 @@ export function DeliveryTeaser() {
   const ref = useScrollReveal<HTMLDivElement>({callBack: () => setDeliveryActive(true)});
 
   return (
-    <section className="mx-auto max-w-7xl px-6 lg:px-8">
+    <section className="container">
       <div ref={ref} className="border border-line bg-ink p-8 text-paper sm:p-12">
         <div className="grid gap-10 lg:grid-cols-[1fr_1.4fr] lg:gap-16">
           <div>
             <div className="flex size-12 items-center justify-center border border-white/15 bg-white/5 text-safety">
               <MapIcon className="size-6" />
             </div>
-            <p className="mt-4 font-label text-xs font-semibold uppercase tracking-[0.2em] text-safety">Доставка</p>
+            <h2 className="mt-4 font-label text-md font-semibold uppercase tracking-[0.2em] text-safety">Доставка</h2>
             <div className="mt-6 font-heading text-4xl font-semibold text-paper sm:text-5xl">
               <CountingAnimation value={48} prefix="~" suffix=" часов" active={deliveryActive} />
             </div>
             <p className="mt-4 text-sm text-paper/60">и необходимый материал у вас на объекте</p>
           </div>
           <div>
-            <h2 className="font-heading text-2xl font-semibold sm:text-3xl">
+            <h3 className="font-heading text-2xl font-semibold sm:text-3xl">
               Привезем материал на объект
-            </h2>
+            </h3>
             <p className="mt-4 max-w-2xl text-base leading-relaxed text-paper/70">
               Развозим по Минску и области собственным транспортом. Сроки доставки оговариваются с покупателем при оформлении заказа в удобное для него время.
             </p>

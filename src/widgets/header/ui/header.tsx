@@ -2,14 +2,26 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { MenuIcon, PhoneIcon, XIcon } from "lucide-react";
+import { ArrowRightIcon, MenuIcon, PhoneIcon, XIcon } from "lucide-react";
 import { AnimatedLink } from "@/shared/ui/animated-link";
 import { Logo } from "@/shared/ui/logo";
+import { cn } from "@/shared/lib/utils";
+import { Dialog, DialogTrigger, DialogClose, DialogPanel } from "@/shared/ui/dialog";
 import { OrderCallbackDialog } from "@/features/order-callback";
 import { NAV_LINKS } from "@/shared/config";
 
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [callbackOpen, setCallbackOpen] = useState(false);
+
+  // Каллбэк-попап вложен в react-дерево nav-панели (общий Dialog из shared/ui), поэтому
+  // закрывать панель через setMobileOpen(false) в момент открытия попапа нельзя — размонтирование
+  // родителя утащит за собой ещё не отрисовавшийся дочерний диалог. Вместо этого прячем панель
+  // визуально, пока попап открыт, и закрываем её по-настоящему только когда попап уже закрылся.
+  function handleCallbackOpenChange(open: boolean) {
+    setCallbackOpen(open);
+    if (!open) setMobileOpen(false);
+  }
 
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-paper/95 backdrop-blur-sm">
@@ -44,36 +56,57 @@ export function Header() {
 
         <div className="flex items-center gap-4">
           <OrderCallbackDialog className="hidden sm:inline-flex" />
-          <button
-            type="button"
-            aria-label={mobileOpen ? "Закрыть меню" : "Открыть меню"}
-            onClick={() => setMobileOpen((v) => !v)}
-            className="text-ink lg:hidden"
-          >
-            {mobileOpen ? <XIcon className="size-6" /> : <MenuIcon className="size-6" />}
-          </button>
+          <Dialog open={mobileOpen} onOpenChange={setMobileOpen}>
+            <DialogTrigger
+              aria-label={mobileOpen ? "Закрыть меню" : "Открыть меню"}
+              className="text-ink lg:hidden"
+            >
+              {mobileOpen ? <XIcon className="size-6" /> : <MenuIcon className="size-6" />}
+            </DialogTrigger>
+
+            <DialogPanel className={cn("lg:hidden transition-opacity", callbackOpen && "opacity-0 pointer-events-none")}>
+              <div className="flex items-center justify-between px-6 py-4">
+                <Logo className="text-paper" />
+                <DialogClose aria-label="Закрыть меню" className="text-paper">
+                  <XIcon className="size-6" />
+                </DialogClose>
+              </div>
+
+              <nav className="flex flex-col px-6">
+                <p className="font-label text-xs font-semibold uppercase tracking-[0.2em] text-safety">Разделы</p>
+                {NAV_LINKS.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setMobileOpen(false)}
+                    className="group flex items-center justify-between gap-4 border-b border-white/10 py-5 first:mt-3"
+                  >
+                    <span className="flex items-center gap-3 font-heading text-3xl font-semibold uppercase tracking-tight">
+                      <span className="h-px w-6 shrink-0 bg-safety" />
+                      {link.label}
+                    </span>
+                    <ArrowRightIcon className="size-5 shrink-0 text-paper/40 transition-transform duration-200 group-hover:translate-x-1 group-hover:text-safety" />
+                  </Link>
+                ))}
+              </nav>
+
+              <div className="mt-auto flex flex-col gap-4 px-6 pb-8 pt-6">
+                <OrderCallbackDialog className="w-full" onOpenChange={handleCallbackOpenChange} />
+                <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm tabular-nums text-paper/70">
+                  <a href="tel:+375296918417" className="flex items-center gap-1.5 transition-colors hover:text-safety">
+                    <PhoneIcon className="size-3.5" />
+                    +375 (29) 691-84-17
+                  </a>
+                  <a href="tel:+375259264845" className="flex items-center gap-1.5 transition-colors hover:text-safety">
+                    <PhoneIcon className="size-3.5" />
+                    +375 (25) 926-48-45
+                  </a>
+                </div>
+              </div>
+            </DialogPanel>
+          </Dialog>
         </div>
       </div>
-
-      {mobileOpen ? (
-        <div className="border-t border-line bg-paper px-6 py-4 lg:hidden">
-          <nav className="flex flex-col gap-4">
-            {NAV_LINKS.map((link) => (
-              <AnimatedLink
-                key={link.href}
-                href={link.href}
-                onClick={() => setMobileOpen(false)}
-                className="text-base"
-              >
-                {link.label}
-              </AnimatedLink>
-            ))}
-          </nav>
-          <div className="mt-4 flex flex-col gap-3 sm:hidden">
-            <OrderCallbackDialog className="w-full" />
-          </div>
-        </div>
-      ) : null}
     </header>
   );
 }

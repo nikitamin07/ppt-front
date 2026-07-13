@@ -17,7 +17,7 @@ export function BlogList({ title = "Полезная информация", limi
   const gridRef = useStaggerReveal<HTMLDivElement>();
 
   return (
-    <section className="mx-auto max-w-7xl px-6 lg:px-8">
+    <section className="container">
       <div className="flex items-end justify-between gap-4 border-b border-line pb-5">
         <h2 className="font-heading text-2xl font-semibold text-ink sm:text-3xl">{title}</h2>
         <AnimatedLink href={viewAllHref} className="hidden sm:inline-flex">

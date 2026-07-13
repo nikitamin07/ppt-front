@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { cn } from "@/shared/lib/utils";
 import { submitOrderCallback } from "../api";
+import { formatBelarusDigits, sanitizeBelarusDigits } from "../lib/phone-mask";
 
 interface OrderCallbackFormProps {
   /** surface — на светлой подложке (попап), inverse — на графитовом фоне (футер) */
@@ -12,16 +13,18 @@ interface OrderCallbackFormProps {
 
 export function OrderCallbackForm({ tone = "surface", className }: OrderCallbackFormProps) {
   const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
+  const [phoneDigits, setPhoneDigits] = useState("");
+  const [phoneFocused, setPhoneFocused] = useState(false);
   const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
 
   const isInverse = tone === "inverse";
+  const showPrefix = phoneFocused || phoneDigits.length > 0;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setStatus("loading");
     try {
-      await submitOrderCallback({ name, phone, source_url: window.location.href });
+      await submitOrderCallback({ name, phone: `+375${phoneDigits}`, source_url: window.location.href });
       setStatus("done");
     } catch {
       setStatus("error");
@@ -48,6 +51,10 @@ export function OrderCallbackForm({ tone = "surface", className }: OrderCallback
       ? "border-white/15 bg-white/5 text-paper placeholder:text-paper/40 focus:border-safety"
       : "border-line bg-paper text-ink placeholder:text-muted-foreground focus:border-safety",
   );
+  const phoneWrapClass = cn(
+    "flex items-center gap-1.5 border px-3.5 py-2.5 text-sm transition-colors",
+    isInverse ? "border-white/15 bg-white/5 text-paper focus-within:border-safety" : "border-line bg-paper text-ink focus-within:border-safety",
+  );
 
   return (
     <form onSubmit={handleSubmit} className={cn("flex flex-col gap-3", className)}>
@@ -56,18 +63,28 @@ export function OrderCallbackForm({ tone = "surface", className }: OrderCallback
         name="name"
         placeholder="Ваше имя"
         value={name}
-        onChange={(e) => setName(e.target.value)}
+        onChange={(e) => setName(e.target.value.replace(/[^a-zA-Zа-яёА-ЯЁ\s'-]/g, ""))}
         className={inputClass}
       />
-      <input
-        required
-        type="tel"
-        name="phone"
-        placeholder="+375 (XX) XXX-XX-XX"
-        value={phone}
-        onChange={(e) => setPhone(e.target.value)}
-        className={inputClass}
-      />
+      <div className={phoneWrapClass}>
+        {showPrefix ? <span className="shrink-0 tabular-nums">+375</span> : null}
+        <input
+          required
+          type="tel"
+          inputMode="numeric"
+          name="phone"
+          pattern="\(\d{2}\) \d{3}-\d{2}-\d{2}"
+          title="Введите номер полностью"
+          placeholder={showPrefix ? "(XX) XXX-XX-XX" : "+375 (XX) XXX-XX-XX"}
+          value={formatBelarusDigits(phoneDigits)}
+          onFocus={() => setPhoneFocused(true)}
+          onChange={(e) => setPhoneDigits(sanitizeBelarusDigits(e.target.value))}
+          className={cn(
+            "w-full bg-transparent outline-none",
+            isInverse ? "placeholder:text-paper/40" : "placeholder:text-muted-foreground",
+          )}
+        />
+      </div>
       <button
         type="submit"
         disabled={status === "loading"}

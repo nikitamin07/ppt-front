@@ -16,7 +16,7 @@ function DialogBackdrop({ className, ...props }: DialogPrimitive.Backdrop.Props)
   return (
     <DialogPrimitive.Backdrop
       className={cn(
-        "fixed inset-0 z-50 bg-ink/60 backdrop-blur-[2px] transition-opacity duration-200",
+        "fixed inset-0 z-50 bg-ink/60 backdrop-blur-sm transition-opacity duration-200",
         "data-[starting-style]:opacity-0 data-[ending-style]:opacity-0",
         className,
       )}
@@ -54,6 +54,26 @@ function DialogContent({ className, children, showClose = true, ...props }: Dial
   );
 }
 
+function DialogPanel({ className, children, ...props }: DialogPrimitive.Popup.Props) {
+  return (
+    <DialogPortal>
+      <DialogBackdrop />
+      <DialogPrimitive.Popup
+        className={cn(
+          "fixed inset-0 z-50 flex flex-col overflow-y-auto bg-ink text-paper",
+          "transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]",
+          "data-[starting-style]:opacity-0 data-[starting-style]:-translate-y-6",
+          "data-[ending-style]:opacity-0 data-[ending-style]:-translate-y-6 data-[ending-style]:duration-150 data-[ending-style]:ease-out",
+          className,
+        )}
+        {...props}
+      >
+        {children}
+      </DialogPrimitive.Popup>
+    </DialogPortal>
+  );
+}
+
 function DialogTitle({ className, ...props }: DialogPrimitive.Title.Props) {
   return (
     <DialogPrimitive.Title
@@ -72,4 +92,14 @@ function DialogDescription({ className, ...props }: DialogPrimitive.Description.
   );
 }
 
-export { Dialog, DialogTrigger, DialogClose, DialogContent, DialogTitle, DialogDescription };
+export {
+  Dialog,
+  DialogTrigger,
+  DialogClose,
+  DialogPortal,
+  DialogBackdrop,
+  DialogContent,
+  DialogPanel,
+  DialogTitle,
+  DialogDescription,
+};
