@@ -2,10 +2,10 @@
 export const SCREEN_WIDTH = 1000;
 
 // Позиция корпуса — в процентах от ширины экрана
-export const CASE_OFF_LEFT = "-20%";
+export const CASE_OFF_LEFT = "-22%";
 export const CASE_ON_LEFT = "0%";
 export const CASE_ON_RIGHT = "100%";
-export const CASE_OFF_RIGHT = "120%";
+export const CASE_OFF_RIGHT = "122%";
 
 const TICK_COUNT = 60;
 const TICK_STEP = SCREEN_WIDTH / TICK_COUNT;

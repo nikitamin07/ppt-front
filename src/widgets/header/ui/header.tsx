@@ -63,7 +63,9 @@ export function Header() {
             
             <DialogPanel className={cn("lg:hidden", callbackOpen && "opacity-0 pointer-events-none")}>
               <div className="flex items-center justify-between px-6 py-4">
-                <Logo className="text-paper" />
+                <Link href="/" aria-label="ППТ.бел — на главную" onClick={() => setMobileOpen(false)}>
+                  <Logo className="text-paper" />
+                </Link>
                 <DialogClose aria-label="Закрыть меню" className="text-paper">
                   <XIcon className="size-6" />
                 </DialogClose>

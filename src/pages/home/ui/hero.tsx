@@ -156,13 +156,13 @@ export function Hero() {
                 </div>
               </div>
 
-              <div className="mt-10 sm:mt-14 grid max-w-full md:max-w-[75%] grid-cols-3 divide-x divide-line border-t border-line pt-8">
+              <div className="mt-10 sm:mt-14 grid max-w-full md:max-w-[75%] grid-cols-3 divide-x divide-line border-t border-line pt-4 sm:pt-8">
                 {STATS.map((stat) => (
                   <div data-hero-stat key={stat.label} className="px-2 sm:px-4">
                     <div className="font-heading text-lg font-semibold text-ink sm:text-2xl lg:text-3xl">
                       <CountingAnimation value={stat.value} suffix={stat.suffix} active={statsActive} />
                     </div>
-                    <div className="mt-1 text-sm text-muted-foreground">{stat.label}</div>
+                    <div className="sm:mt-1 text-xs sm:text-sm text-muted-foreground">{stat.label}</div>
                   </div>
                 ))}
               </div>

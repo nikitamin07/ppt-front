@@ -9,7 +9,7 @@ import { CONTACTS, NAV_LINKS } from "@/shared/config";
 export function Footer() {
   return (
     <footer className="bg-ink text-paper mt-16 sm:mt-32">
-      <div className="mx-auto grid max-w-7xl gap-12 px-6 py-16 sm:py-20 lg:grid-cols-[1.2fr_1fr_1.2fr] lg:gap-8 lg:px-8">
+      <div className="mx-auto grid max-w-7xl gap-12 px-6 py-16 sm:py-20 sm:grid-cols-[1fr_1fr] lg:grid-cols-[1.2fr_1fr_1.2fr] lg:gap-8 lg:px-8">
         <div>
           <Logo className="text-paper" />
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-paper/60">
@@ -45,7 +45,7 @@ export function Footer() {
               </AnimatedLink>
             ))}
           </nav>
-          <h3 className="mt-6 font-heading text-sm font-semibold uppercase tracking-wide text-paper/50">Связаться с нами</h3>
+          <h3 className="mt-10 sm:mt-6 font-heading text-sm font-semibold uppercase tracking-wide text-paper/50">Связаться с нами</h3>
           <MessengerLinks className="mt-3" linkClassName="border-white/15 text-paper" />
         </div>
 
