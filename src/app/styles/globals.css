@@ -59,6 +59,20 @@
   @apply mx-auto max-w-7xl px-6 lg:px-8;
 }
 
+/* Кликабельная карточка (товар/статья/категория): рамка + подъём с тенью на hover. */
+@utility card-lift {
+  @apply border border-line bg-card transition-all duration-300;
+
+  &:hover {
+    @apply -translate-y-1 border-safety shadow-[0_16px_32px_-20px_rgba(27,27,24,0.25)];
+  }
+}
+
+/* Оранжевый надзаголовок секции */
+@utility eyebrow {
+  @apply font-label font-semibold uppercase tracking-[0.2em] text-safety;
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;

@@ -60,7 +60,9 @@ function DialogPanel({ className, children, ...props }: DialogPrimitive.Popup.Pr
       <DialogBackdrop />
       <DialogPrimitive.Popup
         className={cn(
-          "fixed inset-0 z-50 flex flex-col overflow-y-auto bg-ink text-paper",
+          // overflow-x-hidden обязателен: один только overflow-y-auto по спеке CSS даёт computed overflow-x:auto,
+          // и полноэкранное меню становится горизонтально прокручиваемым
+          "fixed inset-0 z-50 flex flex-col overflow-y-auto overflow-x-hidden bg-ink text-paper",
           "transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]",
           "data-[starting-style]:opacity-0 data-[starting-style]:-translate-y-6",
           "data-[ending-style]:opacity-0 data-[ending-style]:-translate-y-6 data-[ending-style]:duration-150 data-[ending-style]:ease-out",

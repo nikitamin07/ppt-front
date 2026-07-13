@@ -1,10 +1,12 @@
 "use client";
 
-import { ClockIcon, MailIcon, MapPinIcon, PhoneIcon } from "lucide-react";
+import { ClockIcon, MailIcon, MapPinIcon } from "lucide-react";
 import { CornerFrame } from "@/shared/ui/corner-frame";
 import { Breadcrumbs } from "@/widgets/breadcrumbs";
-import { TelegramIcon, ViberIcon } from "@/shared/ui/messenger-icons";
+import { MessengerLinks } from "@/shared/ui/messenger-icons";
+import { PhoneLink } from "@/shared/ui/phone-link";
 import { useScrollReveal } from "@/shared/lib/react";
+import { CONTACTS } from "@/shared/config";
 
 const REQUISITES = [
   { label: "Организация", value: "ЧТУП «РешениеСтройДизайн»" },
@@ -31,59 +33,34 @@ export function ContactsPage() {
       <section className="container mt-12">
         <div ref={gridRef} className="grid gap-10 border border-line bg-card p-6 sm:p-8 lg:grid-cols-2 lg:gap-16">
           <div>
-            <h2 className="font-label text-md font-semibold uppercase tracking-[0.2em] text-safety">Контакты</h2>
+            <h2 className="eyebrow">Контакты</h2>
             <ul className="mt-6 flex flex-col gap-4 text-sm text-ink">
               <li className="flex items-start gap-3">
                 <MapPinIcon className="mt-0.5 size-4 shrink-0 text-safety" />
-                Минск, ул. Кнорина, 50А
+                {CONTACTS.address}
               </li>
-              <li className="flex items-center gap-3">
-                <PhoneIcon className="size-4 shrink-0 text-safety" />
-                <a href="tel:+375296918417" className="tabular-nums transition-colors hover:text-safety">
-                  +375 (29) 691-84-17
-                </a>
-              </li>
-              <li className="flex items-center gap-3">
-                <PhoneIcon className="size-4 shrink-0 text-safety" />
-                <a href="tel:+375259264845" className="tabular-nums transition-colors hover:text-safety">
-                  +375 (25) 926-48-45
-                </a>
-              </li>
+              {CONTACTS.phones.map((phone) => (
+                <li key={phone.tel}>
+                  <PhoneLink phone={phone} className="gap-3" iconClassName="size-4 text-safety" />
+                </li>
+              ))}
               <li className="flex items-center gap-3">
                 <ClockIcon className="size-4 shrink-0 text-safety" />
-                Пн–Пт, 9:00–18:00
+                {CONTACTS.workHours}
               </li>
               <li className="flex items-center gap-3">
                 <MailIcon className="size-4 shrink-0 text-safety" />
-                <a href="mailto:7206856@mail.ru" className="transition-colors hover:text-safety">
-                  7206856@mail.ru
+                <a href={`mailto:${CONTACTS.email}`} className="transition-colors hover:text-safety">
+                  {CONTACTS.email}
                 </a>
               </li>
             </ul>
 
-            <div className="mt-6 flex items-center gap-3">
-              <a
-                href="https://t.me/+375296918417"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Написать в Telegram"
-                className="flex size-10 items-center justify-center border border-line text-ink transition-colors hover:border-safety hover:text-safety duration-300"
-              >
-                <TelegramIcon className="size-5 duration-300" />
-              </a>
-              <a
-                href="viber://chat?number=%2B375296918417"
-                target="_blank"
-                aria-label="Написать в Viber"
-                className="flex size-10 items-center justify-center border border-line text-ink transition-colors hover:border-safety hover:text-safety duration-300"
-              >
-                <ViberIcon className="size-5 duration-300" />
-              </a>
-            </div>
+            <MessengerLinks className="mt-6" linkClassName="border-line text-ink" />
           </div>
 
           <div>
-            <h2 className="font-label text-md font-semibold uppercase tracking-[0.2em] text-safety">Реквизиты</h2>
+            <h2 className="eyebrow">Реквизиты</h2>
             <dl className="mt-6 flex flex-col gap-4">
               {REQUISITES.map((item) => (
                 <div key={item.label} className="border-l-2 border-line pl-4">
@@ -97,7 +74,7 @@ export function ContactsPage() {
       </section>
 
       <section className="container mt-12">
-        <h2 className="mb-6 font-label text-md font-semibold uppercase tracking-[0.2em] text-safety">Как нас найти</h2>
+        <h2 className="mb-6 eyebrow">Как нас найти</h2>
         <div ref={mapRef}>
           <CornerFrame>
             <iframe

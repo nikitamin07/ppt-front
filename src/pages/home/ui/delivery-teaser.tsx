@@ -24,17 +24,17 @@ export function DeliveryTeaser() {
             <div className="flex size-12 items-center justify-center border border-white/15 bg-white/5 text-safety">
               <MapIcon className="size-6" />
             </div>
-            <h2 className="mt-4 font-label text-md font-semibold uppercase tracking-[0.2em] text-safety">Доставка</h2>
-            <div className="mt-6 font-heading text-4xl font-semibold text-paper sm:text-5xl">
+            <h2 className="mt-4 eyebrow">Доставка</h2>
+            <div className="mt-10 font-heading text-xl font-semibold text-paper sm:text-2xl lg:text-4xl">
               <CountingAnimation value={48} prefix="~" suffix=" часов" active={deliveryActive} />
             </div>
-            <p className="mt-4 text-sm text-paper/60">и необходимый материал у вас на объекте</p>
+            <p className="mt-2 sm:mt-4 text-sm text-paper/60">и необходимый материал у вас на объекте</p>
           </div>
           <div>
-            <h3 className="font-heading text-2xl font-semibold sm:text-3xl">
+            <h3 className="font-heading font-semibold text-xl md:text-2xl sm:text-3xl">
               Привезем материал на объект
             </h3>
-            <p className="mt-4 max-w-2xl text-base leading-relaxed text-paper/70">
+            <p className="mt-2 sm:mt-4 max-w-2xl text-sm md:text-base leading-relaxed text-paper/70">
               Развозим по Минску и области собственным транспортом. Сроки доставки оговариваются с покупателем при оформлении заказа в удобное для него время.
             </p>
             <ul className="mt-7 grid grid-cols-1 gap-4 sm:grid-cols-3">

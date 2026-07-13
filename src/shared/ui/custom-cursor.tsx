@@ -8,7 +8,7 @@ import { useMediaQuery } from 'usehooks-ts';
 
 MouseFollower.registerGSAP(gsap);
 
-export default function CustomCursor() {
+export function CustomCursor() {
   const pathname = usePathname();
   const cursorRef = useRef<MouseFollower | null>(null);
   const isLargeScreen = useMediaQuery('(min-width: 64rem)'); // 1024px

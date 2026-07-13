@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Oswald } from "next/font/google";
 import "@/app/styles/globals.css";
 import { cn } from "@/shared/lib/utils";
-import CustomCursor from "@/shared/ui/CustomCursor";
+import { CustomCursor } from "@/shared/ui/custom-cursor";
 import { Header } from "@/widgets/header";
 import { Footer } from "@/widgets/footer";
 

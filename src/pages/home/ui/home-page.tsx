@@ -1,4 +1,4 @@
-import { Hero } from "@/widgets/hero";
+import { Hero } from "./hero";
 import { CatalogGrid } from "@/widgets/catalog-grid";
 import { BlogList } from "@/widgets/blog-list";
 import { AboutTeaser } from "./about-teaser";

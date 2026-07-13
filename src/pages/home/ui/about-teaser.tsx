@@ -29,8 +29,8 @@ export function AboutTeaser() {
           <div className="flex size-12 items-center justify-center border border-line bg-paper text-safety">
             <Building2Icon className="size-6" />
           </div>
-          <h2 className="mt-4 font-label text-md font-semibold uppercase tracking-[0.2em] text-safety">О компании</h2>
-          <ul className="mt-6 flex flex-col gap-3">
+          <h2 className="mt-4 eyebrow">О компании</h2>
+          <ul className="mt-10 flex flex-col gap-3">
             {POINTS.map((point) => (
               <li key={point} className="flex items-start gap-2.5 text-sm text-ink">
                 <CheckIcon className="mt-0.5 size-4 shrink-0 text-safety" />
@@ -40,10 +40,10 @@ export function AboutTeaser() {
           </ul>
         </div>
         <div>
-          <h3 className="font-heading text-2xl font-semibold text-ink sm:text-3xl">
+          <h3 className="font-heading font-semibold text-xl md:text-2xl sm:text-3xl text-ink">
             ЧП «РешениеСтройДизайн» – надежный поставщик строительных материалов
           </h3>
-          <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
+          <p className="mt-4 md:max-w-2xl text-sm md:text-base leading-relaxed text-muted-foreground">
             Реализуем все виды утеплителей, строительных и отделочных материалов партнерского
             производства. Держим широкий ассортимент в наличии на складе. Отгружаем в минимальные сроки и только проверенный материал.
           </p>

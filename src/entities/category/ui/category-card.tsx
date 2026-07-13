@@ -10,7 +10,7 @@ export function CategoryCard({ category, imageUrl }: CategoryCardProps) {
   return (
     <Link
       href={`/catalog/${category.slug}`}
-      className="group flex flex-col overflow-hidden border border-line bg-card transition-all duration-300 hover:-translate-y-1 hover:border-safety hover:shadow-[0_16px_32px_-20px_rgba(27,27,24,0.25)]"
+      className="card-lift group flex flex-col overflow-hidden"
     >
       {imageUrl ? (
         // eslint-disable-next-line @next/next/no-img-element

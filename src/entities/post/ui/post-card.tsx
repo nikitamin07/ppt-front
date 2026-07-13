@@ -9,7 +9,7 @@ export function PostCard({ post }: PostCardProps) {
   return (
     <Link
       href={`/blog/${post.slug}`}
-      className="group flex flex-col overflow-hidden border border-line bg-card transition-all duration-300 hover:-translate-y-1 hover:border-safety hover:shadow-[0_16px_32px_-20px_rgba(27,27,24,0.25)]"
+      className="card-lift group flex flex-col overflow-hidden"
     >
       {post.cover_image_url ? (
         // eslint-disable-next-line @next/next/no-img-element

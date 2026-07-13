@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { cn } from "@/shared/lib/utils";
+import { Button } from "@/shared/ui/button";
+import { Input } from "@/shared/ui/input";
 import { submitOrderCallback } from "../api";
 import { formatBelarusDigits, sanitizeBelarusDigits } from "../lib/phone-mask";
 
@@ -45,12 +47,6 @@ export function OrderCallbackForm({ tone = "surface", className }: OrderCallback
     );
   }
 
-  const inputClass = cn(
-    "w-full border px-3.5 py-2.5 text-sm outline-none transition-colors",
-    isInverse
-      ? "border-white/15 bg-white/5 text-paper placeholder:text-paper/40 focus:border-safety"
-      : "border-line bg-paper text-ink placeholder:text-muted-foreground focus:border-safety",
-  );
   const phoneWrapClass = cn(
     "flex items-center gap-1.5 border px-3.5 py-2.5 text-sm transition-colors",
     isInverse ? "border-white/15 bg-white/5 text-paper focus-within:border-safety" : "border-line bg-paper text-ink focus-within:border-safety",
@@ -58,13 +54,13 @@ export function OrderCallbackForm({ tone = "surface", className }: OrderCallback
 
   return (
     <form onSubmit={handleSubmit} className={cn("flex flex-col gap-3", className)}>
-      <input
+      <Input
         required
         name="name"
         placeholder="Ваше имя"
         value={name}
         onChange={(e) => setName(e.target.value.replace(/[^a-zA-Zа-яёА-ЯЁ\s'-]/g, ""))}
-        className={inputClass}
+        className={isInverse ? "border-white/15 bg-white/5 text-paper placeholder:text-paper/40" : undefined}
       />
       <div className={phoneWrapClass}>
         {showPrefix ? <span className="shrink-0 tabular-nums">+375</span> : null}
@@ -85,13 +81,9 @@ export function OrderCallbackForm({ tone = "surface", className }: OrderCallback
           )}
         />
       </div>
-      <button
-        type="submit"
-        disabled={status === "loading"}
-        className="inline-flex items-center justify-center bg-safety px-4 py-2.5 text-sm font-semibold text-white transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-[0_10px_24px_-10px_rgba(255,90,31,0.6)] active:translate-y-0 active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50"
-      >
+      <Button type="submit" disabled={status === "loading"}>
         {status === "loading" ? "Отправка..." : "Заказать звонок"}
-      </button>
+      </Button>
       {status === "error" ? (
         <p className="text-sm text-destructive">Не удалось отправить, попробуйте еще раз.</p>
       ) : null}
