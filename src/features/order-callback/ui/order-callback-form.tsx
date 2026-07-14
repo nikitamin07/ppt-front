@@ -11,9 +11,11 @@ interface OrderCallbackFormProps {
   /** surface — на светлой подложке (попап), inverse — на графитовом фоне (футер) */
   tone?: "surface" | "inverse";
   className?: string;
+  /** для initialFocus диалога: фокус на имени, чтобы Enter отправлял форму, а не жал «Закрыть» */
+  nameInputRef?: React.Ref<HTMLInputElement>;
 }
 
-export function OrderCallbackForm({ tone = "surface", className }: OrderCallbackFormProps) {
+export function OrderCallbackForm({ tone = "surface", className, nameInputRef }: OrderCallbackFormProps) {
   const [name, setName] = useState("");
   const [phoneDigits, setPhoneDigits] = useState("");
   const [phoneFocused, setPhoneFocused] = useState(false);
@@ -55,6 +57,7 @@ export function OrderCallbackForm({ tone = "surface", className }: OrderCallback
   return (
     <form onSubmit={handleSubmit} className={cn("flex flex-col gap-3", className)}>
       <Input
+        ref={nameInputRef}
         required
         name="name"
         placeholder="Ваше имя"

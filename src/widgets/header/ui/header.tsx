@@ -11,10 +11,13 @@ import { Dialog, DialogTrigger, DialogClose, DialogPanel } from "@/shared/ui/dia
 import { OrderCallbackDialog } from "@/features/order-callback";
 import { CONTACTS, NAV_LINKS } from "@/shared/config";
 import { MessengerLinks } from "@/shared/ui/messenger-icons";
+import { usePathname } from "next/navigation";
 
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [callbackOpen, setCallbackOpen] = useState(false);
+
+  const navSection = usePathname()?.split('/')[1];
 
   // Каллбэк-попап вложен в react-дерево nav-панели (общий Dialog из shared/ui), поэтому
   // закрывать панель через setMobileOpen(false) в момент открытия попапа нельзя — размонтирование
@@ -45,7 +48,7 @@ export function Header() {
 
         <nav className="hidden items-center gap-7 lg:flex">
           {NAV_LINKS.map((link) => (
-            <AnimatedLink key={link.href} href={link.href}>
+            <AnimatedLink key={link.href} href={link.href} className={link.href.slice(1) === navSection? "text-safety" : ""}>
               {link.label}
             </AnimatedLink>
           ))}
@@ -78,7 +81,7 @@ export function Header() {
                     key={link.href}
                     href={link.href}
                     onClick={() => setMobileOpen(false)}
-                    className="group flex items-center justify-between gap-4 border-b border-white/10 py-3"
+                    className={`group flex items-center justify-between gap-4 border-b border-white/10 py-3 ${link.href.slice(1) === navSection? "text-safety" : ""}`}
                   >
                     <span className="flex items-center gap-3 font-heading text-xl font-semibold tracking-tight">
                       <span className="h-px w-6 shrink-0 bg-safety" />
