@@ -8,16 +8,18 @@ export interface BreadcrumbCrumb {
   href: string;
 }
 
-export function useBreadcrumbTrail(labels?: Record<string, string>): BreadcrumbCrumb[] {
+/** Ключ со значением null прячет сегмент: так из пути выпадают служебные куски вроде /tema/. */
+export function useBreadcrumbTrail(labels?: Record<string, string | null>): BreadcrumbCrumb[] {
   const pathname = usePathname() ?? "";
   const segments = pathname.split("/").filter(Boolean);
 
   return [
     { label: "Главная", href: "/" },
-    ...segments.map((segment, i) => {
+    ...segments.flatMap((segment, i) => {
+      if (labels?.[segment] === null) return [];
       const href = "/" + segments.slice(0, i + 1).join("/");
       const label = labels?.[segment] ?? NAV_LINKS.find((link) => link.href === href)?.label ?? segment;
-      return { label, href };
+      return [{ label, href }];
     }),
   ];
 }

@@ -1,27 +1,61 @@
+import type { ReactNode } from "react";
 import Link from "next/link";
+import { BrickWall, ChevronRightIcon, Layers, PaintBucket, Rows3, Waves } from "lucide-react";
 import type { Category } from "../model/types";
+
+const iconProps = { className: "size-6", strokeWidth: 1.5 };
+
+/**
+ * Иконка корневой категории по слагу. Слаги заданы в БД и меняются только вручную
+ * через админку, поэтому карта явная — незнакомому слагу достанется Layers.
+ * Храним готовые элементы, а не компоненты: так иконка не «создаётся» на каждый рендер.
+ */
+const ICONS: Record<string, ReactNode> = {
+  penoplast: <Layers {...iconProps} />, // плиты стопкой
+  xps: <Rows3 {...iconProps} />, // экструдированные листы
+  "minvat-uteplitel": <Waves {...iconProps} />, // волокно
+  "polisterolbeton-blocks": <BrickWall {...iconProps} />, // блоки кладкой
+  "dry-building-mixes": <PaintBucket {...iconProps} />, // смеси и грунтовки
+};
 
 interface CategoryCardProps {
   category: Category;
-  imageUrl?: string;
 }
 
-export function CategoryCard({ category, imageUrl }: CategoryCardProps) {
+/** Карточка корневой категории со списком её подкатегорий. */
+export function CategoryCard({ category }: CategoryCardProps) {
+  const children = category.children ?? [];
+
   return (
-    <Link
-      href={`/catalog/${category.slug}`}
-      className="card-lift group flex flex-col overflow-hidden"
-    >
-      {imageUrl ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={imageUrl} alt={category.name} className="aspect-video w-full object-cover" />
-      ) : null}
-      <div className="p-4">
-        <h3 className="font-heading font-semibold text-ink">{category.name}</h3>
-        {category.description ? (
-          <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{category.description}</p>
-        ) : null}
+    // Ссылки на подкатегории лежат внутри карточки, поэтому обернуть её целиком в <a> нельзя:
+    // кликабельность всей карточки даёт растянутый ::after у заголовка.
+    <div className="card-lift group relative flex flex-col p-6">
+      <div className="flex items-start gap-4">
+        <span className="flex size-12 shrink-0 items-center justify-center border border-line text-safety transition-colors group-hover:border-safety">
+          {ICONS[category.slug] ?? <Layers {...iconProps} />}
+        </span>
+        <h2 className="mt-1 font-heading text-lg font-semibold leading-tight text-balance text-ink transition-colors group-hover:text-safety">
+          <Link href={`/catalog/${category.slug}`} className="after:absolute after:inset-0">
+            {category.name}
+          </Link>
+        </h2>
       </div>
-    </Link>
+
+      {children.length > 0 && (
+        <ul className="mt-5 flex flex-col border-t border-line pt-3">
+          {children.map((child) => (
+            <li key={child.id}>
+              <Link
+                href={`/catalog/${child.slug}`}
+                className="group/link relative z-10 flex items-start gap-2 py-1.5 text-sm text-muted-foreground transition-colors hover:text-safety"
+              >
+                <ChevronRightIcon className="mt-0.5 size-3.5 shrink-0 text-line transition-colors group-hover/link:text-safety" />
+                {child.name}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 }

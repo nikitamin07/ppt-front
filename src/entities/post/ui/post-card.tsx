@@ -8,7 +8,7 @@ interface PostCardProps {
 export function PostCard({ post }: PostCardProps) {
   return (
     <Link
-      href={`/blog/${post.slug}`}
+      href={`/poleznaya-informatsiya/${post.slug}`}
       className="card-lift group flex flex-col overflow-hidden"
     >
       {post.cover_image_url ? (

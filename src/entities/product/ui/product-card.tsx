@@ -1,21 +1,27 @@
 import Link from "next/link";
+import { cn } from "@/shared/lib/utils";
 import type { Product } from "../model/types";
 
 interface ProductCardProps {
   product: Product;
-  categorySlug: string;
+  /** Слаг категории товара. null — товар без категории: адреса у него нет, карточка не кликабельна. */
+  categorySlug: string | null;
 }
 
 export function ProductCard({ product, categorySlug }: ProductCardProps) {
   const hasDiscount = product.discount_price != null && product.discount_price < product.price;
+  // При объёмной цене top-level price уже синхронизирован с самым дешёвым тарифом.
+  const pricePrefix = product.is_volume_price ? "от " : "";
 
-  return (
-    <Link
-      href={`/catalog/${categorySlug}/${product.slug}`}
-      className="card-lift group relative flex flex-col overflow-hidden"
-    >
+  const className = cn(
+    "card-lift group relative flex flex-col overflow-hidden",
+    !categorySlug && "hover:translate-y-0 hover:border-line hover:shadow-none",
+  );
+
+  const body = (
+    <>
       {hasDiscount ? (
-        <span className="absolute left-3 top-3 z-10 bg-safety px-2 py-0.5 font-label text-xs font-semibold text-white">
+        <span className="absolute top-3 left-3 z-10 bg-safety px-2 py-0.5 font-label text-xs font-semibold text-white">
           Скидка
         </span>
       ) : null}
@@ -37,11 +43,20 @@ export function ProductCard({ product, categorySlug }: ProductCardProps) {
             </>
           ) : (
             <span className="font-semibold text-ink">
+              {pricePrefix}
               {product.price} {product.price_unit}
             </span>
           )}
         </div>
       </div>
+    </>
+  );
+
+  return categorySlug ? (
+    <Link href={`/catalog/${categorySlug}/${product.slug}`} className={className}>
+      {body}
     </Link>
+  ) : (
+    <div className={className}>{body}</div>
   );
 }

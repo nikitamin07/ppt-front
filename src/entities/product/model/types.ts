@@ -10,27 +10,35 @@ export interface ProductAttributeValue {
   value: string;        // Индивидуальное значение
 }
 
-// Ступенчатая цена в зависимости от объема заказа (наследие product_list)
+// Если цена зависит от объема: цена + свободное текстовое пояснение («до 10 кубов», «до 5 паллет»...)
+export interface ProductVolumePriceTier {
+  price: number;
+  label: string | null;
+}
+
+// Ступенчатая цена в зависимости от объема заказа: low и medium обязательны, high опционален
 export interface ProductVolumePrice {
-  before_10: number;
-  from_10_to_20: number;
-  after_20: number;
+  low: ProductVolumePriceTier;
+  medium: ProductVolumePriceTier;
+  high: ProductVolumePriceTier | null;
 }
 
 // Главная модель Товара
 export interface Product {
   id: number;
-  category_id: number;  // Ссылка на подкатегорию, к которой принадлежит товар
+  // Ссылка на категорию товара — корневую или подкатегорию. null бывает: товар 42 висит
+  // без категории, из-за чего у него нет и адреса вида /catalog/<категория>/<товар>.
+  category_id: number | null;
   slug: string;
   name: string;
   description: string;
   price: number;
   discount_price: number | null;
   price_unit: string;
+  is_featured: boolean; // «Показывать в популярных» — блок на главной, максимум 8 товаров
   is_volume_price: boolean;
   volume_price: ProductVolumePrice | null;
   image_url: string | null;
-  template: string | null; // кастомный шаблон карточки товара (наследие CMS)
   // Динамический массив характеристик «ключ-значение» для этого товара
   attributes: ProductAttributeValue[];
   related_product_ids: number[];

@@ -8,3 +8,8 @@ export function getCategoryTree(): Promise<Category[]> {
 export function getCategoryBySlug(slug: string): Promise<Category> {
   return apiGet<Category>(`/categories/${slug}`);
 }
+
+export async function getCategoriesCount(): Promise<number> {
+  const { count } = await apiGet<{ count: number }>("/categories/count");
+  return count;
+}

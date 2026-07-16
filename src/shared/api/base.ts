@@ -1,4 +1,15 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost/api";
+// В браузере API живёт на том же origin, что и сайт (его проксирует nginx), поэтому
+// дефолт относительный. `next dev` на :3000 своего /api не имеет — там NEXT_PUBLIC_API_URL
+// из .env указывает на nginx (:80). Значение подставляется на этапе сборки.
+//
+// На сервере (RSC, route handlers) относительный URL невозможен, а `localhost` внутри
+// контейнера frontend — это сам frontend. Поэтому там отдельный runtime-адрес
+// API_URL_INTERNAL (в compose = http://backend:80/api).
+// `||`, а не `??`: пустая переменная окружения, а не отсутствующая
+const API_BASE_URL =
+  typeof window === "undefined"
+    ? process.env.API_URL_INTERNAL || process.env.NEXT_PUBLIC_API_URL || "http://localhost/api"
+    : process.env.NEXT_PUBLIC_API_URL || "/api";
 
 export class ApiError extends Error {
   constructor(

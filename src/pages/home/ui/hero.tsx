@@ -20,13 +20,19 @@ import { InsulationDiagram } from "./insulation-diagram";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const STATS = [
-  { value: 50, suffix: "+", label: "позиций в каталоге" },
-  { value: 10, suffix: "", label: "категорий материалов" },
-  { value: 48, suffix: " часов", label: "средний срок доставки" },
-] as const;
+interface HeroProps {
+  /** Живые счётчики каталога — приходят с сервера, поэтому «50+» больше не нужен. */
+  productsCount: number;
+  categoriesCount: number;
+}
 
-export function Hero() {
+export function Hero({ productsCount, categoriesCount }: HeroProps) {
+  const stats = [
+    { value: productsCount, suffix: "", label: "позиций в каталоге" },
+    { value: categoriesCount, suffix: "", label: "категорий материалов" },
+    { value: 48, suffix: " часов", label: "средний срок доставки" },
+  ];
+
   const rootRef = useRef<HTMLDivElement | null>(null);
   const caseWrapRef = useRef<HTMLDivElement | null>(null);
   const clipRectRef = useRef<SVGRectElement | null>(null);
@@ -157,7 +163,7 @@ export function Hero() {
               </div>
 
               <div className="mt-10 sm:mt-14 grid max-w-full md:max-w-[75%] grid-cols-3 divide-x divide-line border-t border-line pt-4 sm:pt-8">
-                {STATS.map((stat) => (
+                {stats.map((stat) => (
                   <div data-hero-stat key={stat.label} className="px-2 sm:px-4">
                     <div className="font-heading text-lg font-semibold text-ink sm:text-2xl lg:text-3xl">
                       <CountingAnimation value={stat.value} suffix={stat.suffix} active={statsActive} />

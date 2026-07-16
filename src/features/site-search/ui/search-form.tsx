@@ -1,41 +1,61 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { SearchIcon } from "lucide-react";
+import { useDebounceValue } from "usehooks-ts";
 import { cn } from "@/shared/lib/utils";
-import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 
 interface SearchFormProps {
-  /** страница результатов: "/catalog" или "/blog" */
-  basePath: string;
   placeholder?: string;
+  /** Доступное имя поля: «Поиск по статьям», «Поиск по товарам». */
+  label: string;
   className?: string;
-  autoFocus?: boolean;
 }
 
-export function SearchForm({ basePath, placeholder = "Поиск", className, autoFocus }: SearchFormProps) {
+/**
+ * Живой поиск: пишет запрос в ?query= текущего роута, страница перерисовывается на сервере.
+ * Роут сохраняется, поэтому поиск работает и внутри /tema/<tag>, и в категории каталога.
+ */
+export function SearchForm({ placeholder = "Поиск", label, className }: SearchFormProps) {
   const router = useRouter();
+  const pathname = usePathname() ?? "";
   const searchParams = useSearchParams();
-  const [query, setQuery] = useState(searchParams?.get("query") ?? "");
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    router.push(`${basePath}?query=${encodeURIComponent(query)}`);
-  }
+  const urlQuery = searchParams?.get("query") ?? "";
+  const [value, setValue] = useState(urlQuery);
+  const [debounced] = useDebounceValue(value, 350);
+
+  // Запрос, который уже отражён в адресе. Стартуем с того, что пришло из URL,
+  // иначе первый же прогон эффекта переписал бы адрес на самого себя.
+  const synced = useRef(urlQuery);
+
+  useEffect(() => {
+    if (synced.current === debounced) return;
+    synced.current = debounced;
+
+    const params = new URLSearchParams(searchParams ?? undefined);
+    if (debounced) params.set("query", debounced);
+    else params.delete("query");
+
+    const search = params.toString();
+    // replace, а не push: выдача поиска не должна засорять историю на каждое слово.
+    // scroll: false — страница не должна прыгать наверх, пока человек печатает.
+    router.replace(search ? `${pathname}?${search}` : pathname, { scroll: false });
+  }, [debounced, pathname, router, searchParams]);
 
   return (
-    <form onSubmit={handleSubmit} className={cn("flex gap-2", className)}>
+    <div className={cn("relative", className)}>
+      <SearchIcon className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-muted-foreground" />
       <Input
+        type="search"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
         placeholder={placeholder}
-        value={query}
-        autoFocus={autoFocus}
-        onChange={(e) => setQuery(e.target.value)}
-        className="py-2"
+        aria-label={label}
+        className="pl-10"
       />
-      <Button type="submit" variant="ink" className="py-2 font-medium">
-        Найти
-      </Button>
-    </form>
+    </div>
   );
 }

@@ -14,7 +14,8 @@ import { useBreadcrumbTrail } from "../model/use-breadcrumb-trail";
 
 interface BreadcrumbsProps {
   className?: string;
-  labels?: Record<string, string>;
+  /** Подпись сегмента пути; null — сегмент в цепочке не показывать. */
+  labels?: Record<string, string | null>;
 }
 
 export function Breadcrumbs({ className, labels }: BreadcrumbsProps) {

@@ -1,20 +1,29 @@
 "use client";
 
 import { ArrowRightIcon } from "lucide-react";
-import { ProductCard } from "@/entities/product";
+import { ProductCard, type Product } from "@/entities/product";
 import { AnimatedLink } from "@/shared/ui/animated-link";
 import { useStaggerReveal } from "@/shared/lib/react";
-import { PLACEHOLDER_PRODUCTS } from "../model/placeholder-products";
 
 interface CatalogGridProps {
+  products: Product[];
+  /** id категории → слаг: в теле товара приходит только category_id, а карточке нужен адрес. */
+  categorySlugById: Record<number, string>;
   title?: string;
-  limit?: number;
   viewAllHref?: string;
 }
 
-export function CatalogGrid({ title = "Популярные товары", limit = 4, viewAllHref = "/catalog" }: CatalogGridProps) {
-  const products = PLACEHOLDER_PRODUCTS.slice(0, limit);
+export function CatalogGrid({
+  products,
+  categorySlugById,
+  title = "Популярные товары",
+  viewAllHref = "/catalog",
+}: CatalogGridProps) {
   const gridRef = useStaggerReveal<HTMLDivElement>();
+
+  // Блок наполняет админ галочкой «Показывать в популярных». Не отметили ни одного —
+  // показывать пустую секцию не за чем.
+  if (products.length === 0) return null;
 
   return (
     <section className="container">
@@ -26,9 +35,13 @@ export function CatalogGrid({ title = "Популярные товары", limit
         </AnimatedLink>
       </div>
 
-      <div ref={gridRef} className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
+      <div ref={gridRef} className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
         {products.map((product) => (
-          <ProductCard key={product.id} product={product} categorySlug={product.category_slug} />
+          <ProductCard
+            key={product.id}
+            product={product}
+            categorySlug={product.category_id != null ? (categorySlugById[product.category_id] ?? null) : null}
+          />
         ))}
       </div>
 
