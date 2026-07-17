@@ -1,5 +1,6 @@
+import Image from "next/image";
 import Link from "next/link";
-import { assetUrl } from "@/shared/api";
+import { assetUrl, NO_IMAGE_SRC } from "@/shared/api";
 import type { PostListItem } from "../model/types";
 
 interface PostCardProps {
@@ -13,10 +14,15 @@ export function PostCard({ post }: PostCardProps) {
       href={`/poleznaya-informatsiya/${post.slug}`}
       className="card-lift group flex flex-col overflow-hidden"
     >
-      {post.cover_image_url ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={assetUrl(post.cover_image_url)!} alt={post.title} className="aspect-video w-full object-cover" />
-      ) : null}
+      <div className="relative aspect-video w-full overflow-hidden">
+        <Image
+          src={assetUrl(post.cover_image_url) ?? NO_IMAGE_SRC}
+          alt={post.title}
+          fill
+          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+          className="object-cover"
+        />
+      </div>
       <div className="p-4">
         <time className="font-label text-xs tabular-nums text-muted-foreground">
           {new Date(post.published_at).toLocaleDateString("ru-RU")}

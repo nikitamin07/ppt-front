@@ -5,10 +5,9 @@ interface TagFilterProps {
   activeSlug?: string;
 }
 
-/** Список тем сбоку. Ссылки — обычные роуты, поэтому фильтр переживает обновление и «назад». */
 export function TagFilter({ tags, activeSlug }: TagFilterProps) {
   return (
-    <aside className="lg:sticky lg:top-24 lg:self-start">
+    <aside>
       <h2 className="eyebrow text-xs">Темы</h2>
       <nav className="mt-4 flex flex-wrap gap-2 lg:flex-col lg:items-start">
         {/* Сброс фильтра — тот же бейдж, ведущий на общий список. */}

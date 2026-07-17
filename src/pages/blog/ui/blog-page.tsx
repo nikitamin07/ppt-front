@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import { getPosts } from "@/entities/post";
 import { getTags } from "@/entities/tag";
-import { SearchForm } from "@/features/site-search";
 import { Breadcrumbs } from "@/widgets/breadcrumbs";
 import { PostFeed } from "@/widgets/post-feed";
 import { TagFilter } from "./tag-filter";
@@ -9,11 +8,10 @@ import { TagFilter } from "./tag-filter";
 interface BlogPageProps {
   /** Слаг темы из роута /poleznaya-informatsiya/tema/<tag>. */
   tagSlug?: string;
-  query?: string;
 }
 
-export async function BlogPage({ tagSlug, query }: BlogPageProps) {
-  const [tags, posts] = await Promise.all([getTags(), getPosts({ page: 1, tag: tagSlug, query })]);
+export async function BlogPage({ tagSlug }: BlogPageProps) {
+  const [tags, posts] = await Promise.all([getTags(), getPosts({ page: 1, tag: tagSlug })]);
 
   // Несуществующая тема — это битый адрес, а не пустая выдача.
   const activeTag = tagSlug ? tags.find((tag) => tag.slug === tagSlug) : undefined;
@@ -33,14 +31,12 @@ export async function BlogPage({ tagSlug, query }: BlogPageProps) {
         </p>
       </section>
 
-      <section className="container">
-        <SearchForm label="Поиск по статьям" placeholder="Поиск по статьям" className="max-w-xl" />
-
-        <div className="mt-10 grid gap-10 lg:grid-cols-[12rem_1fr] lg:gap-12">
+      <section className="container mt-8 sm:mt-12">
+        <div className="grid gap-10 lg:grid-cols-[12rem_1fr] lg:gap-12">
           <TagFilter tags={tags} activeSlug={tagSlug} />
-          {/* key: смена фильтров монтирует ленту заново с уже готовой первой страницей,
+          {/* key: смена темы монтирует ленту заново с уже готовой первой страницей,
               поэтому клиенту не нужно ни сбрасывать список, ни разруливать гонки ответов. */}
-          <PostFeed key={`${tagSlug ?? ""}|${query ?? ""}`} initialPosts={posts} tag={tagSlug} query={query} />
+          <PostFeed key={tagSlug ?? ""} initialPosts={posts} tag={tagSlug} />
         </div>
       </section>
     </>

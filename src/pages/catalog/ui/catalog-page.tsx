@@ -16,7 +16,7 @@ export async function CatalogPage() {
         </p>
       </section>
 
-      <section className="container">
+      <section className="container mt-8 sm:mt-12">
         {categories.length > 0 ? (
           <CategoryTree categories={categories} />
         ) : (

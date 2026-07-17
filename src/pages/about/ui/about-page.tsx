@@ -138,7 +138,7 @@ export function AboutPage() {
 
         <div
           ref={processRef}
-          className="mt-8 grid grid-cols-1 divide-y divide-line border-t border-line sm:grid-cols-3 sm:divide-x sm:divide-y-0 sm:border-t-0"
+          className="mt-8 grid grid-cols-1 divide-y divide-line border-line sm:grid-cols-3 sm:divide-x sm:divide-y-0 border-t-0"
         >
           {PROCESS.map(({ icon: Icon, title, text }, i) => (
             <div key={title} className="flex flex-col gap-3 py-6 first:pt-0 sm:px-6 sm:py-0 sm:first:pl-0 sm:last:pr-0">

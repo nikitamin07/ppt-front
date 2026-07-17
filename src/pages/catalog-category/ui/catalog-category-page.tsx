@@ -53,7 +53,7 @@ export async function CatalogCategoryPage({ slug, searchParams }: CatalogCategor
         </p>
       </section>
 
-      <section className="container">
+      <section className="container mt-8 sm:mt-12">
         <div className="grid gap-8 lg:grid-cols-[15rem_1fr] lg:gap-12">
           <ProductFilters subcategories={subcategories} manufacturers={manufacturers} active={active} />
 

@@ -27,10 +27,14 @@ export function ProductSpecs({ attributes }: ProductSpecsProps) {
             {/* Точки-заполнители для больших экранов (опционально, для красоты) */}
             <div className="mx-2 hidden grow border-b border-dotted border-line sm:block" />
 
-            {/* Правая часть — Индивидуальное значение товара */}
-            <span className="mt-1 text-right text-sm font-semibold tabular-nums text-ink sm:mt-0">
-              {attr.value}
-            </span>
+            {/* Правая часть — индивидуальное значение товара. Админ вводит его как доверенный
+                текст (тот же уровень доверия, что у Post.content) и иногда вставляет разметку —
+                например «15 кг/м<sup>3</sup>» для верхнего индекса, — поэтому рендерим как HTML,
+                а не текстом, иначе теги показались бы на странице буквально. */}
+            <span
+              className="mt-1 text-right text-sm font-semibold tabular-nums text-ink sm:mt-0"
+              dangerouslySetInnerHTML={{ __html: attr.value }}
+            />
           </div>
         ))}
       </div>

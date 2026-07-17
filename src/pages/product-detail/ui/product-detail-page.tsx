@@ -1,9 +1,9 @@
+import Image from "next/image";
 import { notFound } from "next/navigation";
-import { ImageOffIcon } from "lucide-react";
 import { getCategoryBySlug } from "@/entities/category";
 import { getProductBySlug, ProductPriceBlock, ProductSpecs } from "@/entities/product";
 import { OrderCallbackDialog } from "@/features/order-callback";
-import { ApiError, assetUrl } from "@/shared/api";
+import { ApiError, assetUrl, NO_IMAGE_SRC } from "@/shared/api";
 import { CONTACTS } from "@/shared/config";
 import { PhoneLink } from "@/shared/ui/phone-link";
 import { Breadcrumbs } from "@/widgets/breadcrumbs";
@@ -28,7 +28,7 @@ export async function ProductDetailPage({ categorySlug, productSlug }: ProductDe
 
   if (!product) notFound();
 
-  const image = assetUrl(product.image_url);
+  const image = assetUrl(product.image_url) ?? NO_IMAGE_SRC;
 
   return (
     <>
@@ -41,15 +41,9 @@ export async function ProductDetailPage({ categorySlug, productSlug }: ProductDe
 
       <section className="container">
         <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
-          {image ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={image} alt={product.name} className="aspect-square w-full border border-line object-cover" />
-          ) : (
-            <div className="flex aspect-square w-full flex-col items-center justify-center gap-3 border border-dashed border-line bg-card text-muted-foreground">
-              <ImageOffIcon className="size-10" strokeWidth={1.25} />
-              <p className="text-sm">Фото уточняйте у менеджера</p>
-            </div>
-          )}
+          <div className="relative aspect-square w-full overflow-hidden border border-line">
+            <Image src={image} alt={product.name} fill sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" priority />
+          </div>
 
           <div>
             {product.manufacturer ? (

@@ -81,7 +81,13 @@
  * стабильный, специфичных правил меньше, чем ушло бы на переопределение чужих дефолтов.
  */
 @utility prose-post {
-  @apply max-w-none text-base leading-relaxed text-ink;
+  /* whitespace-normal перебивает глобальный white-space: pre-line на body (нужен там для
+     Product.description — простого текста без разметки). Тут — настоящий HTML из RichEditor,
+     переносы строк в нём уже закодированы тегами <p>; необходимости в pre-line нет вообще —
+     а «лишние» \n между тегами (просто форматирование в сохранённом HTML, например </h2>\n<p>)
+     из-за pre-line переставали схлопываться и рендерились как невидимый анонимный блок между
+     реальными элементами — отсюда «ничей» зазор, который в DevTools подсвечивал родителя. */
+  @apply max-w-none whitespace-normal text-base leading-relaxed text-ink;
 
   & h2 {
     @apply mt-10 mb-4 font-heading text-2xl font-semibold text-ink first:mt-0;
@@ -168,6 +174,17 @@
       margin-top: 6rem;
     }
   }
+
+  .post-page-wrapper .container + .container, .post-page-wrapper section + section {
+    margin-top: 1rem;
+  }
+
+  @media (width >= theme(--breakpoint-sm)) {
+    .post-page-wrapper .container + .container, .post-page-wrapper section + section {
+      margin-top: 2rem;
+    }
+  }
+
   * {
     @apply border-border outline-ring/50;
   }

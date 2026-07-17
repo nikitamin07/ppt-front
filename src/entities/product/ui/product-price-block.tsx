@@ -7,7 +7,7 @@ interface ProductPriceBlockProps {
 const TIER_FALLBACK_LABEL = { low: "малый объём", medium: "средний объём", high: "крупный объём" } as const;
 
 function VolumeTiers({ volumePrice, unit }: { volumePrice: ProductVolumePrice; unit: string }) {
-  const tiers = [
+  const tiers: { key: keyof typeof TIER_FALLBACK_LABEL; price: number; label: string | null }[] = [
     { key: "low", ...volumePrice.low },
     { key: "medium", ...volumePrice.medium },
     ...(volumePrice.high ? [{ key: "high" as const, ...volumePrice.high }] : []),

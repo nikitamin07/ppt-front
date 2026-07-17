@@ -1,5 +1,6 @@
+import Image from "next/image";
 import Link from "next/link";
-import { assetUrl } from "@/shared/api";
+import { assetUrl, NO_IMAGE_SRC } from "@/shared/api";
 import { cn } from "@/shared/lib/utils";
 import type { ProductListItem } from "../model/types";
 
@@ -22,10 +23,15 @@ export function ProductCard({ product, categorySlug }: ProductCardProps) {
 
   const body = (
     <>
-      {product.image_url ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={assetUrl(product.image_url)!} alt={product.name} className="aspect-square w-full object-cover" />
-      ) : null}
+      <div className="relative aspect-square w-full overflow-hidden">
+        <Image
+          src={assetUrl(product.image_url) ?? NO_IMAGE_SRC}
+          alt={product.name}
+          fill
+          sizes="(min-width: 1280px) 25vw, (min-width: 640px) 50vw, 100vw"
+          className="object-cover"
+        />
+      </div>
       <div className="p-4">
         {/* Бейдж в потоке, а не абсолютом поверх карточки: картинки у товаров может не быть,
             и тогда абсолютный бейдж ложился бы прямо на название. */}

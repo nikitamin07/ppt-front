@@ -87,10 +87,8 @@ export function DeliveryPage() {
       </section>
 
       <section className="container">
-        <div className="border-b border-line pb-5">
-          <p className="eyebrow text-xs">Самовывоз</p>
-          <h2 className="mt-2 font-heading text-2xl font-semibold text-ink sm:text-3xl">Как забрать самостоятельно</h2>
-        </div>
+        <p className="eyebrow text-xs">Самовывоз</p>
+        <h2 className="mt-2 font-heading text-2xl font-semibold text-ink sm:text-3xl">Как забрать самостоятельно</h2>
 
         <div ref={pickupRef} className="mt-8 grid gap-10 border border-line bg-card p-6 sm:p-8 lg:grid-cols-2 lg:gap-16">
           <div>

@@ -39,7 +39,7 @@ export function ProductFilters({ subcategories, manufacturers, active, className
   return (
     <>
       {/* Десктоп: липкий сайдбар. */}
-      <aside className={cn("hidden lg:sticky lg:top-24 lg:block lg:self-start", className)}>
+      <aside className={cn("hidden lg:block", className)}>
         <div className="flex items-center justify-between gap-4 border-b border-line pb-3">
           <h2 className="eyebrow text-xs">Фильтры</h2>
           <ResetButton active={active} onReset={reset} />

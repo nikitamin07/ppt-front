@@ -23,6 +23,9 @@ export function assetUrl(path: string | null): string | null {
   return path ? `${ASSET_ORIGIN}${path}` : null;
 }
 
+/** Заглушка для карточек/детальных страниц товара и статьи, пока в админке не проставлена картинка. */
+export const NO_IMAGE_SRC = "/img/no_image.jpg";
+
 export class ApiError extends Error {
   constructor(
     public status: number,
