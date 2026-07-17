@@ -73,6 +73,33 @@
   @apply font-label font-semibold uppercase tracking-[0.2em] text-safety;
 }
 
+/*
+ * Типографика для HTML статьи из RichEditor (Post.content, dangerouslySetInnerHTML).
+ * Правила только под теги, которые реально встречаются в контенте — h2, p, ul, li, strong, a
+ * (проверено по всем 5 опубликованным статьям на 2026-07-17). Новый тег в контенте — новое
+ * правило здесь, а не сразу @tailwindcss/typography: набор тегов у RichEditor маленький и
+ * стабильный, специфичных правил меньше, чем ушло бы на переопределение чужих дефолтов.
+ */
+@utility prose-post {
+  @apply max-w-none text-base leading-relaxed text-ink;
+
+  & h2 {
+    @apply mt-10 mb-4 font-heading text-2xl font-semibold text-ink first:mt-0;
+  }
+  & p {
+    @apply mt-4 first:mt-0;
+  }
+  & ul {
+    @apply mt-4 flex list-disc flex-col gap-2 pl-5 marker:text-safety;
+  }
+  & strong {
+    @apply font-semibold text-ink;
+  }
+  & a {
+    @apply text-safety underline underline-offset-2 hover:no-underline;
+  }
+}
+
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;

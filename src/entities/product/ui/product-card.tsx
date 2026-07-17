@@ -1,9 +1,11 @@
 import Link from "next/link";
+import { assetUrl } from "@/shared/api";
 import { cn } from "@/shared/lib/utils";
-import type { Product } from "../model/types";
+import type { ProductListItem } from "../model/types";
 
 interface ProductCardProps {
-  product: Product;
+  /** Списочный товар: карточке хватает его полей, description и attributes ей не нужны. */
+  product: ProductListItem;
   /** Слаг категории товара. null — товар без категории: адреса у него нет, карточка не кликабельна. */
   categorySlug: string | null;
 }
@@ -14,22 +16,27 @@ export function ProductCard({ product, categorySlug }: ProductCardProps) {
   const pricePrefix = product.is_volume_price ? "от " : "";
 
   const className = cn(
-    "card-lift group relative flex flex-col overflow-hidden",
+    "card-lift group flex flex-col overflow-hidden",
     !categorySlug && "hover:translate-y-0 hover:border-line hover:shadow-none",
   );
 
   const body = (
     <>
-      {hasDiscount ? (
-        <span className="absolute top-3 left-3 z-10 bg-safety px-2 py-0.5 font-label text-xs font-semibold text-white">
-          Скидка
-        </span>
-      ) : null}
       {product.image_url ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={product.image_url} alt={product.name} className="aspect-square w-full object-cover" />
+        <img src={assetUrl(product.image_url)!} alt={product.name} className="aspect-square w-full object-cover" />
       ) : null}
       <div className="p-4">
+        {/* Бейдж в потоке, а не абсолютом поверх карточки: картинки у товаров может не быть,
+            и тогда абсолютный бейдж ложился бы прямо на название. */}
+        {hasDiscount ? (
+          <span className="mb-2 inline-block bg-safety px-2 py-0.5 font-label text-xs font-semibold text-white">
+            Скидка
+          </span>
+        ) : null}
+        {product.manufacturer ? (
+          <p className="font-label text-xs text-muted-foreground">{product.manufacturer.name}</p>
+        ) : null}
         <h3 className="font-heading font-semibold text-ink">{product.name}</h3>
         <div className="mt-2 flex items-baseline gap-2 tabular-nums">
           {hasDiscount ? (

@@ -1,15 +1,15 @@
 import { apiGet, apiPost } from "@/shared/api";
-import type { Product } from "../model/types";
+import type { Product, ProductListItem } from "../model/types";
 
 interface GetProductsParams {
   category?: string;
-  page?: number; // постранично по 8; без page — весь список
+  page?: number; // по 8; без page — первая страница (всего товаров: getProductsCount)
   query?: string; // поиск по названию, аналог старого search.php
   [key: string]: string | number | undefined;
 }
 
-export function getProducts(params?: GetProductsParams): Promise<Product[]> {
-  return apiGet<Product[]>("/products", params);
+export function getProducts(params?: GetProductsParams): Promise<ProductListItem[]> {
+  return apiGet<ProductListItem[]>("/products", params);
 }
 
 export function getProductBySlug(categorySlug: string, productSlug: string): Promise<Product> {
@@ -28,8 +28,8 @@ export async function getProductsCount(params?: ProductsCountParams): Promise<nu
 }
 
 // Блок «Популярные»: максимум 8 товаров, пагинации нет
-export function getFeaturedProducts(): Promise<Product[]> {
-  return apiGet<Product[]>("/products/featured");
+export function getFeaturedProducts(): Promise<ProductListItem[]> {
+  return apiGet<ProductListItem[]>("/products/featured");
 }
 
 // Страница каталога с фильтрами: все поля опциональны, цены в рублях
@@ -43,11 +43,12 @@ export interface ProductFilterParams {
   featured?: boolean;
   is_volume_price?: boolean;
   sort?: "default" | "price_asc" | "price_desc" | "name";
-  page?: number; // по 8; без page — все подходящие
+  // По 8; без page — первая страница. Общее число совпадений — total в ответе.
+  page?: number;
 }
 
 export interface ProductFilterResult {
-  items: Product[];
+  items: ProductListItem[];
   total: number; // всего товаров под фильтр (для пагинации)
 }
 

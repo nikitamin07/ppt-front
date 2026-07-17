@@ -11,6 +11,18 @@ const API_BASE_URL =
     ? process.env.API_URL_INTERNAL || process.env.NEXT_PUBLIC_API_URL || "http://localhost/api"
     : process.env.NEXT_PUBLIC_API_URL || "/api";
 
+// Origin для файлов, отданных бэкендом напрямую (/storage/...), а не через apiGet.
+// Всегда браузерная переменная: <img src> резолвит браузер, а не Node — неважно, сервер
+// или клиент собрал HTML. В проде NEXT_PUBLIC_API_URL относительный ("/api") → origin
+// пустой, путь остаётся на том же origin, который nginx проксирует. В dev на :3000
+// переменная указывает на nginx (http://localhost/api) → origin выдёргивается оттуда же,
+// иначе бэкендовский /storage/... ушёл бы на сам dev-сервер и дал 404.
+const ASSET_ORIGIN = (process.env.NEXT_PUBLIC_API_URL || "/api").replace(/\/api\/?$/, "");
+
+export function assetUrl(path: string | null): string | null {
+  return path ? `${ASSET_ORIGIN}${path}` : null;
+}
+
 export class ApiError extends Error {
   constructor(
     public status: number,

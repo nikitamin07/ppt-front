@@ -1,1 +1,1 @@
-export { apiGet, apiPost, ApiError } from "./base";
+export { apiGet, apiPost, assetUrl, ApiError } from "./base";

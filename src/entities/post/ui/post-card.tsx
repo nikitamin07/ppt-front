@@ -1,8 +1,10 @@
 import Link from "next/link";
-import type { Post } from "../model/types";
+import { assetUrl } from "@/shared/api";
+import type { PostListItem } from "../model/types";
 
 interface PostCardProps {
-  post: Post;
+  /** Списочная статья: карточке нужны заголовок, дата и excerpt, но не content. */
+  post: PostListItem;
 }
 
 export function PostCard({ post }: PostCardProps) {
@@ -13,7 +15,7 @@ export function PostCard({ post }: PostCardProps) {
     >
       {post.cover_image_url ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={post.cover_image_url} alt={post.title} className="aspect-video w-full object-cover" />
+        <img src={assetUrl(post.cover_image_url)!} alt={post.title} className="aspect-video w-full object-cover" />
       ) : null}
       <div className="p-4">
         <time className="font-label text-xs tabular-nums text-muted-foreground">
