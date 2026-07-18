@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Oswald } from "next/font/google";
 import "@/app/styles/globals.css";
 import { cn } from "@/shared/lib/utils";
+import { TrackVisit } from "@/shared/lib/react";
 import { CustomCursor } from "@/shared/ui/custom-cursor";
 import { Header } from "@/widgets/header";
 import { Footer } from "@/widgets/footer";
@@ -33,6 +34,7 @@ export default function RootLayout({
   return (
     <html lang="ru" className={cn("h-full", "antialiased", inter.variable, oswald.variable)}>
       <body className="min-h-full flex flex-col bg-background text-foreground font-sans">
+        <TrackVisit />
         <CustomCursor />
         <Header />
         <main className="flex-1">{children}</main>
