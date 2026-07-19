@@ -57,7 +57,7 @@ export function ProductCard({ product, categorySlug }: ProductCardProps) {
           ) : (
             <span className="font-semibold text-ink">
               {pricePrefix}
-              {product.price} {product.price_unit}
+              {product.price} руб/{product.price_unit}
             </span>
           )}
         </div>

@@ -36,12 +36,9 @@ export async function PostDetailPage({ slug }: PostDetailPageProps) {
           <time className="font-label text-xs tabular-nums text-muted-foreground">
               {new Date(post.published_at).toLocaleDateString("ru-RU")}
           </time>
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <h1 className="mt-2 max-w-3xl font-heading text-3xl font-semibold text-balance text-ink sm:text-4xl">
-              {post.title}
-            </h1>
-            <ShareButton title={post.title} className="mr-15"/>
-          </div>
+          <h1 className="mt-2 max-w-4xl font-heading text-3xl font-semibold text-balance text-ink sm:text-4xl">
+            {post.title}
+          </h1>
 
           {postTags.length > 0 ? (
             <div className="mt-4 flex flex-wrap gap-2">
@@ -53,7 +50,7 @@ export async function PostDetailPage({ slug }: PostDetailPageProps) {
         </section>
 
         <section className="container mt-5">
-          <div className="relative aspect-21/9 w-full overflow-hidden border border-line">
+          <div className="relative aspect-20/9 w-full overflow-hidden border border-line">
             <Image src={cover} alt={post.title} fill sizes="(min-width: 1024px) 768px, 100vw" className="object-cover" priority />
           </div>
         </section>
@@ -61,6 +58,13 @@ export async function PostDetailPage({ slug }: PostDetailPageProps) {
         <section className="container">
           {/* content — доверенный HTML из RichEditor админки, можем использовать dangerouslySetInnerHTML*/}
           <div className="prose-post max-w-3xl" dangerouslySetInnerHTML={{ __html: post.content }} />
+        </section>
+
+        <section className="container">
+          <div className="flex flex-col gap-24 py-10 md:flex-row items-center sm:justify-between">
+            <p className="font-heading text-lg font-semibold text-ink">Поделитесь публикацией с коллегами и друзьями в Telegram, Viber, WhatsApp или скопировав ссылку.</p>
+            <ShareButton title={post.title} className="md:mr-20"/>
+          </div>
         </section>
 
         <section className="container">

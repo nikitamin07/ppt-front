@@ -39,9 +39,8 @@ export function useScrollReveal<T extends HTMLElement>(options?: { y?: number; d
       )
     });
 
-    // Web-шрифты (font-display: swap) сдвигают раскладку после первого расчёта
-    // позиций ScrollTrigger — пересчитываем стартовые точки триггеров один раз.
-    // invalidateOnRefresh НЕ используем: он сбросил бы уже сыгранную анимацию обратно в 0.
+    // Web-шрифты сдвигают раскладку — пересчитываем триггеры разово;
+    // invalidateOnRefresh сбросил бы сыгранную анимацию в 0.
     document.fonts?.ready.then(() => ScrollTrigger.refresh());
 
     return () => ctx.revert();

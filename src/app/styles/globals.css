@@ -73,20 +73,11 @@
   @apply font-label font-semibold uppercase tracking-[0.2em] text-safety;
 }
 
-/*
- * Типографика для HTML статьи из RichEditor (Post.content, dangerouslySetInnerHTML).
- * Правила только под теги, которые реально встречаются в контенте — h2, p, ul, li, strong, a
- * (проверено по всем 5 опубликованным статьям на 2026-07-17). Новый тег в контенте — новое
- * правило здесь, а не сразу @tailwindcss/typography: набор тегов у RichEditor маленький и
- * стабильный, специфичных правил меньше, чем ушло бы на переопределение чужих дефолтов.
- */
+/* Типографика статьи из RichEditor (Post.content). Правила только под реально
+   встречающиеся теги; новый тег в контенте — новое правило здесь. */
 @utility prose-post {
-  /* whitespace-normal перебивает глобальный white-space: pre-line на body (нужен там для
-     Product.description — простого текста без разметки). Тут — настоящий HTML из RichEditor,
-     переносы строк в нём уже закодированы тегами <p>; необходимости в pre-line нет вообще —
-     а «лишние» \n между тегами (просто форматирование в сохранённом HTML, например </h2>\n<p>)
-     из-за pre-line переставали схлопываться и рендерились как невидимый анонимный блок между
-     реальными элементами — отсюда «ничей» зазор, который в DevTools подсвечивал родителя. */
+  /* whitespace-normal перебивает pre-line c body: иначе \n между
+     тегами рендерились как лишние зазоры. */
   @apply max-w-none whitespace-normal text-base leading-relaxed text-ink;
 
   & h2 {
@@ -176,12 +167,12 @@
   }
 
   .post-page-wrapper .container + .container, .post-page-wrapper section + section {
-    margin-top: 1rem;
+    margin-top: 2rem;
   }
 
   @media (width >= theme(--breakpoint-sm)) {
     .post-page-wrapper .container + .container, .post-page-wrapper section + section {
-      margin-top: 2rem;
+      margin-top: 4rem;
     }
   }
 
@@ -191,20 +182,14 @@
 }
 
 @layer utilities {
-  /* Страница 404: молоток стучит по цифрам. Три анимации, один период (1.1s), поэтому
-     удар, вздрагивание цифр и искры совпадают. Навешивать только через motion-safe:
-     при prefers-reduced-motion сцена должна замереть.
-
-     База — 180deg: у иконки lucide боёк вверху справа, а нам нужен боёк вниз, к цифрам.
-     Ось вращения — точка хвата рукояти (origin-[8%_88%] в координатах иконки), поэтому
-     180deg = боёк лежит на цифрах. Боёк смещён от оси на (17,-13): поднимает его
-     увеличение угла (180 → 235), а уменьшение, наоборот, загоняет вниз. */
+  /* 404: три анимации, один период 1.1s, навешивать через motion-safe.
+     Зеркало+90° кладут боёк на цифры не вверх ногами; подъём — уменьшение угла. */
   @keyframes hammer-swing {
-    0%, 100% { transform: rotate(180deg); }
-    18%      { transform: rotate(232deg); }
-    34%      { transform: rotate(235deg); }
-    41%      { transform: rotate(172deg); }
-    50%      { transform: rotate(180deg); }
+    0%, 100% { transform: scaleX(-1) rotate(70deg); }
+    18%      { transform: scaleX(-1) rotate(38deg); }
+    34%      { transform: scaleX(-1) rotate(35deg); }
+    41%      { transform: scaleX(-1) rotate(78deg); }
+    50%      { transform: scaleX(-1) rotate(70deg); }
   }
 
   @keyframes knock-jolt {
@@ -213,9 +198,8 @@
     56%           { transform: translateY(0); }
   }
 
-  /* Искры разлетаются веером от точки удара. Свой угол каждой задан свойством rotate,
-     а оно по спецификации применяется ДО transform — поэтому translateY здесь уводит
-     штрих вдоль его собственной наклонённой оси, то есть наружу, а не просто вверх. */
+  /* Угол искры задан свойством rotate, оно применяется ДО transform —
+     translateY уводит штрих вдоль его наклонённой оси, наружу. */
   @keyframes knock-spark {
     0%, 38%   { opacity: 0; transform: translateY(-2px) scale(0.3); }
     43%       { opacity: 1; transform: translateY(-9px) scale(1); }

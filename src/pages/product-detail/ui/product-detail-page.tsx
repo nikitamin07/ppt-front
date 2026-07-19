@@ -14,8 +14,6 @@ interface ProductDetailPageProps {
 }
 
 export async function ProductDetailPage({ categorySlug, productSlug }: ProductDetailPageProps) {
-  // GET /products/{categorySlug}/{productSlug} само проверяет, что слаг категории — прямая
-  // категория товара (а не любая, куда он входит через корень), и 404-ит на любое расхождение.
   const [product, category] = await Promise.all([
     getProductBySlug(categorySlug, productSlug).catch((error: unknown) => {
       if (error instanceof ApiError && error.status === 404) return null;
@@ -68,8 +66,6 @@ export async function ProductDetailPage({ categorySlug, productSlug }: ProductDe
       {product.description ? (
         <section className="container">
           <h2 className="eyebrow text-xs">Описание</h2>
-          {/* description — простой текст (не HTML), переносы строк сохраняет глобальный
-              white-space: pre-line на body. */}
           <p className="mt-4 max-w-3xl text-base leading-relaxed text-ink">{product.description}</p>
         </section>
       ) : null}

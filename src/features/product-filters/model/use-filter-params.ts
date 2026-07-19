@@ -4,10 +4,8 @@ import { useCallback, useMemo } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 /**
- * Чтение и запись фильтров в адрес страницы.
- *
- * Всё состояние живёт в URL: страница — серверная, поэтому смена фильтра ре-рендерит
- * её на сервере с уже отфильтрованным списком. Ссылку на выборку можно отправить.
+ * Чтение и запись фильтров в URL — состояние живёт там,
+ * страница серверная, ссылку на выборку можно отправить.
  */
 export function useFilterParams() {
   const router = useRouter();

@@ -6,10 +6,8 @@ interface FeedStatusProps {
   loading: boolean;
   failed: boolean;
   reachedEnd: boolean;
-  /** Метка догрузки из useInfiniteList: пока видна и список не кончился — тянется следующая страница. */
   sentinelRef: (node?: Element | null) => void;
   onRetry: () => void;
-  /** «Не удалось загрузить статьи.» / «…товары.» */
   errorText: string;
 }
 

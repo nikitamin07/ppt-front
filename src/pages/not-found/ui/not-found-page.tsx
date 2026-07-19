@@ -8,14 +8,11 @@ const SPARK_ANGLES = [-45, 0, 45];
 
 export function NotFoundPage() {
   return (
-    <section className="container flex flex-col items-center py-16 text-center sm:py-24">
-      <p className="eyebrow text-xs">Ошибка 404</p>
+    <section className="container flex flex-col items-center pt-12 text-center">
+      <p className="eyebrow text-xs">Страница не найдена</p>
 
       <CornerFrame className="mt-8">
-        <div className="px-10 pt-28 pb-8 sm:px-16 sm:pt-36">
-          {/* Точка отсчёта сцены — верх глифов «404» по центру. Это не top-0 обёртки:
-              при leading-none строчный бокс всё равно выше самих цифр примерно на 0.27em,
-              поэтому и молоток, и искры опущены на эту величину (19px при 7xl, 35px при 9xl). */}
+        <div className="px-10 pt-16 pb-8 sm:px-16 sm:pt-26">
           <div className="relative inline-block">
             <span className="block font-heading text-7xl leading-none font-semibold tracking-tight text-ink tabular-nums select-none sm:text-9xl motion-safe:animate-[knock-jolt_1.1s_ease-in-out_infinite]">
               404
@@ -24,12 +21,10 @@ export function NotFoundPage() {
             <HammerIcon
               aria-hidden
               strokeWidth={1.25}
-              // Разворот на 180° живёт в кейфреймах: класс rotate-180 задал бы отдельное
-              // свойство rotate, которое сложилось бы с transform из анимации.
-              className="absolute -top-[95px] left-[calc(50%+50px)] size-20 origin-[8%_88%] text-ink sm:-top-[124px] sm:left-[calc(50%+70px)] sm:size-28 motion-safe:animate-[hammer-swing_1.1s_ease-in-out_infinite]"
+              className="absolute -top-[109px] left-[calc(50%+36px)] size-20 origin-[8%_88%] text-ink sm:-top-[150px] sm:left-[calc(50%+50px)] sm:size-28 motion-safe:animate-[hammer-swing_1.1s_ease-in-out_infinite]"
             />
 
-            <span aria-hidden className="pointer-events-none absolute top-[19px] left-1/2 sm:top-[35px]">
+            <span aria-hidden className="pointer-events-none absolute top-4.75 left-1/2 sm:top-8.75">
               {SPARK_ANGLES.map((angle) => (
                 <span
                   key={angle}

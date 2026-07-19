@@ -30,10 +30,8 @@ export interface ProductManufacturer {
 }
 
 /**
- * Товар в списке — то, что отдают /products, /products/featured и /products/filter.
- *
- * Ровно поля карточки: description и attributes весят в разы больше всего остального,
- * поэтому в списках их нет. Нужен полный товар — берите Product (эндпоинт одного товара).
+ * Товар в списке (/products, /featured, /filter) — без description
+ * и attributes: полный товар только в Product.
  */
 export interface ProductListItem {
   id: number;

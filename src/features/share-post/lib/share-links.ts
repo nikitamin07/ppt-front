@@ -5,11 +5,8 @@ interface ShareTarget {
 }
 
 /**
- * Официальные веб-интенты «поделиться» для каждой сети.
- *
- * Instagram сюда не входит: платформа не поддерживает шаринг внешней ссылки через веб —
- * ни intent-URL, ни API для этого нет (в отличие от Telegram/WhatsApp/Viber). Вместо неё
- * share-button.tsx показывает обычную кнопку «Скопировать ссылку».
+ * Официальные веб-интенты «поделиться». Instagram не умеет шарить
+ * внешние ссылки — вместо него кнопка «Скопировать ссылку».
  */
 export function buildShareLinks({ url, title }: ShareTarget) {
   const encodedUrl = encodeURIComponent(url);

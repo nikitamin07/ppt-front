@@ -10,9 +10,8 @@ interface CountingAnimationProps {
   duration?: number;
   className?: string;
   /**
-   * Явное управление стартом (например, из внешнего GSAP-таймлайна) — считает,
-   * когда active станет true. Если проп не передан, считает сам по себе через
-   * IntersectionObserver при появлении во вьюпорте.
+   * Явный старт (внешний таймлайн); без пропа считает сам
+   * по IntersectionObserver при появлении во вьюпорте.
    */
   active?: boolean;
 }

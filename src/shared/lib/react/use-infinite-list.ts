@@ -14,11 +14,8 @@ interface UseInfiniteListOptions<T> {
 }
 
 /**
- * Лента с догрузкой по скроллу: накапливает страницы 2, 3, 4… пока метка видна.
- *
- * Фильтры сюда не передаются намеренно — они живут в URL, а страница перемонтирует ленту
- * (key по фильтрам) с уже готовой первой страницей. Поэтому здесь нет ни сброса списка,
- * ни защиты от гонок: устаревшему ответу неоткуда взяться.
+ * Лента с догрузкой по скроллу. Фильтры не передаются: смена фильтра
+ * перемонтирует ленту (key), поэтому нет сброса и защиты от гонок.
  */
 export function useInfiniteList<T>({ initialItems, loadPage, perPage, initiallyComplete }: UseInfiniteListOptions<T>) {
   const [items, setItems] = useState(initialItems);
@@ -27,9 +24,8 @@ export function useInfiniteList<T>({ initialItems, loadPage, perPage, initiallyC
   const [loading, setLoading] = useState(false);
   const [failed, setFailed] = useState(false);
 
-  // Держим загрузчик в ref: вызывающий передаёт стрелку прямо в пропсах, и без этого
-  // каждый рендер менял бы её ссылку, а с ней и зависимости эффекта ниже.
-  // Обновляем в эффекте, а не в теле: писать в ref во время рендера нельзя.
+  // Загрузчик в ref: иначе стрелка из пропсов дёргала бы
+  // зависимости эффекта ниже на каждом рендере.
   const loadPageRef = useRef(loadPage);
   useEffect(() => {
     loadPageRef.current = loadPage;

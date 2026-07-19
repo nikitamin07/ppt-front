@@ -36,7 +36,7 @@ export function ProductPriceBlock({ product }: ProductPriceBlockProps) {
       <div>
         {/* price уже синхронизирован бэкендом с самым дешёвым заполненным тарифом. */}
         <p className="font-heading text-3xl font-semibold text-ink tabular-nums sm:text-4xl">
-          от {price} {unit}
+          от {price} руб/{unit}
         </p>
         <VolumeTiers volumePrice={volumePrice} unit={unit} />
       </div>

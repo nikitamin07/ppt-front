@@ -8,9 +8,8 @@ interface CornerFrameProps {
 }
 
 /**
- * Фирменный элемент: уголки-метки, как на рулетке или чертеже.
- * Оборачивает контент и рисует 4 засечки по углам через ::before/::after заменители (span).
- * Метки помечены [data-corner-mark] — за них можно зацепить анимацию входа (см. pages/home/ui/hero).
+ * Уголки-метки по углам контента, как на чертеже.
+ * [data-corner-mark] — за них цепляется анимация входа (hero).
  */
 export function CornerFrame({ className, markClassName, children }: CornerFrameProps) {
   const mark = "absolute size-3.5 border-safety transition-all duration-300 sm:size-4";

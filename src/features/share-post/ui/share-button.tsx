@@ -12,23 +12,8 @@ interface ShareButtonProps {
 }
 
 /**
- * Геометрия трапеции — не подогнана на глаз, а выведена из самой центральной кнопки.
- * Кнопка — квадрат 40px, повёрнутый на 45°, так что её вершины смотрят строго вверх/вправо/
- * вниз/влево на расстоянии r = 20√2 ≈ 28 от центра (половина диагонали квадрата), а рёбра —
- * ровно по диагоналям (NE/SE/SW/NW). Каждая трапеция сидит на одном из этих рёбер:
- *  - верхняя грань (P1–P2) параллельна этому ребру и отстоит от него на зазор g = 6 —
- *    обе её точки лежат на тех же лучах «центр→вершина», просто чуть дальше (r+g), поэтому
- *    параллельность получается сама, без подгонки;
- *  - боковые грани (P1–P3 и P2–P4) идут вдоль тех же лучей «центр→вершина» дальше наружу —
- *    в буквальном смысле линии, исходящие из вершин центрального ромба;
- *  - нижняя грань (P3–P4) на радиусе R = 90 — тем самым это ровно ребро большого внешнего
- *    ромба (те же лучи, максимальное удаление), а не просто «какая-то дальняя грань».
- * Четыре трапеции повёрнуты друг относительно друга на 90° (dir), поэтому у соседних общий
- * луч-вершина — и боковые грани соседей автоматически совпадают в одну линию: внешний контур
- * получается ровным ромбом без ручной подгонки стыков. Точки исходно выведены в координатах
- * с центром в (0,0) и сдвинуты на (+90,+90), чтобы уместиться в SVG-бокс 0..180 (см. box).
- * R = 105 (а не 60, как в первой версии) — так на трапеции видно иконки: сама кнопка (r=28)
- * не менялась, увеличилась только «рама» вокруг неё.
+ * Трапеции выведены из ромба-кнопки: лучи «центр→вершина», зазор 6, внешний радиус 105.
+ * Соседние повёрнуты на 90°, поэтому их грани стыкуются сами.
  */
 const box = 210; // сторона SVG-бокса трапеции
 const anchor = 105; // центр бокса — тот же мировой центр, где сидит кнопка
@@ -38,42 +23,32 @@ const TRAPEZOID_VERTICES = [
   [210, 105],
   [139, 105],
 ] as const; // P1 P3 P4 P2, см. комментарий выше
-// SVG <polygon points> не принимает единицы (числа = user units), а CSS clip-path: polygon()
-// без единиц невалиден и молча игнорируется целиком — отсюда два разных формата одних точек.
+// SVG points — без единиц, clip-path требует px:
+// два формата одних и тех же точек.
 const TRAPEZOID_POINTS = TRAPEZOID_VERTICES.map(([x, y]) => `${x},${y}`).join(" ");
 const TRAPEZOID_CLIP = TRAPEZOID_VERTICES.map(([x, y]) => `${x}px ${y}px`).join(", ");
-// Не радиальная середина (та ближе к острию — трапеция шире у внешнего края), а настоящий
-// центроид четырёхугольника (формула площади многоугольника по вершинам выше) — там иконка
-// визуально по центру видимой фигуры, а не у самого края.
-const ICON_POS = { left: 143, top: 67 };
+// Центроид трапеции, лежит на её диагонали: один параметр —
+// смещение от центра по каждой оси, перекос невозможен.
+const ICON_OFFSET = 35;
+const ICON_POS = { left: anchor + ICON_OFFSET, top: anchor - ICON_OFFSET };
 
 /**
- * Плитки заведены брендовыми цветами намеренно — единственное отступление от правила
- * «safety — единственный акцент» в этом проекте: сеть узнают по фирменному цвету, то же
- * соображение, что и с логотипами производителей. dir поворачивает трапецию целиком (90° друг
- * от друга — она сидит на диагональных рёбрах NE/SE/SW/NW ромба-кнопки), иконка внутри
- * повёрнута на -dir, чтобы остаться прямой.
+ * Брендовые цвета — намеренное отступление от «safety — единственный акцент»:
+ * сеть узнают по цвету. Иконка повёрнута на -dir, остаётся прямой.
  */
 const NETWORKS = [
-  { key: "telegram", label: "Telegram", Icon: TelegramIcon, color: "#26A5E4", dir: 0 },
-  { key: "whatsapp", label: "WhatsApp", Icon: WhatsappIcon, color: "#25D366", dir: 90 },
-  { key: "viber", label: "Viber", Icon: ViberIcon, color: "#7360F2", dir: 180 },
+  // Самолётик плотнее круглых глифов и его масса смещена вправо —
+  // бокс поменьше и сдвиг влево для оптического центра.
+  { key: "telegram", label: "Telegram", Icon: TelegramIcon, color: "#26A5E4", dir: 0, iconClass: "size-5.5 -ml-0.5" },
+  { key: "whatsapp", label: "WhatsApp", Icon: WhatsappIcon, color: "#25D366", dir: 90, iconClass: "size-6" },
+  { key: "viber", label: "Viber", Icon: ViberIcon, color: "#7360F2", dir: 180, iconClass: "size-6" },
 ] as const;
 
-const COPY_LINK = { dir: 270 } as const;
-
-/**
- * ОДНА transition на всё (полёт из центра + подсветка при наведении), а не отдельные
- * transition-transform/transition-colors. Обе — это Tailwind-классы, которые целиком задают
- * transition-property (+ duration/timing) одним блоком, а не складываются: у них общая
- * CSS-специфичность, и когда оба класса висят на одном элементе, в итоговом CSS побеждает
- * только ОДИН из них (later-in-stylesheet), второй теряет transition-property целиком.
- * Explicit transition-[...] с одним списком свойств — единственная transition-property на
- * элементе, конфликтовать не с чем.
- */
+// Одна transition на всё: классы transition-transform и transition-colors
+// не складываются, в CSS выживает только один.
 const TILE_TRANSITION = "transition-[transform,opacity,background-color,color] duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]";
-// Заливка/рамка в покое — точно как у центральной кнопки (белая заливка, line-рамка):
-// дочерние элементы не должны отличаться от неё, пока на них не навели курсор.
+// В покое плитка выглядит как центральная кнопка
+// (белая заливка, line-рамка) до наведения.
 const TILE_BASE = "group absolute top-1/2 left-1/2 bg-white text-ink outline-none";
 
 /** Кнопка «Поделиться»: раскрывает веер трапеций-ромбов вокруг себя с пружинной анимацией по клику. */
@@ -83,9 +58,8 @@ export function ShareButton({ title, className }: ShareButtonProps) {
   const [copied, setCopied] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
 
-  // window недоступен на сервере, поэтому ссылку берём после монтирования — та же причина,
-  // что у order-callback-form.tsx (window.location.href в обработчике формы). Здесь это разовое
-  // чтение из окружения на маунте, а не побочный эффект от рендера, поэтому эффект уместен.
+  // window нет на сервере — ссылку берём после монтирования,
+  // как в order-callback-form.tsx.
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setUrl(window.location.href);
@@ -120,8 +94,8 @@ export function ShareButton({ title, className }: ShareButtonProps) {
 
   return (
     <div ref={rootRef} className={cn("relative inline-block size-10", className)}>
-      {/* Сама кнопка — квадрат, повёрнутый на 45°: тот же ромб, из вершин и рёбер которого
-          выведена геометрия трапеций вокруг. Белая заливка, при наведении — темнее (paper). */}
+      {/* Кнопка — квадрат под 45°: ромб, из которого
+          выведена геометрия трапеций вокруг. */}
       <button
         type="button"
         aria-expanded={open}
@@ -135,11 +109,10 @@ export function ShareButton({ title, className }: ShareButtonProps) {
         </span>
       </button>
 
-      {/* Якорь для веера: точно совпадает с рамкой кнопки, поэтому translate(-anchor,-anchor) у
-          каждой трапеции центрируется на ней (transformOrigin — центр её собственного бокса
-          box×box, который после translate как раз садится в этот якорь). */}
+      {/* Якорь веера совпадает с кнопкой: translate(-anchor,-anchor)
+          центрирует каждую трапецию на ней. */}
       <div className="pointer-events-none absolute inset-0">
-        {NETWORKS.map(({ key, label, Icon, color, dir }) => (
+        {NETWORKS.map(({ key, label, Icon, color, dir, iconClass }) => (
           <a
             key={key}
             href={links[key]}
@@ -172,7 +145,7 @@ export function ShareButton({ title, className }: ShareButtonProps) {
               className="absolute flex items-center justify-center"
               style={{ left: ICON_POS.left, top: ICON_POS.top, transform: `translate(-50%, -50%) rotate(${-dir}deg)` }}
             >
-              <Icon className="size-4" />
+              <Icon className={iconClass} />
             </span>
           </a>
         ))}
@@ -188,7 +161,7 @@ export function ShareButton({ title, className }: ShareButtonProps) {
               width: box,
               height: box,
               transformOrigin: `${anchor}px ${anchor}px`,
-              transform: `translate(-${anchor}px, -${anchor}px) rotate(${COPY_LINK.dir}deg) scale(${open ? 1 : 0})`,
+              transform: `translate(-${anchor}px, -${anchor}px) rotate(270deg) scale(${open ? 1 : 0})`,
               clipPath: `polygon(${TRAPEZOID_CLIP})`,
             } as React.CSSProperties
           }
@@ -209,9 +182,9 @@ export function ShareButton({ title, className }: ShareButtonProps) {
           </svg>
           <span
             className="absolute flex items-center justify-center"
-            style={{ left: ICON_POS.left, top: ICON_POS.top, transform: `translate(-50%, -50%) rotate(${-COPY_LINK.dir}deg)` }}
+            style={{ left: ICON_POS.left, top: ICON_POS.top, transform: `translate(-50%, -50%) rotate(-45deg)` }}
           >
-            {copied ? <CheckIcon className="size-4" /> : <LinkIcon className="size-4" />}
+            {copied ? <CheckIcon className="size-6" /> : <LinkIcon className="size-6" />}
           </span>
         </button>
       </div>
