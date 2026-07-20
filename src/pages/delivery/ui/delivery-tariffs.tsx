@@ -2,9 +2,9 @@ import { RulerIcon } from "lucide-react";
 import { CornerFrame } from "@/shared/ui/corner-frame";
 
 const ZONES = [
-  { label: "Минск и в пределах МКАД", price: "от 50 руб." },
-  { label: "За МКАД, радиус 10 км", price: "от 60 руб." },
-  { label: "За МКАД, радиус 30 км", price: "от 80 руб." },
+  { label: "Минск и в пределах МКАД", price: "от 50 ƃ." },
+  { label: "За МКАД, радиус 10 км", price: "от 60 ƃ." },
+  { label: "За МКАД, радиус 30 км", price: "от 80 ƃ." },
   { label: "Остальная территория Беларуси", price: "по звонку" },
 ] as const;
 

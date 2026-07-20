@@ -17,20 +17,12 @@ export function ProductSpecs({ attributes }: ProductSpecsProps) {
         {attributes.map((attr) => (
           <div
             key={attr.attribute_id}
-            className="flex flex-col justify-between border-b border-line py-2 last:border-0 sm:flex-row sm:items-baseline"
+            className="flex items-baseline justify-between border-b border-line py-2 last:border-0"
           >
-            {/* Левая часть — Название характеристики (Ключ) */}
-            <span className="text-sm text-muted-foreground sm:pr-4">
-              {attr.name}
-            </span>
-
-            {/* Точки-заполнители для больших экранов (опционально, для красоты) */}
-            <div className="mx-2 hidden grow border-b border-dotted border-line sm:block" />
-
-            {/* Значение — доверенный HTML из админки (бывает «15 кг/м<sup>3</sup>»),
-                рендерим как разметку, не текстом. */}
+            <span className="text-sm text-muted-foreground">{attr.name}</span>
+            <div className="mx-2 min-w-6 grow border-b border-dotted border-line" />
             <span
-              className="mt-1 text-right text-sm font-semibold tabular-nums text-ink sm:mt-0"
+              className="whitespace-nowrap text-right text-sm font-semibold tabular-nums text-ink"
               dangerouslySetInnerHTML={{ __html: attr.value }}
             />
           </div>

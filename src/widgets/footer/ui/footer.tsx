@@ -60,6 +60,7 @@ export function Footer() {
         <div className="mx-auto flex max-w-7xl flex-col gap-2 px-6 py-5 text-xs tabular-nums text-paper/40 sm:flex-row sm:items-center sm:justify-between lg:px-8">
           <span>УНП 791217541</span>
           <span>© {new Date().getFullYear()} ППТ.бел. Все права защищены.</span>
+          <AnimatedLink href="/privacy" className="text-paper/40">Политика конфиденциальности</AnimatedLink>
           <span>Разработано <AnimatedLink href="https://t.me/nikbtw07" className="text-paper/40">Nikita Minchukou</AnimatedLink></span>
         </div>
       </div>

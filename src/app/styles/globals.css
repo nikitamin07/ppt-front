@@ -52,7 +52,7 @@
   --color-safety: var(--color-safety);
   --color-safety-ink: var(--color-safety-ink);
   --font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
-  --font-label: var(--font-oswald), ui-sans-serif, system-ui, sans-serif;
+  --font-label: 'nbrb', var(--font-oswald), ui-sans-serif, system-ui, sans-serif;
 }
 
 @utility container {
@@ -353,9 +353,10 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --font-involve: 'Involve', ui-sans-serif, system-ui, sans-serif;
+  /* 'nbrb' спереди — только знак ƃ рисуется им (unicode-range), остальной текст не меняется. */
+  --font-involve: 'nbrb', 'Involve', ui-sans-serif, system-ui, sans-serif;
   --font-heading: var(--font-involve);
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'nbrb', var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 
   /* Индустриальная палитра: бетон/крафт + графит + строительный оранжевый */
   --color-ink: #1b1b18;

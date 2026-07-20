@@ -49,7 +49,7 @@ export function FilterFields({ subcategories, manufacturers }: FilterFieldsProps
   return (
     <div className="flex flex-col gap-8">
       <fieldset>
-        <legend className="eyebrow text-xs">Цена, руб</legend>
+        <legend className="eyebrow text-xs">Цена, ƃ</legend>
         <div className="mt-4 flex items-center gap-2">
           <Input
             type="number"
@@ -58,7 +58,7 @@ export function FilterFields({ subcategories, manufacturers }: FilterFieldsProps
             value={priceMin}
             onChange={(e) => setPriceMin(e.target.value)}
             placeholder="от"
-            aria-label="Цена от, руб"
+            aria-label="Цена от, ƃ"
             className="tabular-nums"
           />
           <span className="text-muted-foreground">—</span>
@@ -69,7 +69,7 @@ export function FilterFields({ subcategories, manufacturers }: FilterFieldsProps
             value={priceMax}
             onChange={(e) => setPriceMax(e.target.value)}
             placeholder="до"
-            aria-label="Цена до, руб"
+            aria-label="Цена до, ƃ"
             className="tabular-nums"
           />
         </div>

@@ -1,3 +1,13 @@
+/* Знак белорусского рубля (U+0183, «ƃ») официально в Unicode ещё не выдан —
+   это единственный шрифт с отрисованным символом (вместо похожей на «Б» заглушки).
+   unicode-range держит его точечным: остальной текст не затрагивает. */
+@font-face {
+  font-family: 'nbrb';
+  src: url('/fonts/nbrb.woff2') format('woff2');
+  unicode-range: U+183;
+  font-display: swap;
+}
+
 @font-face {
   font-family: 'Involve';
   src: url('/fonts/Involve-Regular.woff2') format('woff2');

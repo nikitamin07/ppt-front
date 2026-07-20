@@ -48,16 +48,16 @@ export function ProductCard({ product, categorySlug }: ProductCardProps) {
           {hasDiscount ? (
             <>
               <span className="text-sm text-muted-foreground line-through">
-                {product.price} {product.price_unit}
+                {product.price} ƃ/{product.price_unit}
               </span>
               <span className="font-semibold text-safety">
-                {product.discount_price} {product.price_unit}
+                {product.discount_price} ƃ/{product.price_unit}
               </span>
             </>
           ) : (
             <span className="font-semibold text-ink">
               {pricePrefix}
-              {product.price} руб/{product.price_unit}
+              {product.price} ƃ/{product.price_unit}
             </span>
           )}
         </div>

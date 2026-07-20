@@ -1,12 +1,15 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { MapPinIcon, TruckIcon } from "lucide-react";
 import { getCategoryBySlug } from "@/entities/category";
-import { getProductBySlug, ProductPriceBlock, ProductSpecs } from "@/entities/product";
+import { getProductBySlug, getProducts, ProductPriceBlock, ProductSpecs } from "@/entities/product";
 import { OrderCallbackDialog } from "@/features/order-callback";
 import { ApiError, assetUrl, NO_IMAGE_SRC } from "@/shared/api";
 import { CONTACTS } from "@/shared/config";
+import { CornerFrame } from "@/shared/ui/corner-frame";
 import { PhoneLink } from "@/shared/ui/phone-link";
 import { Breadcrumbs } from "@/widgets/breadcrumbs";
+import { CatalogGrid } from "@/widgets/catalog-grid";
 
 interface ProductDetailPageProps {
   categorySlug: string;
@@ -26,6 +29,12 @@ export async function ProductDetailPage({ categorySlug, productSlug }: ProductDe
 
   if (!product) notFound();
 
+  // related_product_ids сейчас всегда [] (фича не включена админом) — берём товары той же
+  // категории вместо неё, это и есть «сопутствующие» в терминах доступных данных.
+  const similarProducts = await getProducts({ category: categorySlug })
+    .then((items) => items.filter((item) => item.slug !== product.slug).slice(0, 4))
+    .catch(() => []);
+
   const image = assetUrl(product.image_url) ?? NO_IMAGE_SRC;
 
   return (
@@ -38,26 +47,26 @@ export async function ProductDetailPage({ categorySlug, productSlug }: ProductDe
       />
 
       <section className="container">
-        <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
+        {product.manufacturer ? (
+          <p className="font-label text-sm text-muted-foreground">{product.manufacturer.name}</p>
+        ) : null}
+        <h1 className="mt-1 font-heading text-3xl font-semibold text-balance text-ink sm:text-4xl">
+          {product.name}
+        </h1>
+
+        <div className="mt-8 grid gap-10 lg:grid-cols-[0.9fr_1.3fr_0.9fr] lg:gap-10">
           <div className="relative aspect-square w-full overflow-hidden border border-line">
-            <Image src={image} alt={product.name} fill sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" priority />
+            <Image src={image} alt={product.name} fill sizes="(min-width: 1024px) 30vw, 100vw" className="object-cover" priority />
           </div>
 
+          <ProductSpecs attributes={product.attributes} />
+
           <div>
-            {product.manufacturer ? (
-              <p className="font-label text-sm text-muted-foreground">{product.manufacturer.name}</p>
-            ) : null}
-            <h1 className="mt-1 font-heading text-3xl font-semibold text-balance text-ink sm:text-4xl">
-              {product.name}
-            </h1>
+            <ProductPriceBlock product={product} />
 
-            <div className="mt-6">
-              <ProductPriceBlock product={product} />
-            </div>
-
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <OrderCallbackDialog className="px-5 py-3" />
-              <PhoneLink phone={CONTACTS.phones[0]} className="justify-center text-sm sm:justify-start" />
+            <div className="mt-6 flex flex-col gap-3">
+              <OrderCallbackDialog className="w-full px-5 py-3" />
+              <PhoneLink phone={CONTACTS.phones[0]} className="justify-center text-sm" />
             </div>
           </div>
         </div>
@@ -66,16 +75,43 @@ export async function ProductDetailPage({ categorySlug, productSlug }: ProductDe
       {product.description ? (
         <section className="container">
           <h2 className="eyebrow text-xs">Описание</h2>
-          <p className="mt-4 max-w-3xl text-base leading-relaxed text-ink">{product.description}</p>
+          <p className="mt-4 max-w-full text-base leading-relaxed text-ink">{product.description}</p>
         </section>
       ) : null}
 
-      <section className="container">
-        <ProductSpecs attributes={product.attributes} />
-      </section>
+      <CatalogGrid products={similarProducts} title="Сопутствующие товары" viewAllHref={`/catalog/${categorySlug}`} />
 
-      {/* related_product_ids сейчас всегда [] (таблица пуста, фича не включена админом) —
-          рендерить блок под пустой список незачем. */}
+      <section className="container">
+        <div className="border-b border-line pb-5">
+          <p className="eyebrow text-xs">Доставка и самовывоз</p>
+          <h2 className="mt-2 font-heading text-2xl font-semibold text-ink sm:text-3xl">Как забрать товар</h2>
+        </div>
+
+        <div className="mt-8 grid gap-10 lg:grid-cols-2 lg:gap-16">
+          <div>
+            <ul className="flex flex-col gap-4 text-sm text-ink">
+              <li className="flex items-start gap-3">
+                <MapPinIcon className="mt-0.5 size-4 shrink-0 text-safety" />
+                Самовывоз: {CONTACTS.address}, {CONTACTS.workHours}
+              </li>
+              <li className="flex items-start gap-3">
+                <TruckIcon className="mt-0.5 size-4 shrink-0 text-safety" />
+                Доставка по Минску — от 50 ƃ, дальше цена зависит от расстояния — уточним по звонку.
+              </li>
+            </ul>
+            <OrderCallbackDialog className="mt-6 px-5 py-3" />
+          </div>
+
+          <CornerFrame>
+            <iframe
+              title="ППТ.бел на карте Yandex"
+              src="https://yandex.by/map-widget/v1/-/CCU74CcJ1C"
+              allowFullScreen
+              className="block h-64 w-full border border-line sm:h-full sm:min-h-72"
+            />
+          </CornerFrame>
+        </div>
+      </section>
     </>
   );
 }

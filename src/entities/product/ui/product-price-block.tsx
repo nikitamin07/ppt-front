@@ -19,7 +19,7 @@ function VolumeTiers({ volumePrice, unit }: { volumePrice: ProductVolumePrice; u
         <li key={tier.key} className="flex items-baseline justify-between gap-4 text-sm">
           <span className="text-muted-foreground">{tier.label ?? TIER_FALLBACK_LABEL[tier.key]}</span>
           <span className="font-semibold text-ink tabular-nums">
-            {tier.price} {unit}
+            {tier.price} ƃ/{unit}
           </span>
         </li>
       ))}
@@ -36,7 +36,7 @@ export function ProductPriceBlock({ product }: ProductPriceBlockProps) {
       <div>
         {/* price уже синхронизирован бэкендом с самым дешёвым заполненным тарифом. */}
         <p className="font-heading text-3xl font-semibold text-ink tabular-nums sm:text-4xl">
-          от {price} руб/{unit}
+          от {price} ƃ/{unit}
         </p>
         <VolumeTiers volumePrice={volumePrice} unit={unit} />
       </div>
@@ -49,14 +49,14 @@ export function ProductPriceBlock({ product }: ProductPriceBlockProps) {
       <div>
         <div className="flex items-baseline gap-3 tabular-nums">
           <span className="text-lg text-muted-foreground line-through">
-            {price} {unit}
+            {price} ƃ/{unit}
           </span>
           <span className="font-heading text-3xl font-semibold text-safety sm:text-4xl">
-            {discountPrice} {unit}
+            {discountPrice} ƃ/{unit}
           </span>
         </div>
         <p className="mt-1 text-sm text-muted-foreground tabular-nums">
-          Экономия {saved} {unit}
+          Экономия {saved} ƃ
         </p>
       </div>
     );
@@ -64,7 +64,7 @@ export function ProductPriceBlock({ product }: ProductPriceBlockProps) {
 
   return (
     <p className="font-heading text-3xl font-semibold text-ink tabular-nums sm:text-4xl">
-      {price} {unit}
+      {price} ƃ/{unit}
     </p>
   );
 }

@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
+import { Checkbox } from "@/shared/ui/checkbox";
 import { Input } from "@/shared/ui/input";
 import { submitOrderCallback } from "../api";
 import { formatBelarusDigits, sanitizeBelarusDigits } from "../lib/phone-mask";
@@ -20,12 +22,24 @@ export function OrderCallbackForm({ tone = "surface", className, nameInputRef }:
   const [phoneDigits, setPhoneDigits] = useState("");
   const [phoneFocused, setPhoneFocused] = useState(false);
   const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
+  const [honeypot, setHoneypot] = useState("");
+  const [consent, setConsent] = useState(false);
+  // время монтирования формы — заявки быстрее ~1.5с считаем ботом
+  const mountedAtRef = useRef<number | null>(null);
+  useEffect(() => {
+    mountedAtRef.current = Date.now();
+  }, []);
 
   const isInverse = tone === "inverse";
   const showPrefix = phoneFocused || phoneDigits.length > 0;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!consent) return;
+    if (honeypot || !mountedAtRef.current || Date.now() - mountedAtRef.current < 1500) {
+      setStatus("done");
+      return;
+    }
     setStatus("loading");
     try {
       await submitOrderCallback({ name, phone: `+375${phoneDigits}`, source_url: window.location.href });
@@ -56,6 +70,16 @@ export function OrderCallbackForm({ tone = "surface", className, nameInputRef }:
 
   return (
     <form onSubmit={handleSubmit} className={cn("flex flex-col gap-3", className)}>
+      <input
+        type="text"
+        name="patronymic"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        value={honeypot}
+        onChange={(e) => setHoneypot(e.target.value)}
+        className="absolute left-[-9999px] h-0 w-0 overflow-hidden opacity-0"
+      />
       <Input
         ref={nameInputRef}
         required
@@ -84,15 +108,26 @@ export function OrderCallbackForm({ tone = "surface", className, nameInputRef }:
           )}
         />
       </div>
-      <Button type="submit" disabled={status === "loading"}>
+      <label className={cn("flex cursor-pointer items-start gap-2.5 text-xs", isInverse ? "text-paper/40" : "text-muted-foreground/70")}>
+        <Checkbox checked={consent} onCheckedChange={(checked) => setConsent(checked === true)} className="mt-0.5" />
+        <span>
+          Отправляя форму, вы соглашаетесь на{" "}
+          <Link
+            href="/privacy"
+            onClick={(e) => e.stopPropagation()}
+            className={cn("underline underline-offset-2", isInverse ? "hover:text-paper/70" : "hover:text-ink")}
+          >
+            обработку персональных данных
+          </Link>
+          .
+        </span>
+      </label>
+      <Button type="submit" disabled={status === "loading" || !consent}>
         {status === "loading" ? "Отправка..." : "Заказать звонок"}
       </Button>
       {status === "error" ? (
         <p className="text-sm text-destructive">Не удалось отправить, попробуйте еще раз.</p>
       ) : null}
-      <p className={cn("text-xs", isInverse ? "text-paper/40" : "text-muted-foreground/70")}>
-        Отправляя форму, вы соглашаетесь на обработку персональных данных.
-      </p>
     </form>
   );
 }
