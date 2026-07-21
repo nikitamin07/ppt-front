@@ -2,14 +2,17 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { MapPinIcon, TruckIcon } from "lucide-react";
 import { getCategoryBySlug } from "@/entities/category";
-import { getProductBySlug, getProducts, ProductPriceBlock, ProductSpecs } from "@/entities/product";
+import { getProductBySlug, getProducts, ProductPriceBlock } from "@/entities/product";
+import { CalcValueForm } from "@/features/calc-value";
 import { OrderCallbackDialog } from "@/features/order-callback";
 import { ApiError, assetUrl, NO_IMAGE_SRC } from "@/shared/api";
 import { CONTACTS } from "@/shared/config";
+import { cn } from "@/shared/lib/utils";
 import { CornerFrame } from "@/shared/ui/corner-frame";
 import { PhoneLink } from "@/shared/ui/phone-link";
 import { Breadcrumbs } from "@/widgets/breadcrumbs";
 import { CatalogGrid } from "@/widgets/catalog-grid";
+import { ProductTabs } from "./product-tabs";
 
 interface ProductDetailPageProps {
   categorySlug: string;
@@ -37,6 +40,11 @@ export async function ProductDetailPage({ categorySlug, productSlug }: ProductDe
 
   const image = assetUrl(product.image_url) ?? NO_IMAGE_SRC;
 
+  const effectivePrice = product.discount_price ?? product.price;
+  // isCalculative считает бэкенд (настройка категории + вычислимость объёма) — своих условий
+  // не добавляем. Ступенчатая цена исключена отдельно: там цена сама зависит от результата.
+  const showCalculator = product.isCalculative && !product.is_volume_price;
+
   return (
     <>
       <Breadcrumbs
@@ -54,12 +62,11 @@ export async function ProductDetailPage({ categorySlug, productSlug }: ProductDe
           {product.name}
         </h1>
 
-        <div className="mt-8 grid gap-10 lg:grid-cols-[0.9fr_1.3fr_0.9fr] lg:gap-10">
+        {/* Без калькулятора колонок две, но картинка сохраняет ту же ширину — треть ряда. */}
+        <div className={cn("mt-8 grid gap-10", showCalculator ? "lg:grid-cols-3" : "lg:grid-cols-[1fr_2fr]")}>
           <div className="relative aspect-square w-full overflow-hidden border border-line">
             <Image src={image} alt={product.name} fill sizes="(min-width: 1024px) 30vw, 100vw" className="object-cover" priority />
           </div>
-
-          <ProductSpecs attributes={product.attributes} />
 
           <div>
             <ProductPriceBlock product={product} />
@@ -69,15 +76,18 @@ export async function ProductDetailPage({ categorySlug, productSlug }: ProductDe
               <PhoneLink phone={CONTACTS.phones[0]} className="justify-center text-sm" />
             </div>
           </div>
+
+          {showCalculator && (
+            <CalcValueForm
+              price={effectivePrice}
+              unit={product.price_unit}
+              cubesPerPack={product.cubes_per_pack}
+            />
+          )}
         </div>
       </section>
 
-      {product.description ? (
-        <section className="container">
-          <h2 className="eyebrow text-xs">Описание</h2>
-          <p className="mt-4 max-w-full text-base leading-relaxed text-ink">{product.description}</p>
-        </section>
-      ) : null}
+      <ProductTabs attributes={product.attributes} description={product.description} />
 
       <CatalogGrid products={similarProducts} title="Сопутствующие товары" viewAllHref={`/catalog/${categorySlug}`} />
 

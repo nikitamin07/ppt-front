@@ -59,4 +59,10 @@ export interface Product extends ProductListItem {
   // Динамический массив характеристик «ключ-значение» для этого товара
   attributes: ProductAttributeValue[];
   related_product_ids: number[];
+  // Показывать ли калькулятор объёма: считает бэкенд по настройке категории
+  // и вычислимости объёма. Готовый ответ — своих условий не добавляем.
+  // camelCase здесь намеренный: единственное исключение в snake_case API.
+  isCalculative: boolean;
+  // Кубов в одной упаковке. null — товар продаётся кубами, объём считается напрямую.
+  cubes_per_pack: number | null;
 }
