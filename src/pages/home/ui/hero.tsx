@@ -139,14 +139,14 @@ export function Hero({ productsCount, categoriesCount }: HeroProps) {
         <div className="mx-auto w-full max-w-7xl px-6 lg:px-8">
           <div className="grid gap-12 lg:grid-cols-[1.35fr_0.65fr] lg:items-center lg:gap-8">
             <div>
-              <p data-hero-eyebrow className="eyebrow text-xs lg:text-sm">
+              <p data-hero-eyebrow className="eyebrow text-[3vw] sm:text-xs lg:text-sm">
                 ППТ.бел — склад строительных материалов
               </p>
-              <h1 className="mt-4 font-heading text-2xl font-semibold leading-[1.08] text-ink sm:text-5xl lg:text-[3.4rem]">
+              <h1 className="mt-2 sm:mt-4 font-heading text-[6.5vw] font-semibold leading-[1.08] text-ink sm:text-5xl lg:text-[3.4rem]">
                 <span data-hero-line className="block">Материалы для стройки</span>
                 <span data-hero-line className="block">и утепления — в наличии</span>
               </h1>
-              <p data-hero-sub className="mt-4 sm:mt-6 max-w-full text-sm leading-relaxed text-muted-foreground sm:text-lg">
+              <p data-hero-sub className="mt-6 sm:mt-8 max-w-full text-base leading-relaxed text-muted-foreground sm:text-lg">
                 Доставка строительных материалов по всей территории республики Беларусь. {"\n"}
                 Работаем напрямую от производителей, что позволяет поддерживать низкие цены и быструю доставку. Оставьте заявку, и наши сотрудники помогут подобрать оптимальный вариант
                 с учётом особенностей объекта и бюджета.

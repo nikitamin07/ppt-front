@@ -21,7 +21,8 @@ export function CatalogGrid({ products, title = "Популярные товар
     <section className="container">
       <SectionHeading title={title} href={viewAllHref} linkLabel="Смотреть все" />
 
-      <div ref={gridRef} className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
+      {/* Две колонки уже на мобиле: восемь карточек в столбик растягивали блок на пять экранов. */}
+      <div ref={gridRef} className="mt-8 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
         {products.map((product) => (
           <ProductCard key={product.id} product={product} categorySlug={product.category_slug} />
         ))}

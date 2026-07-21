@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getCategoryBySlug } from "@/entities/category";
 import { CatalogCategoryPage } from "@/pages/catalog-category";
 import type { CatalogSearchParams } from "@/features/product-filters";
+import { truncateForMeta } from "@/shared/lib/utils";
 
 // Товары и категории правятся через админку, а на сборке образа бэкенд ещё недоступен.
 export const dynamic = "force-dynamic";
@@ -24,7 +25,10 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
 
   return {
     title: `${category.name} — купить в Минске | ППТ.бел`,
-    description: category.description || `${category.name} со склада в Минске: наличие, цены и доставка по Беларуси.`,
+    // Описание из админки — сплошной абзац на ~450 знаков, в сниппет идёт только начало.
+    description: category.description
+      ? truncateForMeta(category.description)
+      : `${category.name} со склада в Минске: наличие, цены и доставка по Беларуси.`,
     robots: filtered ? { index: false, follow: true } : undefined,
   };
 }

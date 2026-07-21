@@ -4,12 +4,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useIntersectionObserver } from "usehooks-ts";
 
 interface UseInfiniteListOptions<T> {
-  /** Первая страница, отрендеренная на сервере. */
   initialItems: T[];
-  /** Догрузка страницы (нумерация с 1). Порция короче perPage означает конец списка. */
   loadPage: (page: number) => Promise<T[]>;
   perPage: number;
-  /** Список кончился сразу — например, бэкенд прислал total и он уже покрыт первой страницей. */
   initiallyComplete: boolean;
 }
 
@@ -53,7 +50,6 @@ export function useInfiniteList<T>({ initialItems, loadPage, perPage, initiallyC
   const canLoadMore = isIntersecting && !loading && !reachedEnd && !failed;
 
   useEffect(() => {
-    // Правило советует подписываться через onChange самого наблюдателя — см. причину выше.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     if (canLoadMore) void loadNext();
   }, [canLoadMore, loadNext]);

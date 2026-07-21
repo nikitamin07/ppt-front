@@ -28,7 +28,7 @@ export function ProductCard({ product, categorySlug }: ProductCardProps) {
           src={assetUrl(product.image_url) ?? NO_IMAGE_SRC}
           alt={product.name}
           fill
-          sizes="(min-width: 1280px) 25vw, (min-width: 640px) 50vw, 100vw"
+          sizes="(min-width: 1024px) 25vw, 50vw"
           className="object-cover"
         />
       </div>
@@ -44,7 +44,8 @@ export function ProductCard({ product, categorySlug }: ProductCardProps) {
           <p className="font-label text-xs text-muted-foreground">{product.manufacturer.name}</p>
         ) : null}
         <h3 className="font-heading font-semibold text-ink">{product.name}</h3>
-        <div className="mt-2 flex items-baseline gap-2 tabular-nums">
+        {/* wrap: в двух колонках на мобиле старая и новая цена в строку не помещаются. */}
+        <div className="mt-2 flex flex-wrap items-baseline gap-x-2 tabular-nums">
           {hasDiscount ? (
             <>
               <span className="text-sm text-muted-foreground line-through">

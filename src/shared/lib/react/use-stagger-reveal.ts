@@ -6,8 +6,12 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-/** Каскадное появление прямых детей контейнера при входе во вьюпорт. */
-export function useStaggerReveal<T extends HTMLElement>(options?: { y?: number; stagger?: number }) {
+/** Каскадное появление прямых детей контейнера: по скроллу или сразу при монтировании. */
+export function useStaggerReveal<T extends HTMLElement>(options?: {
+  y?: number;
+  stagger?: number;
+  onMount?: boolean;
+}) {
   const ref = useRef<T | null>(null);
 
   useEffect(() => {
@@ -28,18 +32,14 @@ export function useStaggerReveal<T extends HTMLElement>(options?: { y?: number; 
           duration: 0.5,
           stagger: options?.stagger ?? 0.08,
           ease: "power2.out",
-          scrollTrigger: {
-            trigger: el,
-            start: "top 90%",
-            once: true,
-          },
+          // onMount — играем сразу, иначе ждём входа во вьюпорт.
+          scrollTrigger: options?.onMount ? undefined : { trigger: el, start: "top 90%", once: true },
         },
       );
     }, el);
 
     // Web-шрифты сдвигают раскладку — пересчитываем триггеры разово;
-    // invalidateOnRefresh сбросил бы сыгранную анимацию в 0.
-    document.fonts?.ready.then(() => ScrollTrigger.refresh());
+    if (!options?.onMount) document.fonts?.ready.then(() => ScrollTrigger.refresh());
 
     return () => ctx.revert();
     // eslint-disable-next-line react-hooks/exhaustive-deps

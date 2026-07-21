@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useDebounceValue } from "usehooks-ts";
-import type { Category } from "@/entities/category";
+import type { CategoryListItem } from "@/entities/category";
 import type { Manufacturer } from "@/entities/manufacturer";
 import { Checkbox } from "@/shared/ui/checkbox";
 import { Input } from "@/shared/ui/input";
@@ -10,7 +10,7 @@ import { useFilterParams } from "../model/use-filter-params";
 
 interface FilterFieldsProps {
   /** Подкатегории текущей корневой категории. Пусто — блок категорий не показываем. */
-  subcategories: Category[];
+  subcategories: CategoryListItem[];
   manufacturers: Manufacturer[];
 }
 
@@ -49,7 +49,11 @@ export function FilterFields({ subcategories, manufacturers }: FilterFieldsProps
   return (
     <div className="flex flex-col gap-8">
       <fieldset>
-        <legend className="eyebrow text-xs">Цена, ƃ</legend>
+        {/* normal-case: uppercase перегнал бы ƃ (U+0183) в U+0182 — мимо unicode-range шрифта nbrb.
+            1.35em: глиф рисуется по строчной высоте, так он дотягивается до капители соседних букв. */}
+        <legend className="eyebrow text-xs">
+          Цена, <span className="text-[1.35em] leading-none normal-case">ƃ</span>
+        </legend>
         <div className="mt-4 flex items-center gap-2">
           <Input
             type="number"

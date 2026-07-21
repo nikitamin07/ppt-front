@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { SlidersHorizontalIcon, XIcon } from "lucide-react";
-import type { Category } from "@/entities/category";
+import type { CategoryListItem } from "@/entities/category";
 import type { Manufacturer } from "@/entities/manufacturer";
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
@@ -11,7 +11,7 @@ import { useFilterParams } from "../model/use-filter-params";
 import { FilterFields } from "./filter-fields";
 
 interface ProductFiltersProps {
-  subcategories: Category[];
+  subcategories: CategoryListItem[];
   manufacturers: Manufacturer[];
   /** Есть ли что сбрасывать — считается на сервере по адресу страницы. */
   active: boolean;
@@ -59,8 +59,8 @@ export function ProductFilters({ subcategories, manufacturers, active, className
             </Button>
           }
         />
-        <DialogPanel className="lg:hidden">
-          <div className="flex items-center justify-between gap-4 border-b border-white/15 pb-4">
+        <DialogPanel className="lg:hidden py-5">
+          <div className="flex items-center justify-between gap-4 px-5 border-b border-white/15 pb-4">
             <DialogTitle className="font-heading text-lg font-semibold text-paper">Фильтры</DialogTitle>
             <DialogClose aria-label="Закрыть фильтры" className="text-paper">
               <XIcon className="size-5" />
@@ -68,15 +68,15 @@ export function ProductFilters({ subcategories, manufacturers, active, className
           </div>
 
           {/* Панель тёмная — поля внутри инвертируем точечно, а не плодим вторую тему. */}
-          <div className="mt-6 flex-1 overflow-y-auto text-paper [&_.text-ink]:text-paper [&_legend]:text-safety">
+          <div className="mt-6 px-5 flex-1 overflow-y-auto text-paper [&_.text-ink]:text-paper [&_legend]:text-safety">
             <FilterFields subcategories={subcategories} manufacturers={manufacturers} />
           </div>
 
-          <div className="mt-6 flex items-center justify-between gap-4 border-t border-white/15 pt-4">
+          <div className="mt-6 flex items-center justify-between gap-4 px-5 border-t border-white/15 pt-4">
             <ResetButton active={active} onReset={reset} />
             <DialogClose
               render={
-                <Button variant="safety" className="px-5 py-2.5">
+                <Button variant="safety" className="px-5 py-2.5 w-full">
                   Показать товары
                 </Button>
               }

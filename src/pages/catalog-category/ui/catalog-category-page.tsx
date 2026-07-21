@@ -48,7 +48,13 @@ export async function CatalogCategoryPage({ slug, searchParams }: CatalogCategor
 
       <section className="container">
         <h1 className="font-heading text-3xl font-semibold text-balance text-ink sm:text-4xl">{category.name}</h1>
-        <p className="mt-3 font-label text-sm text-muted-foreground tabular-nums">
+        {/* Текст из админки: простой абзац без разметки, поэтому рендерим как текст. */}
+        {category.description && (
+          <p className="mt-4 max-w-3xl text-base leading-relaxed text-muted-foreground">
+            {category.description}
+          </p>
+        )}
+        <p className="mt-4 font-label text-sm text-muted-foreground tabular-nums">
           {total} {plural(total, { one: "позиция", few: "позиции", many: "позиций" })}
         </p>
       </section>
