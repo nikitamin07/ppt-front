@@ -1,5 +1,5 @@
 import { apiGet, apiPost } from "@/shared/api";
-import type { Product, ProductListItem } from "../model/types";
+import type { Product, ProductListItem, ProductMeta } from "../model/types";
 
 interface GetProductsParams {
   category?: string;
@@ -14,6 +14,11 @@ export function getProducts(params?: GetProductsParams): Promise<ProductListItem
 
 export function getProductBySlug(categorySlug: string, productSlug: string): Promise<Product> {
   return apiGet<Product>(`/products/${categorySlug}/${productSlug}`);
+}
+
+// Только для generateMetadata: ~310 байт против 3.7 КБ у карточки товара.
+export function getProductMeta(categorySlug: string, productSlug: string): Promise<ProductMeta> {
+  return apiGet<ProductMeta>(`/products/${categorySlug}/${productSlug}/meta`);
 }
 
 interface ProductsCountParams {

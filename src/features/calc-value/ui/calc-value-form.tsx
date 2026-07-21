@@ -56,7 +56,8 @@ export function CalcValueForm({ price, unit, cubesPerPack }: CalcValueFormProps)
           <label key={field.key} className="flex flex-col gap-1 text-sm text-ink">
             {field.label}
             <Input
-              type="text"
+              type="number"
+              step="0.1"
               inputMode="decimal"
               placeholder={field.placeholder}
               value={values[field.key]}

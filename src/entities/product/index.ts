@@ -4,10 +4,12 @@ export type {
   ProductManufacturer,
   ProductAttributeValue,
   ProductVolumePrice,
+  ProductMeta,
   Attribute,
 } from "./model/types";
 export type { ProductFilterParams, ProductFilterResult } from "./api";
-export { getProducts, getProductBySlug, getProductsCount, getFeaturedProducts, filterProducts } from "./api";
+export { getProducts, getProductBySlug, getProductMeta, getProductsCount, getFeaturedProducts, filterProducts } from "./api";
 export { ProductCard } from "./ui/product-card";
 export { ProductSpecs } from "./ui/product-specs";
 export { ProductPriceBlock } from "./ui/product-price-block";
+export { ProductGallery } from "./ui/product-gallery";

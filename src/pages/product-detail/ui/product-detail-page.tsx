@@ -1,11 +1,10 @@
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import { MapPinIcon, TruckIcon } from "lucide-react";
 import { getCategoryBySlug } from "@/entities/category";
-import { getProductBySlug, getProducts, ProductPriceBlock } from "@/entities/product";
+import { getProductBySlug, getProducts, ProductGallery, ProductPriceBlock } from "@/entities/product";
 import { CalcValueForm } from "@/features/calc-value";
 import { OrderCallbackDialog } from "@/features/order-callback";
-import { ApiError, assetUrl, NO_IMAGE_SRC } from "@/shared/api";
+import { ApiError } from "@/shared/api";
 import { CONTACTS } from "@/shared/config";
 import { cn } from "@/shared/lib/utils";
 import { CornerFrame } from "@/shared/ui/corner-frame";
@@ -38,8 +37,6 @@ export async function ProductDetailPage({ categorySlug, productSlug }: ProductDe
     .then((items) => items.filter((item) => item.slug !== product.slug).slice(0, 4))
     .catch(() => []);
 
-  const image = assetUrl(product.image_url) ?? NO_IMAGE_SRC;
-
   const effectivePrice = product.discount_price ?? product.price;
   // isCalculative считает бэкенд (настройка категории + вычислимость объёма) — своих условий
   // не добавляем. Ступенчатая цена исключена отдельно: там цена сама зависит от результата.
@@ -64,9 +61,7 @@ export async function ProductDetailPage({ categorySlug, productSlug }: ProductDe
 
         {/* Без калькулятора колонок две, но картинка сохраняет ту же ширину — треть ряда. */}
         <div className={cn("mt-8 grid gap-10", showCalculator ? "lg:grid-cols-3" : "lg:grid-cols-[1fr_2fr]")}>
-          <div className="relative aspect-square w-full overflow-hidden border border-line">
-            <Image src={image} alt={product.name} fill sizes="(min-width: 1024px) 30vw, 100vw" className="object-cover" priority />
-          </div>
+          <ProductGallery images={product.image_urls} name={product.name} />
 
           <div>
             <ProductPriceBlock product={product} />

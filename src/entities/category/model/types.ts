@@ -11,3 +11,13 @@ export interface CategoryListItem {
 export interface Category extends CategoryListItem {
   description: string;
 }
+
+/**
+ * Крошечный ответ /categories/{slug}/meta — только для generateMetadata.
+ * meta_description пишется в админке отдельно от description; «» если его стёрли.
+ */
+export interface CategoryMeta {
+  slug: string;
+  name: string;
+  meta_description: string;
+}

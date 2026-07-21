@@ -53,12 +53,26 @@ export interface ProductListItem {
   manufacturer: ProductManufacturer | null;
 }
 
+/**
+ * Крошечный ответ /products/{categorySlug}/{productSlug}/meta — только для generateMetadata.
+ * meta_description пишется в админке отдельно и уже влезает в сниппет; «» если его стёрли.
+ */
+export interface ProductMeta {
+  slug: string;
+  name: string;
+  meta_description: string;
+  image_url: string | null;
+  category_slug: string;
+}
+
 /** Полный товар — только с эндпоинта /products/{categorySlug}/{productSlug}. */
 export interface Product extends ProductListItem {
   description: string;
   // Динамический массив характеристик «ключ-значение» для этого товара
   attributes: ProductAttributeValue[];
   related_product_ids: number[];
+  // Все фото товара в порядке из админки; [] когда их нет. image_url — это image_urls[0].
+  image_urls: string[];
   // Показывать ли калькулятор объёма: считает бэкенд по настройке категории
   // и вычислимости объёма. Готовый ответ — своих условий не добавляем.
   // camelCase здесь намеренный: единственное исключение в snake_case API.
