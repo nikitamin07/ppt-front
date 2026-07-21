@@ -38,9 +38,11 @@ export interface ProductListItem {
   // Категория товара — корневая или подкатегория. Схема допускает null (категорию можно
   // отвязать в админке), но сейчас категория есть у всех товаров.
   category_id: number | null;
-  // Слаг прямой категории — из него строится адрес /catalog/{category_slug}/{slug}.
-  // null тогда же, когда null category_id.
+  // Слаг прямой категории — корневой или подкатегории. null тогда же, когда null category_id.
   category_slug: string | null;
+  // Готовый путь категории для адреса: «penoplast/ppt» либо «dry-building-mixes» у корневой.
+  // Считает бэкенд: половину карточек дорисовывает лента на клиенте, где дерева нет.
+  category_path: string | null;
   slug: string;
   name: string;
   price: number;

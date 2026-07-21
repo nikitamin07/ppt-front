@@ -18,8 +18,6 @@ export interface CatalogSearchParams {
   discounted?: string;
   featured?: string;
   volume?: string;
-  /** Подкатегории через запятую — уточнение внутри корневой категории. */
-  sub?: string;
   /** id производителей через запятую. */
   manufacturers?: string;
   sort?: string;
@@ -39,22 +37,21 @@ function toNumber(value?: string): number | undefined {
 }
 
 /**
- * Адрес страницы → тело запроса к API. Отмеченные подкатегории
- * сужают выборку; без них — вся категория из пути.
+ * Адрес страницы → тело запроса к API. Выборка всегда идёт
+ * по категории из пути: подкатегории — это отдельные страницы.
  */
 export function toFilterParams(
   searchParams: CatalogSearchParams,
   categorySlug: string,
   page?: number,
 ): ProductFilterParams {
-  const sub = searchParams.sub?.split(",").filter(Boolean) ?? [];
   // Бэкенд ждёт id числами; мусор в адресе отбрасываем, иначе получим 422.
   const manufacturers = (searchParams.manufacturers?.split(",") ?? [])
     .map(Number)
     .filter((id) => Number.isInteger(id) && id > 0);
 
   return {
-    categories: sub.length > 0 ? sub : [categorySlug],
+    categories: [categorySlug],
     query: searchParams.query || undefined,
     price_min: toNumber(searchParams.price_min),
     price_max: toNumber(searchParams.price_max),
@@ -69,6 +66,6 @@ export function toFilterParams(
 
 /** Есть ли что сбрасывать: категория из пути фильтром не считается. */
 export function hasActiveFilters(searchParams: CatalogSearchParams): boolean {
-  const { query, price_min, price_max, discounted, featured, volume, sub, manufacturers } = searchParams;
-  return Boolean(query || price_min || price_max || discounted || featured || volume || sub || manufacturers);
+  const { query, price_min, price_max, discounted, featured, volume, manufacturers } = searchParams;
+  return Boolean(query || price_min || price_max || discounted || featured || volume || manufacturers);
 }

@@ -4,15 +4,11 @@ import { filterProducts, ProductCard, type ProductFilterParams, type ProductList
 import { useInfiniteList } from "@/shared/lib/react";
 import { FeedStatus } from "@/shared/ui/feed-status";
 
-/** Бэкенд отдаёт по столько товаров на страницу. */
 const PER_PAGE = 8;
 
 interface ProductFeedProps {
-  /** Первая страница, уже отфильтрованная на сервере. */
   initialProducts: ProductListItem[];
-  /** Всего товаров под текущий фильтр — из ответа бэкенда. */
   total: number;
-  /** Фильтры из адреса — ими же дозапрашиваем страницы 2, 3, 4… */
   filters: ProductFilterParams;
 }
 
@@ -20,7 +16,6 @@ export function ProductFeed({ initialProducts, total, filters }: ProductFeedProp
   const { items, ...status } = useInfiniteList({
     initialItems: initialProducts,
     perPage: PER_PAGE,
-    // В отличие от статей, у товаров бэкенд присылает total — по нему конец списка виден сразу.
     initiallyComplete: initialProducts.length >= total,
     loadPage: async (page) => (await filterProducts({ ...filters, page })).items,
   });
@@ -37,7 +32,7 @@ export function ProductFeed({ initialProducts, total, filters }: ProductFeedProp
     <div aria-busy={status.loading}>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 xl:grid-cols-3">
         {items.map((product) => (
-          <ProductCard key={product.id} product={product} categorySlug={product.category_slug} />
+          <ProductCard key={product.id} product={product} />
         ))}
       </div>
 

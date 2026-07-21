@@ -2,15 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useDebounceValue } from "usehooks-ts";
-import type { CategoryListItem } from "@/entities/category";
 import type { Manufacturer } from "@/entities/manufacturer";
 import { Checkbox } from "@/shared/ui/checkbox";
 import { Input } from "@/shared/ui/input";
 import { useFilterParams } from "../model/use-filter-params";
 
 interface FilterFieldsProps {
-  /** Подкатегории текущей корневой категории. Пусто — блок категорий не показываем. */
-  subcategories: CategoryListItem[];
   manufacturers: Manufacturer[];
 }
 
@@ -20,7 +17,7 @@ const FLAGS = [
   { param: "volume", label: "Цена зависит от объёма" },
 ] as const;
 
-export function FilterFields({ subcategories, manufacturers }: FilterFieldsProps) {
+export function FilterFields({ manufacturers }: FilterFieldsProps) {
   const { get, set } = useFilterParams();
 
   // Цену не шлём на каждую нажатую цифру: «1» из «150» отфильтровало бы почти всё.
@@ -37,7 +34,6 @@ export function FilterFields({ subcategories, manufacturers }: FilterFieldsProps
     set({ price_min: debouncedMin || null, price_max: debouncedMax || null });
   }, [debouncedMin, debouncedMax, set]);
 
-  const checkedSubs = get("sub").split(",").filter(Boolean);
   const checkedManufacturers = get("manufacturers").split(",").filter(Boolean);
 
   /** Общий переключатель для списков «через запятую» в адресе. */
@@ -78,24 +74,6 @@ export function FilterFields({ subcategories, manufacturers }: FilterFieldsProps
           />
         </div>
       </fieldset>
-
-      {subcategories.length > 0 && (
-        <fieldset>
-          <legend className="eyebrow text-xs">Подкатегории</legend>
-          <div className="mt-4 flex flex-col gap-3">
-            {subcategories.map((category) => (
-              <label key={category.id} className="flex cursor-pointer items-start gap-2.5 text-sm text-ink">
-                <Checkbox
-                  checked={checkedSubs.includes(category.slug)}
-                  onCheckedChange={(checked) => toggleInList("sub", checkedSubs, category.slug, checked === true)}
-                  className="mt-0.5"
-                />
-                {category.name}
-              </label>
-            ))}
-          </div>
-        </fieldset>
-      )}
 
       {manufacturers.length > 0 && (
         <fieldset>

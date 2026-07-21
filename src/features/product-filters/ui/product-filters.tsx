@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { SlidersHorizontalIcon, XIcon } from "lucide-react";
-import type { CategoryListItem } from "@/entities/category";
 import type { Manufacturer } from "@/entities/manufacturer";
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
@@ -11,7 +10,6 @@ import { useFilterParams } from "../model/use-filter-params";
 import { FilterFields } from "./filter-fields";
 
 interface ProductFiltersProps {
-  subcategories: CategoryListItem[];
   manufacturers: Manufacturer[];
   /** Есть ли что сбрасывать — считается на сервере по адресу страницы. */
   active: boolean;
@@ -32,7 +30,7 @@ function ResetButton({ active, onReset }: { active: boolean; onReset: () => void
   );
 }
 
-export function ProductFilters({ subcategories, manufacturers, active, className }: ProductFiltersProps) {
+export function ProductFilters({ manufacturers, active, className }: ProductFiltersProps) {
   const { reset } = useFilterParams();
   const [open, setOpen] = useState(false);
 
@@ -45,7 +43,7 @@ export function ProductFilters({ subcategories, manufacturers, active, className
           <ResetButton active={active} onReset={reset} />
         </div>
         <div className="mt-6">
-          <FilterFields subcategories={subcategories} manufacturers={manufacturers} />
+          <FilterFields manufacturers={manufacturers} />
         </div>
       </aside>
 
@@ -69,7 +67,7 @@ export function ProductFilters({ subcategories, manufacturers, active, className
 
           {/* Панель тёмная — поля внутри инвертируем точечно, а не плодим вторую тему. */}
           <div className="mt-6 px-5 flex-1 overflow-y-auto text-paper [&_.text-ink]:text-paper [&_legend]:text-safety">
-            <FilterFields subcategories={subcategories} manufacturers={manufacturers} />
+            <FilterFields manufacturers={manufacturers} />
           </div>
 
           <div className="mt-6 flex items-center justify-between gap-4 px-5 border-t border-white/15 pt-4">

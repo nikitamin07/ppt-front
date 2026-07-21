@@ -48,7 +48,7 @@ export function CategoryCard({ category }: CategoryCardProps) {
           {children.map((child) => (
             <li key={child.id}>
               <Link
-                href={`/catalog/${child.slug}`}
+                href={`/catalog/${category.slug}/${child.slug}`}
                 className="group/link flex items-start gap-2 px-6 py-2 text-sm text-muted-foreground transition-colors hover:bg-ink/4 hover:text-safety focus-visible:bg-ink/4 focus-visible:text-safety focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-safety"
               >
                 <ChevronRightIcon className="mt-0.5 size-3.5 shrink-0 text-muted-foreground transition-colors group-hover/link:text-safety group-focus-visible/link:text-safety" />

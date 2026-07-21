@@ -13,18 +13,18 @@ interface CatalogGridProps {
 export function CatalogGrid({ products, title = "Популярные товары", viewAllHref = "/catalog" }: CatalogGridProps) {
   const gridRef = useStaggerReveal<HTMLDivElement>();
 
-  // Блок наполняет админ галочкой «Показывать в популярных». Не отметили ни одного —
-  // показывать пустую секцию не за чем.
   if (products.length === 0) return null;
 
   return (
     <section className="container">
       <SectionHeading title={title} href={viewAllHref} linkLabel="Смотреть все" />
-
-      {/* Две колонки уже на мобиле: восемь карточек в столбик растягивали блок на пять экранов. */}
-      <div ref={gridRef} className="mt-8 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
+      {/* На мобильной колонке 8 карточек — это слишком много по высоте, поэтому режем блок до 4. */}
+      <div
+        ref={gridRef}
+        className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4 [&>*:nth-child(n+5)]:hidden sm:[&>*:nth-child(n+5)]:block"
+      >
         {products.map((product) => (
-          <ProductCard key={product.id} product={product} categorySlug={product.category_slug} />
+          <ProductCard key={product.id} product={product} />
         ))}
       </div>
 
