@@ -12,19 +12,20 @@ interface CalcValueFormProps {
   unit: string;
   /** Кубов в упаковке. null — товар продаётся кубами, считаем прямо по объёму. */
   cubesPerPack: number | null;
+  /** Толщина товара в мм — приходит числом с бэкенда, не вводится вручную. */
+  thickness: number;
 }
 
 const FIELDS = [
   { key: "height", label: "Высота стены, м", placeholder: "2,7" },
   { key: "width", label: "Ширина стены, м", placeholder: "6" },
-  { key: "thickness", label: "Толщина материала, мм", placeholder: "50" },
 ] as const;
 
 type FieldKey = (typeof FIELDS)[number]["key"];
 
-const EMPTY: Record<FieldKey, string> = { height: "", width: "", thickness: "" };
+const EMPTY: Record<FieldKey, string> = { height: "", width: "" };
 
-export function CalcValueForm({ price, unit, cubesPerPack }: CalcValueFormProps) {
+export function CalcValueForm({ price, unit, cubesPerPack, thickness }: CalcValueFormProps) {
   const [values, setValues] = useState(EMPTY);
   const [result, setResult] = useState<{
     area: number;
@@ -41,7 +42,7 @@ export function CalcValueForm({ price, unit, cubesPerPack }: CalcValueFormProps)
   function submit(event: FormEvent) {
     event.preventDefault();
     const area = calculateArea(toNumber(values.height), toNumber(values.width));
-    const volume = calculateVolume(area, toNumber(values.thickness));
+    const volume = calculateVolume(area, thickness);
     // Кубами торгуют по объёму, упаковками — по числу упаковок, оно и идёт в цену.
     const packs = cubesPerPack ? calculatePacks(volume, cubesPerPack) : null;
     setResult({ area, volume, packs, cost: calculateCost(packs ?? volume, price) });
@@ -69,6 +70,12 @@ export function CalcValueForm({ price, unit, cubesPerPack }: CalcValueFormProps)
           </label>
         ))}
       </div>
+
+      {/* Толщина не вводится — показываем, с какой считаем, иначе итог берётся из ниоткуда. */}
+      <p className="mt-3 flex items-baseline justify-between gap-4 text-sm">
+        <span className="text-muted-foreground">Толщина материала</span>
+        <span className="font-semibold text-ink tabular-nums">{thickness} мм</span>
+      </p>
 
       <Button type="submit" variant="ink" disabled={!ready} className="mt-4 w-full">
         Рассчитать

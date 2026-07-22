@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Oswald } from "next/font/google";
 import "@/app/styles/globals.css";
 import { cn } from "@/shared/lib/utils";
+import { SITE_NAME, SITE_URL } from "@/shared/lib/seo";
 import { TrackVisit } from "@/shared/lib/react";
 import { CustomCursor } from "@/shared/ui/custom-cursor";
 import { Header } from "@/widgets/header";
@@ -20,10 +21,17 @@ const oswald = Oswald({
   display: "swap",
 });
 
+const title = "ППТ.бел — материалы для строительства и утепления";
+const description =
+  "Пенопласт, минеральная вата, сухие строительные смеси. В наличии, с доставкой по Беларуси.";
+
+// canonical и og:url тут не задаём: они бы унаследовались страницами, которые их не
+// переопределили, и объявили бы каждую такую страницу копией главной.
 export const metadata: Metadata = {
-  title: "ППТ.бел — материалы для строительства и утепления",
-  description:
-    "Пенопласт, минеральная вата, сухие строительные смеси. В наличии, с доставкой по Беларуси.",
+  metadataBase: new URL(SITE_URL),
+  title,
+  description,
+  openGraph: { type: "website", title, description, siteName: SITE_NAME, locale: "ru_RU" },
 };
 
 export default function RootLayout({

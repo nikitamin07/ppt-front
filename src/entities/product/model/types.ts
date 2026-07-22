@@ -81,4 +81,6 @@ export interface Product extends ProductListItem {
   isCalculative: boolean;
   // Кубов в одной упаковке. null — товар продаётся кубами, объём считается напрямую.
   cubes_per_pack: number | null;
+  // Толщина товара в мм для калькулятора: считает бэкенд. null — калькулятора у категории нет.
+  thickness: number | null;
 }

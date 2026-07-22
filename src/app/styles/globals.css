@@ -113,9 +113,9 @@
     @apply bg-background text-foreground;
   }
 
-  /* Улучшаем UX при фокусе с клавиатуры (доступность/Accessibility) */
+  /* Улучшаем UX при фокусе с клавиатуры (доступность/Accessibility). */
   :focus-visible {
-    outline: 2px solid var(--color-active);
+    outline: 2px solid var(--color-safety);
     outline-offset: 2px;
   }
 

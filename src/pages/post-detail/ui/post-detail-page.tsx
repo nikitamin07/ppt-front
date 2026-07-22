@@ -26,20 +26,20 @@ export async function PostDetailPage({ slug }: PostDetailPageProps) {
 
   const postTags = tags.filter((tag) => post.tag_ids.includes(tag.id));
   const cover = assetUrl(post.cover_image_url) ?? NO_IMAGE_SRC;
-  console.log(post)
 
   return (
     <>
       <Breadcrumbs labels={{ [post.slug]: post.title }} />
       <div className="post-page-wrapper">
         <section className="container">
-          <time className="font-label text-xs tabular-nums text-muted-foreground">
-              {new Date(post.published_at).toLocaleDateString("ru-RU")}
-          </time>
-          <h1 className="mt-2 max-w-4xl font-heading text-3xl font-semibold text-balance text-ink sm:text-4xl">
-            {post.title}
-          </h1>
-
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-12 sm:justify-between">
+            <h1 className="max-w-4xl font-heading text-3xl font-semibold text-balance text-ink sm:text-4xl">
+              {post.title}
+            </h1>
+            <time className="font-label text-xs tabular-nums text-muted-foreground">
+                {new Date(post.published_at).toLocaleDateString("ru-RU")}
+            </time>
+          </div>
           {postTags.length > 0 ? (
             <div className="mt-4 flex flex-wrap gap-2">
               {postTags.map((tag) => (
@@ -61,7 +61,7 @@ export async function PostDetailPage({ slug }: PostDetailPageProps) {
         </section>
 
         <section className="container">
-          <div className="flex flex-col gap-24 py-10 md:flex-row items-center sm:justify-between">
+          <div className="flex flex-col gap-24 pt-10 pb-16 sm:pb-10 md:flex-row items-center sm:justify-between">
             <p className="font-heading text-lg font-semibold text-ink">Поделитесь публикацией с коллегами и друзьями в Telegram, Viber, WhatsApp или скопировав ссылку.</p>
             <ShareButton title={post.title} className="md:mr-20"/>
           </div>

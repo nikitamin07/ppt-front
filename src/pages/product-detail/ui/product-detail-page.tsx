@@ -7,7 +7,6 @@ import { OrderCallbackDialog } from "@/features/order-callback";
 import { ApiError } from "@/shared/api";
 import { CONTACTS } from "@/shared/config";
 import { cn } from "@/shared/lib/utils";
-import { CornerFrame } from "@/shared/ui/corner-frame";
 import { PhoneLink } from "@/shared/ui/phone-link";
 import { Breadcrumbs } from "@/widgets/breadcrumbs";
 import { CatalogGrid } from "@/widgets/catalog-grid";
@@ -38,9 +37,10 @@ export async function ProductDetailPage({ trail, productSlug }: ProductDetailPag
     .catch(() => []);
 
   const effectivePrice = product.discount_price ?? product.price;
-  // isCalculative считает бэкенд (настройка категории + вычислимость объёма) — своих условий
-  // не добавляем. Ступенчатая цена исключена отдельно: там цена сама зависит от результата.
-  const showCalculator = product.isCalculative && !product.is_volume_price;
+  // isCalculative считает бэкенд — своих условий не добавляем. Ступенчатая цена исключена
+  // отдельно: там цена сама зависит от результата. null в итоге — калькулятора нет.
+  const calcThickness = product.isCalculative && !product.is_volume_price ? product.thickness : null;
+  const showCalculator = calcThickness !== null;
 
   return (
     <>
@@ -59,8 +59,14 @@ export async function ProductDetailPage({ trail, productSlug }: ProductDetailPag
           {product.name}
         </h1>
 
-        {/* Без калькулятора колонок две, но картинка сохраняет ту же ширину — треть ряда. */}
-        <div className={cn("mt-8 grid gap-10", showCalculator ? "lg:grid-cols-3" : "lg:grid-cols-[1fr_2fr]")}>
+        {/* До lg — две колонки: фото и цена в ряд, калькулятор переносится ниже.
+            Без калькулятора картинка на lg сохраняет ту же ширину — треть ряда. */}
+        <div
+          className={cn(
+            "mt-8 grid gap-10 md:grid-cols-2",
+            showCalculator ? "lg:grid-cols-3" : "lg:grid-cols-[1fr_2fr]",
+          )}
+        >
           <ProductGallery images={product.image_urls} name={product.name} />
 
           <div>
@@ -79,11 +85,12 @@ export async function ProductDetailPage({ trail, productSlug }: ProductDetailPag
             </div>
           </div>
 
-          {showCalculator && (
+          {calcThickness !== null && (
             <CalcValueForm
               price={effectivePrice}
               unit={product.price_unit}
               cubesPerPack={product.cubes_per_pack}
+              thickness={calcThickness}
             />
           )}
         </div>
@@ -92,22 +99,6 @@ export async function ProductDetailPage({ trail, productSlug }: ProductDetailPag
       <ProductTabs attributes={product.attributes} description={product.description} />
 
       <CatalogGrid products={similarProducts} title="Похожие товары" viewAllHref={`/catalog/${categoryPath(trail)}`} />
-
-      <section className="container">
-        <div className="border-b border-line pb-5">
-          <p className="eyebrow text-xs">Доставка и самовывоз</p>
-          <h2 className="mt-2 font-heading text-2xl font-semibold text-ink sm:text-3xl">Как забрать товар</h2>
-        </div>
-
-          <CornerFrame>
-            <iframe
-              title="ППТ.бел на карте Yandex"
-              src="https://yandex.by/map-widget/v1/-/CCU74CcJ1C"
-              allowFullScreen
-              className="block h-64 w-full border border-line sm:h-full sm:min-h-72"
-            />
-          </CornerFrame>
-      </section>
     </>
   );
 }
