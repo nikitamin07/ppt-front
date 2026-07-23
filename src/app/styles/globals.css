@@ -348,6 +348,34 @@
   }
 }
 
+/* Стартовое состояние анимации hero. Его обязан отрисовать сервер: JS выполняется
+   после первой покраски, и выставленный из useEffect opacity:0 давал бы мигание
+   «видно → спряталось → проявилось». Только прозрачность: сдвиг и масштаб ставит
+   сам gsap, элемент в этот момент уже невидим, поэтому скачка не видно.
+   .js-anim ставит инлайн-скрипт в layout.tsx — без JS и при reduced-motion
+   правило не применяется, и hero виден целиком. */
+@media (prefers-reduced-motion: no-preference) {
+  .js-anim :is(
+    [data-hero-eyebrow],
+    [data-hero-line],
+    [data-hero-sub],
+    [data-hero-cta],
+    [data-hero-stat],
+    [data-hero-caption],
+    [data-diagram-layer],
+    [data-diagram-label],
+    [data-diagram-dimension]
+  ) {
+    opacity: 0;
+  }
+
+  /* Каскад, попадающий в первый экран (сетка категорий в каталоге). Ниже сгиба
+     атрибут не нужен: там блок прячется раньше, чем до него доскроллят. */
+  .js-anim [data-reveal-stagger] > * {
+    opacity: 0;
+  }
+}
+
 @import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));

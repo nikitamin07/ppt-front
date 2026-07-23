@@ -2,11 +2,8 @@
 
 import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
-import gsap from 'gsap';
-import MouseFollower from 'mouse-follower';
+import type MouseFollower from 'mouse-follower';
 import { useMediaQuery } from 'usehooks-ts';
-
-MouseFollower.registerGSAP(gsap);
 
 export function CustomCursor() {
   const pathname = usePathname();
@@ -14,16 +11,22 @@ export function CustomCursor() {
   const isLargeScreen = useMediaQuery('(min-width: 64rem)'); // 1024px
 
   useEffect(() => {
-    if (!isLargeScreen) {
-      if (cursorRef.current) {
-        cursorRef.current.destroy();
-        cursorRef.current = null;
-      }
-      return;
-    }
+    if (!isLargeScreen) return;
 
-    if (!cursorRef.current) {
-      cursorRef.current = new MouseFollower({
+    // Курсор — украшение, и только для десктопа. Статический импорт клал его
+    // в общий чанк всех страниц, поэтому тянем отдельным чанком после гидратации.
+    let cancelled = false;
+
+    void (async () => {
+      const [gsap, MouseFollowerCtor] = await Promise.all([
+        import('gsap').then((m) => m.default),
+        import('mouse-follower').then((m) => m.default),
+      ]);
+      // Экран успел сузиться, пока грузился чанк — курсор уже не нужен.
+      if (cancelled) return;
+
+      MouseFollowerCtor.registerGSAP(gsap);
+      cursorRef.current = new MouseFollowerCtor({
         speed: 0.55,
         skewing: 2,
         skewingText: 2,
@@ -33,13 +36,12 @@ export function CustomCursor() {
           '-hidden': 'iframe'
         }
       });
-    }
+    })();
 
     return () => {
-      if (cursorRef.current) {
-        cursorRef.current.destroy();
-        cursorRef.current = null;
-      }
+      cancelled = true;
+      cursorRef.current?.destroy();
+      cursorRef.current = null;
     };
   }, [isLargeScreen]);
 

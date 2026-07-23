@@ -1,5 +1,3 @@
-"use client";
-
 import {
   AlertTriangleIcon,
   CalendarClockIcon,
@@ -11,7 +9,7 @@ import { Breadcrumbs } from "@/widgets/breadcrumbs";
 import { CornerFrame } from "@/shared/ui/corner-frame";
 import { PhoneLink } from "@/shared/ui/phone-link";
 import { OrderCallbackDialog } from "@/features/order-callback";
-import { useScrollReveal, useStaggerReveal } from "@/shared/lib/react";
+import { Reveal, RevealStagger } from "@/shared/ui/reveal";
 import { CONTACTS } from "@/shared/config";
 import { DeliveryTariffs } from "./delivery-tariffs";
 
@@ -27,10 +25,6 @@ const WAREHOUSE_HOURS = [
 ] as const;
 
 export function DeliveryPage() {
-  const timingRef = useStaggerReveal<HTMLDivElement>();
-  const pickupRef = useScrollReveal<HTMLDivElement>();
-  const mapRef = useScrollReveal<HTMLDivElement>({ delay: 0.1 });
-
   return (
     <>
       <Breadcrumbs />
@@ -63,14 +57,14 @@ export function DeliveryPage() {
           <h2 className="mt-2 font-heading text-2xl font-semibold text-ink sm:text-3xl">Когда привезём</h2>
         </div>
 
-        <div ref={timingRef} className="sm:mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-6">
+        <RevealStagger className="sm:mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-6">
           {TIMING.map(({ icon: Icon, text }) => (
             <div key={text} className="flex items-center sm:items-start gap-3 border border-line bg-card p-4 sm:flex-col">
               <Icon className="size-7 shrink-0 text-safety sm:size-8" />
               <span className="text-sm text-ink">{text}</span>
             </div>
           ))}
-        </div>
+        </RevealStagger>
       </section>
 
       <section className="container">
@@ -90,7 +84,7 @@ export function DeliveryPage() {
         <p className="eyebrow text-xs">Самовывоз</p>
         <h2 className="mt-2 font-heading text-2xl font-semibold text-ink sm:text-3xl">Как забрать самостоятельно</h2>
 
-        <div ref={pickupRef} className="mt-8 grid gap-10 border border-line bg-card p-6 sm:p-8 lg:grid-cols-2 lg:gap-16">
+        <Reveal className="mt-8 grid gap-10 border border-line bg-card p-6 sm:p-8 lg:grid-cols-2 lg:gap-16">
           <div>
             <p className="max-w-md text-sm leading-relaxed text-muted-foreground">
               Заберите нужный материал прямо со склада — без ожидания доставки.
@@ -109,7 +103,7 @@ export function DeliveryPage() {
             </ul>
           </div>
 
-          <div ref={mapRef}>
+          <Reveal delay={0.1}>
             <CornerFrame>
               <iframe
                 title="Склад ППТ.бел на карте Yandex"
@@ -118,8 +112,8 @@ export function DeliveryPage() {
                 className="block h-64 w-full border border-line sm:h-full sm:min-h-72"
               />
             </CornerFrame>
-          </div>
-        </div>
+          </Reveal>
+        </Reveal>
       </section>
 
       <section className="container">

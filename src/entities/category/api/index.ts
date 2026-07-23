@@ -1,8 +1,10 @@
-import { apiGet } from "@/shared/api";
+import { apiGet, REFERENCE_TTL } from "@/shared/api";
 import type { Category, CategoryListItem, CategoryMeta } from "../model/types";
 
+// Кэшируем: дерево нужно каждой странице каталога для разбора адреса, а меняется
+// оно только когда админ правит структуру. Сброс — перезапуск контейнера или TTL.
 export function getCategoryTree(): Promise<CategoryListItem[]> {
-  return apiGet<CategoryListItem[]>("/categories");
+  return apiGet<CategoryListItem[]>("/categories", undefined, REFERENCE_TTL);
 }
 
 export function getCategoryBySlug(slug: string): Promise<Category> {

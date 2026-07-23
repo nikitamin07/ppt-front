@@ -44,7 +44,15 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   return res.json() as Promise<T>;
 }
 
-export function apiGet<T>(path: string, params?: Record<string, string | number | undefined>): Promise<T> {
+/** Секунды жизни кэша для справочников: дерево категорий, производители, теги. */
+export const REFERENCE_TTL = 60 * 60 * 24 * 7;
+
+export function apiGet<T>(
+  path: string,
+  params?: Record<string, string | number | undefined>,
+  /** Кэшировать ответ на N секунд. Только на сервере — в браузере fetch это поле игнорирует. */
+  revalidate?: number,
+): Promise<T> {
   const query = params
     ? "?" +
       Object.entries(params)
@@ -52,7 +60,7 @@ export function apiGet<T>(path: string, params?: Record<string, string | number 
         .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`)
         .join("&")
     : "";
-  return request<T>(`${path}${query}`);
+  return request<T>(`${path}${query}`, revalidate === undefined ? undefined : { next: { revalidate } });
 }
 
 export function apiPost<T>(path: string, body: unknown): Promise<T> {

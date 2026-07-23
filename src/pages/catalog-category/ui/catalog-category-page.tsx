@@ -26,21 +26,22 @@ interface CatalogCategoryPageProps {
 export async function CatalogCategoryPage({ trail, searchParams }: CatalogCategoryPageProps) {
   const slug = trail[trail.length - 1].slug;
 
+  const filters = toFilterParams(searchParams, slug);
+
+  // Все три запроса зависят только от адреса и фильтров — идут разом.
   // Эндпоинт одной категории отдаёт и parent_id, и children — тянуть ради этого всё
   // дерево незачем. Несуществующий слаг он же и отсекает своей 404.
-  const category = await getCategoryBySlug(slug).catch((error: unknown) => {
-    if (error instanceof ApiError && error.status === 404) return null;
-    // Обрыв сети или 500 — это не «категории нет»: молча подменять их на 404 нельзя.
-    throw error;
-  });
-
-  if (!category) notFound();
-
-  const filters = toFilterParams(searchParams, slug);
-  const [{ items, total }, manufacturers] = await Promise.all([
+  const [category, { items, total }, manufacturers] = await Promise.all([
+    getCategoryBySlug(slug).catch((error: unknown) => {
+      if (error instanceof ApiError && error.status === 404) return null;
+      // Обрыв сети или 500 — это не «категории нет»: молча подменять их на 404 нельзя.
+      throw error;
+    }),
     filterProducts({ ...filters, page: 1 }),
     getManufacturers(),
   ]);
+
+  if (!category) notFound();
 
   // Дети есть только у корневой категории; у подкатегории список пуст, и блок не рендерится.
   const subcategories = category.parent_id === null ? (category.children ?? []) : [];

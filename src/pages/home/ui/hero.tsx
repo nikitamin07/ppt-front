@@ -15,10 +15,19 @@ import {
   CASE_OFF_RIGHT,
 } from "@/shared/ui/tape-ruler";
 import { OrderCallbackDialog } from "@/features/order-callback";
+import { dropAnimStartState } from "@/shared/lib/react";
 import { Button } from "@/shared/ui/button";
 import { InsulationDiagram } from "./insulation-diagram";
 
 gsap.registerPlugin(ScrollTrigger);
+
+/**
+ * Абсолютная позиция лида на таймлайне: он самый крупный в первом экране, то есть
+ * кандидат в LCP, а прозрачный элемент метрика не засчитывает. Стартуем его рядом
+ * с заголовком (было 0.68 — позиция вычислялась от конца предыдущего твина).
+ * Длительность при этом большая: LCP смотрит на начало проявления, а не на конец.
+ */
+const LEAD_START = 0.35;
 
 interface HeroProps {
   /** Живые счётчики каталога — приходят с сервера, поэтому «50+» больше не нужен. */
@@ -46,42 +55,55 @@ export function Hero({ productsCount, categoriesCount }: HeroProps) {
       return;
     }
 
-    const ctx = gsap.context(() => {
-      // fromTo с явным конечным состоянием везде
-      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-      tl.fromTo("[data-hero-eyebrow]", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5 })
-        .fromTo("[data-hero-line]", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.6, stagger: 0.08 }, "-=0.2")
-        .fromTo("[data-hero-sub]", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5 }, "-=0.3")
-        .fromTo(
-          "[data-hero-cta]",
-          { opacity: 0, y: 12 },
-          { opacity: 1, y: 0, duration: 0.5, stagger: 0.08 },
-          "-=0.25",
-        )
-        .fromTo(
-          "[data-hero-stat]",
-          { opacity: 0, y: 12 },
-          { opacity: 1, y: 0, duration: 0.4, stagger: 0.08 },
-          "-=0.2",
-        )
-        // Числа стартуют считать ровно в тот момент, когда блок статистики начинает проявляться
-        .call(() => setStatsActive(true), [], "<")
-        .fromTo(
-          "[data-diagram-layer]",
-          { scaleX: 0 },
-          { scaleX: 1, duration: 0.5, stagger: 0.12, ease: "power2.inOut" },
-          "-=0.5",
-        )
-        .fromTo(
-          "[data-diagram-label]",
-          { opacity: 0, y: 6 },
-          { opacity: 1, y: 0, duration: 0.3, stagger: 0.06 },
-          "-=0.15",
-        )
-        .fromTo("[data-diagram-dimension]", { opacity: 0 }, { opacity: 1, duration: 0.3 }, "-=0.1");
-    }, rootRef);
+    let ctx: gsap.Context | undefined;
 
-    return () => ctx.revert();
+    try {
+      ctx = gsap.context(() => {
+        // fromTo с явным конечным состоянием везде
+        const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+        // Длительности разные: заголовок и лид проявляются медленно и весомо,
+        // мелочь вокруг них — быстрее. Перекрытия подобраны под эти длительности.
+        tl.fromTo("[data-hero-eyebrow]", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.55 })
+          .fromTo("[data-hero-line]", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.85, stagger: 0.08 }, "-=0.25")
+          .fromTo("[data-hero-sub]", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 1 }, LEAD_START)
+          .fromTo(
+            "[data-hero-cta]",
+            { opacity: 0, y: 12 },
+            { opacity: 1, y: 0, duration: 0.65, stagger: 0.08 },
+            "-=0.45",
+          )
+          .fromTo(
+            "[data-hero-stat]",
+            { opacity: 0, y: 12 },
+            { opacity: 1, y: 0, duration: 0.55, stagger: 0.08 },
+            "-=0.35",
+          )
+          // Числа стартуют считать ровно в тот момент, когда блок статистики начинает проявляться
+          .call(() => setStatsActive(true), [], "<")
+          // opacity здесь обязателен: стартовое состояние приходит из CSS, и снять
+          // его может только gsap — иначе слои остались бы прозрачными навсегда.
+          .fromTo(
+            "[data-diagram-layer]",
+            { opacity: 0, scaleX: 0 },
+            { opacity: 1, scaleX: 1, duration: 0.65, stagger: 0.12, ease: "power2.inOut" },
+            "-=0.7",
+          )
+          .fromTo(
+            "[data-diagram-label]",
+            { opacity: 0, y: 6 },
+            { opacity: 1, y: 0, duration: 0.4, stagger: 0.06 },
+            "-=0.25",
+          )
+          .fromTo("[data-diagram-dimension]", { opacity: 0 }, { opacity: 1, duration: 0.45 }, "-=0.2");
+      }, rootRef);
+    } catch {
+      // Таймлайн не собрался — снимаем спрятанное из CSS, иначе hero останется пустым.
+      dropAnimStartState();
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setStatsActive(true);
+    }
+
+    return () => ctx?.revert();
   }, []);
 
   // Рулетка: hero пинится, корпус пробегает по нижней кромке,
@@ -142,7 +164,7 @@ export function Hero({ productsCount, categoriesCount }: HeroProps) {
               <p data-hero-eyebrow className="eyebrow text-[3vw] sm:text-xs lg:text-sm">
                 ППТ.бел — склад строительных материалов
               </p>
-              <h1 className="mt-2 sm:mt-4 font-heading text-[6.5vw] font-semibold leading-[1.08] text-ink sm:text-5xl lg:text-[3.4rem]">
+              <h1 className="mt-2 sm:mt-4 font-heading text-[6.5vw] font-semibold leading-[1.08] text-ink sm:text-5xl lg:text-[3rem] xl:text-[3.4rem]">
                 <span data-hero-line className="block">Материалы для стройки</span>
                 <span data-hero-line className="block">и утепления — в наличии</span>
               </h1>
@@ -161,7 +183,7 @@ export function Hero({ productsCount, categoriesCount }: HeroProps) {
                 </div>
               </div>
 
-              <div className="mt-10 sm:mt-14 grid max-w-full md:max-w-[75%] grid-cols-3 divide-x divide-line border-t border-line pt-4 sm:pt-8">
+              <div className="mt-10 sm:mt-14 grid max-w-full md:max-w-3/4 lg:max-w-[82%] xl:max-w-3/4 grid-cols-3 divide-x divide-line border-t border-line pt-4 sm:pt-8">
                 {stats.map((stat) => (
                   <div data-hero-stat key={stat.label} className="px-2 sm:px-4">
                     <div className="font-heading text-lg font-semibold text-ink sm:text-2xl lg:text-3xl">
@@ -184,6 +206,7 @@ export function Hero({ productsCount, categoriesCount }: HeroProps) {
           <TapeRuler caseWrapRef={caseWrapRef} clipRectRef={clipRectRef} />
           <p
             ref={captionRef}
+            data-hero-caption
             className="mx-auto text-center max-w-7xl px-6 font-label text-base font-semibold text-ink sm:text-xl lg:px-8"
           >
             Точность до миллиметра — в характеристиках каждого товара

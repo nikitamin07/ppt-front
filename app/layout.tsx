@@ -42,6 +42,10 @@ export default function RootLayout({
   return (
     <html lang="ru" className={cn("h-full", "antialiased", inter.variable, oswald.variable)}>
       <body className="min-h-full flex flex-col bg-background text-foreground font-sans">
+        {/* Синхронный инлайн-скрипт до разбора остального body: класс успевает встать
+            раньше первого кадра, и стартовые состояния анимаций приходят из CSS,
+            а не выставляются JS уже после покраски. Без JS класса нет — контент виден. */}
+        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js-anim')" }} />
         <TrackVisit />
         <CustomCursor />
         <Header />

@@ -1,11 +1,9 @@
-"use client";
-
 import { ClockIcon, MailIcon, MapPinIcon } from "lucide-react";
 import { CornerFrame } from "@/shared/ui/corner-frame";
 import { Breadcrumbs } from "@/widgets/breadcrumbs";
 import { MessengerLinks } from "@/shared/ui/messenger-icons";
 import { PhoneLink } from "@/shared/ui/phone-link";
-import { useScrollReveal } from "@/shared/lib/react";
+import { Reveal } from "@/shared/ui/reveal";
 import { CONTACTS } from "@/shared/config";
 
 const REQUISITES = [
@@ -16,9 +14,6 @@ const REQUISITES = [
 ] as const;
 
 export function ContactsPage() {
-  const gridRef = useScrollReveal<HTMLDivElement>();
-  const mapRef = useScrollReveal<HTMLDivElement>({ delay: 0.1 });
-
   return (
     <>
       <Breadcrumbs/>
@@ -31,7 +26,7 @@ export function ContactsPage() {
       </section>
 
       <section className="container mt-12">
-        <div ref={gridRef} className="grid gap-10 border border-line bg-card p-6 sm:p-8 lg:grid-cols-2 lg:gap-16">
+        <div className="grid gap-10 border border-line bg-card p-6 sm:p-8 lg:grid-cols-2 lg:gap-16">
           <div>
             <h2 className="eyebrow">Контакты</h2>
             <ul className="mt-6 flex flex-col gap-4 text-sm text-ink">
@@ -75,7 +70,7 @@ export function ContactsPage() {
 
       <section className="container mt-12">
         <h2 className="mb-6 eyebrow">Как нас найти</h2>
-        <div ref={mapRef}>
+        <Reveal delay={0.1}>
           <CornerFrame>
             <iframe
               title="ППТ.бел на карте Yandex"
@@ -84,7 +79,7 @@ export function ContactsPage() {
               className="block h-64 w-full border border-line sm:h-80 lg:h-96"
             />
           </CornerFrame>
-        </div>
+        </Reveal>
       </section>
     </>
   );

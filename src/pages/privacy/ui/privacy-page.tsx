@@ -1,7 +1,4 @@
-"use client";
-
 import { Breadcrumbs } from "@/widgets/breadcrumbs";
-import { useScrollReveal } from "@/shared/lib/react";
 import { CONTACTS } from "@/shared/config";
 
 const UPDATED_AT = "20 июля 2026";
@@ -58,8 +55,6 @@ const CLAUSES = [
 ] as const;
 
 export function PrivacyPage() {
-  const docRef = useScrollReveal<HTMLDivElement>();
-
   return (
     <>
       <Breadcrumbs labels={{ privacy: "Политика конфиденциальности" }} />
@@ -72,8 +67,8 @@ export function PrivacyPage() {
         <p className="mt-2 text-xs tabular-nums text-muted-foreground/70">Действует с {UPDATED_AT}</p>
       </section>
 
-      <section className="container">
-        <div ref={docRef} className="border border-line bg-card p-6 sm:p-10">
+      <section className="container mt-8 sm:mt-12">
+        <div className="border border-line bg-card p-6 sm:p-10">
           {CLAUSES.map((clause) => (
             <p key={clause.title} className="mt-5 max-w-none text-sm leading-relaxed text-ink first:mt-0 sm:text-base">
               <span className="font-semibold">{clause.title}</span> {clause.text}

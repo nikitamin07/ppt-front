@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import {
   BadgePercentIcon,
@@ -21,7 +19,7 @@ import {
 import { Breadcrumbs } from "@/widgets/breadcrumbs";
 import { AnimatedLink } from "@/shared/ui/animated-link";
 import { OrderCallbackDialog } from "@/features/order-callback";
-import { useStaggerReveal } from "@/shared/lib/react";
+import { RevealStagger } from "@/shared/ui/reveal";
 import { CONTACTS } from "@/shared/config";
 import { CompanyPassport } from "./company-passport";
 
@@ -83,10 +81,6 @@ const MATERIALS = [
 const VALUES = ["Дорожим клиентами", "Дорожим репутацией", "Работаем для вас"] as const;
 
 export function AboutPage() {
-  const offersRef = useStaggerReveal<HTMLUListElement>();
-  const processRef = useStaggerReveal<HTMLDivElement>();
-  const materialsRef = useStaggerReveal<HTMLDivElement>();
-
   return (
     <>
       <Breadcrumbs />
@@ -120,14 +114,14 @@ export function AboutPage() {
           <h2 className="mt-2 font-heading text-2xl font-semibold text-ink sm:text-3xl">Что мы предлагаем</h2>
         </div>
 
-        <ul ref={offersRef} className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 lg:grid-cols-4">
+        <RevealStagger as="ul" className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 lg:grid-cols-4">
           {OFFERS.map(({ icon: Icon, label }) => (
             <li key={label} className="flex flex-col items-start gap-3 border border-line bg-card p-4">
               <Icon className="size-7 text-safety sm:size-8" />
               <span className="text-sm text-ink">{label}</span>
             </li>
           ))}
-        </ul>
+        </RevealStagger>
       </section>
 
       <section className="container">
@@ -136,10 +130,7 @@ export function AboutPage() {
           <h2 className="mt-2 font-heading text-2xl font-semibold text-ink sm:text-3xl">Как мы работаем</h2>
         </div>
 
-        <div
-          ref={processRef}
-          className="mt-8 grid grid-cols-1 divide-y divide-line border-line sm:grid-cols-3 sm:divide-x sm:divide-y-0 border-t-0"
-        >
+        <RevealStagger className="mt-8 grid grid-cols-1 divide-y divide-line border-line sm:grid-cols-3 sm:divide-x sm:divide-y-0 border-t-0">
           {PROCESS.map(({ icon: Icon, title, text }, i) => (
             <div key={title} className="flex flex-col gap-3 py-6 first:pt-0 sm:px-6 sm:py-0 sm:first:pl-0 sm:last:pr-0">
               <div className="flex items-center gap-3">
@@ -152,7 +143,7 @@ export function AboutPage() {
               <p className="text-sm leading-relaxed text-muted-foreground">{text}</p>
             </div>
           ))}
-        </div>
+        </RevealStagger>
       </section>
 
       <section className="container">
@@ -161,7 +152,7 @@ export function AboutPage() {
           <h2 className="mt-2 font-heading text-2xl font-semibold text-ink sm:text-3xl">Что мы поставляем</h2>
         </div>
 
-        <div ref={materialsRef} className="mt-8 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
+        <RevealStagger className="mt-8 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
           {MATERIALS.map(({ icon: Icon, title, text, href }) => (
             <Link key={title} href={href} className="card-lift group flex flex-col gap-3 p-4 sm:p-5">
               <Icon className="size-7 text-safety transition-transform duration-300 group-hover:-translate-y-0.5 sm:size-8" />
@@ -169,7 +160,7 @@ export function AboutPage() {
               <p className="text-xs leading-relaxed text-muted-foreground sm:text-sm">{text}</p>
             </Link>
           ))}
-        </div>
+        </RevealStagger>
       </section>
 
       <section className="container">

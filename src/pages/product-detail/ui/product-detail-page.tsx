@@ -22,19 +22,23 @@ export async function ProductDetailPage({ trail, productSlug }: ProductDetailPag
   // Эндпоинт товара ждёт слаг прямой категории — это хвост цепочки.
   const categorySlug = trail[trail.length - 1].slug;
 
-  const product = await getProductBySlug(categorySlug, productSlug).catch((error: unknown) => {
-    if (error instanceof ApiError && error.status === 404) return null;
-    // Обрыв сети или 500 — это не «товара нет»: молча подменять их на 404 нельзя.
-    throw error;
-  });
+  // Оба запроса зависят только от адреса, поэтому идут разом: карточка товара —
+  // самый долгий запрос на сайте, ждать за ним ещё один незачем.
+  const [product, similarProducts] = await Promise.all([
+    getProductBySlug(categorySlug, productSlug).catch((error: unknown) => {
+      if (error instanceof ApiError && error.status === 404) return null;
+      // Обрыв сети или 500 — это не «товара нет»: молча подменять их на 404 нельзя.
+      throw error;
+    }),
+    // related_product_ids сейчас всегда [] (фича не включена админом) — берём товары той же
+    // категории вместо неё, это и есть «сопутствующие» в терминах доступных данных.
+    // Отсеиваем по слагу из адреса: он тождественно равен слагу найденного товара.
+    getProducts({ category: categorySlug })
+      .then((items) => items.filter((item) => item.slug !== productSlug).slice(0, 4))
+      .catch(() => []),
+  ]);
 
   if (!product) notFound();
-
-  // related_product_ids сейчас всегда [] (фича не включена админом) — берём товары той же
-  // категории вместо неё, это и есть «сопутствующие» в терминах доступных данных.
-  const similarProducts = await getProducts({ category: categorySlug })
-    .then((items) => items.filter((item) => item.slug !== product.slug).slice(0, 4))
-    .catch(() => []);
 
   const effectivePrice = product.discount_price ?? product.price;
   // isCalculative считает бэкенд — своих условий не добавляем. Ступенчатая цена исключена

@@ -26,27 +26,22 @@ type Resolved =
   | { kind: "product"; trail: CategoryListItem[]; productSlug: string };
 
 /**
- * Категория и товар живут на одной глубине пути, поэтому сегменты разбирает дерево:
- * последний сегмент — либо сама категория, либо товар в категории из предыдущего.
+ * Тип страницы задаёт длина пути: товары живут только в подкатегориях (бэкенд не даёт
+ * привязать их к корню), поэтому 1 сегмент — корень, 2 — подкатегория, 3 — товар в ней.
  */
 async function resolve(segments: string[]): Promise<Resolved | null> {
   // Глубже трёх сегментов в каталоге нет: корень / подкатегория / товар.
   if (segments.length === 0 || segments.length > 3) return null;
 
-  const last = segments[segments.length - 1];
-  const categoryTrail = await getCategoryTrail(last);
+  const isProduct = segments.length === 3;
+  const categorySegments = isProduct ? segments.slice(0, -1) : segments;
+
+  const trail = await getCategoryTrail(categorySegments[categorySegments.length - 1]);
 
   // Категория обязана стоять по своему полному пути: «/catalog/ppt» без родителя — не адрес.
-  if (categoryTrail.length > 0) {
-    return segments.join("/") === categoryPath(categoryTrail) ? { kind: "category", trail: categoryTrail } : null;
-  }
+  if (trail.length === 0 || categorySegments.join("/") !== categoryPath(trail)) return null;
 
-  if (segments.length < 2) return null;
-
-  const trail = await getCategoryTrail(segments[segments.length - 2]);
-  if (trail.length === 0 || segments.slice(0, -1).join("/") !== categoryPath(trail)) return null;
-
-  return { kind: "product", trail, productSlug: last };
+  return isProduct ? { kind: "product", trail, productSlug: segments[segments.length - 1] } : { kind: "category", trail };
 }
 
 export async function generateMetadata({ params, searchParams }: PageProps): Promise<Metadata> {
