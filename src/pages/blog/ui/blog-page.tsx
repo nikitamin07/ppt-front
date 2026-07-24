@@ -34,8 +34,6 @@ export async function BlogPage({ tagSlug }: BlogPageProps) {
       <section className="container mt-8 sm:mt-12">
         <div className="grid gap-10 lg:grid-cols-[12rem_1fr] lg:gap-12">
           <TagFilter tags={tags} activeSlug={tagSlug} />
-          {/* key: смена темы монтирует ленту заново с уже готовой первой страницей,
-              поэтому клиенту не нужно ни сбрасывать список, ни разруливать гонки ответов. */}
           <PostFeed key={tagSlug ?? ""} initialPosts={posts} tag={tagSlug} />
         </div>
       </section>

@@ -32,7 +32,6 @@ export default async function OpengraphImage() {
               </div>
             </div>
 
-            {/* Строки заголовка — отдельными блоками: satori не переносит текст по \n. */}
             <div
               style={{
                 display: "flex",

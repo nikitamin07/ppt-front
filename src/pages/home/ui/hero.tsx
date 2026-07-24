@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 import { ArrowRightIcon } from "lucide-react";
 import { CountingAnimation } from "@/shared/ui/counting-animation";
 import {
@@ -15,22 +16,12 @@ import {
   CASE_OFF_RIGHT,
 } from "@/shared/ui/tape-ruler";
 import { OrderCallbackDialog } from "@/features/order-callback";
-import { dropAnimStartState } from "@/shared/lib/react";
 import { Button } from "@/shared/ui/button";
 import { InsulationDiagram } from "./insulation-diagram";
 
 gsap.registerPlugin(ScrollTrigger);
 
-/**
- * Абсолютная позиция лида на таймлайне: он самый крупный в первом экране, то есть
- * кандидат в LCP, а прозрачный элемент метрика не засчитывает. Стартуем его рядом
- * с заголовком (было 0.68 — позиция вычислялась от конца предыдущего твина).
- * Длительность при этом большая: LCP смотрит на начало проявления, а не на конец.
- */
-const LEAD_START = 0.35;
-
 interface HeroProps {
-  /** Живые счётчики каталога — приходят с сервера, поэтому «50+» больше не нужен. */
   productsCount: number;
   categoriesCount: number;
 }
@@ -48,24 +39,20 @@ export function Hero({ productsCount, categoriesCount }: HeroProps) {
   const captionRef = useRef<HTMLParagraphElement | null>(null);
   const [statsActive, setStatsActive] = useState(false);
 
-  useEffect(() => {
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReducedMotion || !rootRef.current) {
-      setStatsActive(true);
-      return;
-    }
+  // useGSAP избегает двойной вызов эффектов в Strict Mode
+  useGSAP(
+    () => {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        setStatsActive(true);
+        return;
+      }
 
-    let ctx: gsap.Context | undefined;
-
-    try {
-      ctx = gsap.context(() => {
+      try {
         // fromTo с явным конечным состоянием везде
         const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-        // Длительности разные: заголовок и лид проявляются медленно и весомо,
-        // мелочь вокруг них — быстрее. Перекрытия подобраны под эти длительности.
         tl.fromTo("[data-hero-eyebrow]", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.55 })
           .fromTo("[data-hero-line]", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.85, stagger: 0.08 }, "-=0.25")
-          .fromTo("[data-hero-sub]", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 1 }, LEAD_START)
+          .fromTo("[data-hero-sub]", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 1 }, 0.35)
           .fromTo(
             "[data-hero-cta]",
             { opacity: 0, y: 12 },
@@ -80,8 +67,6 @@ export function Hero({ productsCount, categoriesCount }: HeroProps) {
           )
           // Числа стартуют считать ровно в тот момент, когда блок статистики начинает проявляться
           .call(() => setStatsActive(true), [], "<")
-          // opacity здесь обязателен: стартовое состояние приходит из CSS, и снять
-          // его может только gsap — иначе слои остались бы прозрачными навсегда.
           .fromTo(
             "[data-diagram-layer]",
             { opacity: 0, scaleX: 0 },
@@ -95,76 +80,88 @@ export function Hero({ productsCount, categoriesCount }: HeroProps) {
             "-=0.25",
           )
           .fromTo("[data-diagram-dimension]", { opacity: 0 }, { opacity: 1, duration: 0.45 }, "-=0.2");
-      }, rootRef);
-    } catch {
-      // Таймлайн не собрался — снимаем спрятанное из CSS, иначе hero останется пустым.
-      dropAnimStartState();
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setStatsActive(true);
-    }
-
-    return () => ctx?.revert();
-  }, []);
+      } catch {
+        setStatsActive(true);
+      }
+    },
+    { scope: rootRef },
+  );
 
   // Рулетка: hero пинится, корпус пробегает по нижней кромке,
   // за ним дорисовывается разметка, затем скролл продолжается.
-  useEffect(() => {
-    const root = rootRef.current;
-    if (!root) return;
+  useGSAP(
+    () => {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        clipRectRef.current?.setAttribute("width", String(SCREEN_WIDTH));
+        gsap.set(caseWrapRef.current, { left: CASE_OFF_RIGHT });
+        gsap.set(captionRef.current, { opacity: 1, y: 0 });
+        return;
+      }
 
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReducedMotion) {
-      clipRectRef.current?.setAttribute("width", String(SCREEN_WIDTH));
-      gsap.set(caseWrapRef.current, { left: CASE_OFF_RIGHT });
-      gsap.set(captionRef.current, { opacity: 1, y: 0 });
-      return;
-    }
+      let tl: gsap.core.Timeline | undefined;
 
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: root,
-          start: "bottom bottom",
-          end: () => "+=" + window.innerHeight * 1.1,
-          scrub: 0.6,
-          pin: true,
-        },
-      });
+      const build = () => {
+        tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: rootRef.current,
+            start: "bottom bottom",
+            end: () => "+=" + window.innerHeight * 1.1,
+            scrub: 0.6,
+            pin: true,
+          },
+        });
 
-      tl.fromTo(
-        caseWrapRef.current,
-        { left: CASE_OFF_LEFT },
-        { left: CASE_ON_LEFT, duration: 0.15, ease: "power1.out" },
-      )
-        .addLabel("cross")
-        .fromTo(caseWrapRef.current, { left: CASE_ON_LEFT }, { left: CASE_ON_RIGHT, duration: 0.7, ease: "none" }, "cross")
-        .fromTo(
-          clipRectRef.current,
-          { attr: { width: 0 } },
-          { attr: { width: SCREEN_WIDTH }, duration: 0.7, ease: "none" },
-          "cross",
-        )
-        .fromTo(captionRef.current, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.15 }, "cross+=0.55")
-        .fromTo(
+        tl.fromTo(
           caseWrapRef.current,
-          { left: CASE_ON_RIGHT },
-          { left: CASE_OFF_RIGHT, duration: 0.15, ease: "power1.in" },
-        );
-    }, root);
+          { left: CASE_OFF_LEFT },
+          { left: CASE_ON_LEFT, duration: 0.15, ease: "power1.out" },
+        )
+          .addLabel("cross")
+          .fromTo(caseWrapRef.current, { left: CASE_ON_LEFT }, { left: CASE_ON_RIGHT, duration: 0.7, ease: "none" }, "cross")
+          .fromTo(
+            clipRectRef.current,
+            { attr: { width: 0 } },
+            { attr: { width: SCREEN_WIDTH }, duration: 0.7, ease: "none" },
+            "cross",
+          )
+          .fromTo(captionRef.current, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.15 }, "cross+=0.55")
+          .fromTo(
+            caseWrapRef.current,
+            { left: CASE_ON_RIGHT },
+            { left: CASE_OFF_RIGHT, duration: 0.15, ease: "power1.in" },
+          );
+      };
 
-    return () => ctx.revert();
-  }, []);
+      // Пин вставляет распорку и меняет высоту документа. Пока браузер восстанавливает
+      // позицию скролла, эти двое дерутся, и страницу уводит вниз. Ждём load: к этому
+      // моменту позиция уже восстановлена и высота стабильна.
+      if (document.readyState === "complete") {
+        build();
+      } else {
+        window.addEventListener("load", build, { once: true });
+      }
+
+      // Таймлайн рождается вне колбэка, поэтому контекст useGSAP его не подхватит —
+      // убираем вручную вместе с его триггером.
+      return () => {
+        window.removeEventListener("load", build);
+        tl?.scrollTrigger?.kill();
+        tl?.kill();
+      };
+    },
+    { scope: rootRef },
+  );
 
   return (
     <section>
-      <div ref={rootRef} className="relative flex flex-col bg-paper pt-12 pb-42 sm:pb-46 md:pb-55 xl:pb-60 min-h-[calc(100vh-105px)]">
+      <div ref={rootRef} className="relative flex flex-col bg-paper pt-12 pb-42 sm:pb-46 md:pb-52 xl:pb-60 min-h-[calc(100vh-105px)]">
         <div className="mx-auto w-full max-w-7xl px-6 lg:px-8">
           <div className="grid gap-12 lg:grid-cols-[1.35fr_0.65fr] lg:items-center lg:gap-8">
             <div>
               <p data-hero-eyebrow className="eyebrow text-[3vw] sm:text-xs lg:text-sm">
                 ППТ.бел — склад строительных материалов
               </p>
-              <h1 className="mt-2 sm:mt-4 font-heading text-[6.5vw] font-semibold leading-[1.08] text-ink sm:text-5xl lg:text-[3rem] xl:text-[3.4rem]">
+              <h1 className="mt-2 sm:mt-4 font-heading text-[6.5vw] font-semibold leading-[1.08] text-ink sm:text-5xl lg:text-[2.8rem] xl:text-[3.4rem]">
                 <span data-hero-line className="block">Материалы для стройки</span>
                 <span data-hero-line className="block">и утепления — в наличии</span>
               </h1>
@@ -183,7 +180,7 @@ export function Hero({ productsCount, categoriesCount }: HeroProps) {
                 </div>
               </div>
 
-              <div className="mt-10 sm:mt-14 grid max-w-full md:max-w-3/4 lg:max-w-[82%] xl:max-w-3/4 grid-cols-3 divide-x divide-line border-t border-line pt-4 sm:pt-8">
+              <div className="mt-8 sm:mt-10 grid max-w-full md:max-w-3/4 lg:max-w-[82%] xl:max-w-3/4 grid-cols-3 divide-x divide-line border-t border-line pt-4 xl:pt-8">
                 {stats.map((stat) => (
                   <div data-hero-stat key={stat.label} className="px-2 sm:px-4">
                     <div className="font-heading text-lg font-semibold text-ink sm:text-2xl lg:text-3xl">
@@ -195,13 +192,13 @@ export function Hero({ productsCount, categoriesCount }: HeroProps) {
               </div>
             </div>
 
-            <div className="hidden h-full items-center justify-center border border-line bg-card p-6 lg:flex">
+            <div className="hidden h-full items-center justify-center border border-line bg-card py-4 lg:flex">
               <InsulationDiagram />
             </div>
           </div>
         </div>
 
-        {/* Рулетка на нижней кромке hero — см. второй useEffect выше */}
+        {/* Рулетка на нижней кромке hero */}
         <div className="absolute inset-x-0 bottom-0 flex flex-col gap-3 pb-3 md:gap-6 md:pb-6 overflow-hidden">
           <TapeRuler caseWrapRef={caseWrapRef} clipRectRef={clipRectRef} />
           <p

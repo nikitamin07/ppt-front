@@ -5,6 +5,8 @@ import { getTags, TagBadge } from "@/entities/tag";
 import { OrderCallbackDialog } from "@/features/order-callback";
 import { ShareButton } from "@/features/share-post";
 import { ApiError, assetUrl, NO_IMAGE_SRC } from "@/shared/api";
+import { absoluteUrl, breadcrumbJsonLd, SITE_NAME } from "@/shared/lib/seo";
+import { JsonLd } from "@/shared/ui/json-ld";
 import { Breadcrumbs } from "@/widgets/breadcrumbs";
 
 interface PostDetailPageProps {
@@ -26,9 +28,33 @@ export async function PostDetailPage({ slug }: PostDetailPageProps) {
 
   const postTags = tags.filter((tag) => post.tag_ids.includes(tag.id));
   const cover = assetUrl(post.cover_image_url) ?? NO_IMAGE_SRC;
+  const postPath = `/poleznaya-informatsiya/${post.slug}`;
+  const coverUrl = assetUrl(post.cover_image_url);
 
   return (
     <>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "Article",
+          headline: post.title,
+          description: post.excerpt,
+          url: absoluteUrl(postPath),
+          datePublished: post.published_at,
+          ...(coverUrl && { image: [coverUrl] }),
+          // Статьи пишет магазин, отдельных авторов у блога нет.
+          author: { "@type": "Organization", name: SITE_NAME, url: absoluteUrl("/") },
+          publisher: { "@type": "Organization", name: SITE_NAME, url: absoluteUrl("/") },
+        }}
+      />
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Главная", path: "/" },
+          { name: "Полезная информация", path: "/poleznaya-informatsiya" },
+          { name: post.title, path: postPath },
+        ])}
+      />
+
       <Breadcrumbs labels={{ [post.slug]: post.title }} />
       <div className="post-page-wrapper">
         <section className="container">

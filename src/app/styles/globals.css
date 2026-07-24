@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "../../shared/lib/fonts.css";
+@import "shadcn/tailwind.css";
 
 @theme inline {
   /* --- SHADCN --- */
@@ -73,12 +74,9 @@
   @apply font-label font-semibold uppercase tracking-[0.2em] text-safety;
 }
 
-/* Типографика статьи из RichEditor (Post.content). Правила только под реально
-   встречающиеся теги; новый тег в контенте — новое правило здесь. */
+/* Типографика статьи */
 @utility prose-post {
-  /* whitespace-normal перебивает pre-line c body: иначе \n между
-     тегами рендерились как лишние зазоры. */
-  @apply max-w-none whitespace-normal text-base leading-relaxed text-ink;
+  @apply max-w-none text-base leading-relaxed text-ink;
 
   & h2 {
     @apply mt-10 mb-4 font-heading text-2xl font-semibold text-ink first:mt-0;
@@ -109,7 +107,7 @@
     background-color: var(--background);
     color: var(--color-primary);
     overflow-x: hidden;
-    white-space: pre-line;
+    white-space: normal;
     @apply bg-background text-foreground;
   }
 
@@ -348,14 +346,18 @@
   }
 }
 
-/* Стартовое состояние анимации hero. Его обязан отрисовать сервер: JS выполняется
-   после первой покраски, и выставленный из useEffect opacity:0 давал бы мигание
+/* Стартовое состояние анимаций. Его обязан отрисовать сервер: JS выполняется после
+   первой покраски, и выставленный из эффекта opacity:0 давал бы мигание
    «видно → спряталось → проявилось». Только прозрачность: сдвиг и масштаб ставит
    сам gsap, элемент в этот момент уже невидим, поэтому скачка не видно.
-   .js-anim ставит инлайн-скрипт в layout.tsx — без JS и при reduced-motion
-   правило не применяется, и hero виден целиком. */
-@media (prefers-reduced-motion: no-preference) {
-  .js-anim :is(
+
+   scripting: enabled вместо класса от инлайн-скрипта. Класс пришлось бы вешать на
+   <html>, чьим className владеет React, — это ломало гидратацию, и тогда не
+   запускался ни один эффект, включая саму анимацию. Здесь DOM не трогаем вообще.
+   Без JS и при reduced-motion запрос не совпадает, контент виден целиком; старые
+   браузеры без поддержки scripting тоже показывают всё сразу. */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  :is(
     [data-hero-eyebrow],
     [data-hero-line],
     [data-hero-sub],
@@ -371,12 +373,34 @@
 
   /* Каскад, попадающий в первый экран (сетка категорий в каталоге). Ниже сгиба
      атрибут не нужен: там блок прячется раньше, чем до него доскроллят. */
-  .js-anim [data-reveal-stagger] > * {
+  [data-reveal-stagger] > * {
     opacity: 0;
+  }
+
+  /* Страховка: если gsap почему-то не отработал (упавший чанк, сорванная гидратация),
+     раскрываем сами, чистым CSS. Задержка больше интро (~2.7с), поэтому рабочую
+     анимацию не трогает — к этому моменту gsap уже поставил opacity:1. caption
+     исключён: им управляет скролл-пиннинг, до скролла он и должен быть скрыт. */
+  :is(
+    [data-hero-eyebrow],
+    [data-hero-line],
+    [data-hero-sub],
+    [data-hero-cta],
+    [data-hero-stat],
+    [data-diagram-layer],
+    [data-diagram-label],
+    [data-diagram-dimension]
+  ),
+  [data-reveal-stagger] > * {
+    animation: reveal-failsafe 0.4s linear 3.2s forwards;
   }
 }
 
-@import "shadcn/tailwind.css";
+@keyframes reveal-failsafe {
+  to {
+    opacity: 1;
+  }
+}
 
 @custom-variant dark (&:is(.dark *));
 

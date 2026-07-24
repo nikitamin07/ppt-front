@@ -4,9 +4,11 @@ import { categoryPath, type CategoryListItem } from "@/entities/category";
 import { getProductBySlug, getProducts, ProductGallery, ProductPriceBlock } from "@/entities/product";
 import { CalcValueForm } from "@/features/calc-value";
 import { OrderCallbackDialog } from "@/features/order-callback";
-import { ApiError } from "@/shared/api";
+import { ApiError, assetUrl } from "@/shared/api";
 import { CONTACTS } from "@/shared/config";
+import { absoluteUrl, breadcrumbJsonLd } from "@/shared/lib/seo";
 import { cn } from "@/shared/lib/utils";
+import { JsonLd } from "@/shared/ui/json-ld";
 import { PhoneLink } from "@/shared/ui/phone-link";
 import { Breadcrumbs } from "@/widgets/breadcrumbs";
 import { CatalogGrid } from "@/widgets/catalog-grid";
@@ -46,8 +48,44 @@ export async function ProductDetailPage({ trail, productSlug }: ProductDetailPag
   const calcThickness = product.isCalculative && !product.is_volume_price ? product.thickness : null;
   const showCalculator = calcThickness !== null;
 
+  const productUrl = `/catalog/${categoryPath(trail)}/${product.slug}`;
+  const productImages = product.image_urls
+    .map((image) => assetUrl(image))
+    .filter((image): image is string => image !== null);
+
   return (
     <>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "Product",
+          name: product.name,
+          description: product.description || product.name,
+          url: absoluteUrl(productUrl),
+          ...(productImages.length > 0 && { image: productImages }),
+          ...(product.manufacturer && { brand: { "@type": "Brand", name: product.manufacturer.name } }),
+          offers: {
+            "@type": "Offer",
+            // Цена уже в рублях: пересчёт из копеек делает бэкенд.
+            price: effectivePrice,
+            priceCurrency: "BYN",
+            availability: "https://schema.org/InStock",
+            url: absoluteUrl(productUrl),
+          },
+        }}
+      />
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Главная", path: "/" },
+          { name: "Каталог", path: "/catalog" },
+          ...trail.map((item, i) => ({
+            name: item.name,
+            path: `/catalog/${categoryPath(trail.slice(0, i + 1))}`,
+          })),
+          { name: product.name, path: productUrl },
+        ])}
+      />
+
       <Breadcrumbs
         labels={{
           ...Object.fromEntries(trail.map((item) => [item.slug, item.name])),

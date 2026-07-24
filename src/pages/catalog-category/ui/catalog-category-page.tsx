@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRightIcon } from "lucide-react";
-import { getCategoryBySlug, type CategoryListItem } from "@/entities/category";
+import { categoryPath, getCategoryBySlug, type CategoryListItem } from "@/entities/category";
 import { getManufacturers } from "@/entities/manufacturer";
 import { filterProducts } from "@/entities/product";
 import { ApiError } from "@/shared/api";
@@ -13,7 +13,9 @@ import {
   toFilterParams,
   type CatalogSearchParams,
 } from "@/features/product-filters";
+import { breadcrumbJsonLd } from "@/shared/lib/seo";
 import { plural } from "@/shared/lib/utils";
+import { JsonLd } from "@/shared/ui/json-ld";
 import { Breadcrumbs } from "@/widgets/breadcrumbs";
 import { ProductFeed } from "@/widgets/product-feed";
 
@@ -49,6 +51,17 @@ export async function CatalogCategoryPage({ trail, searchParams }: CatalogCatego
 
   return (
     <>
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Главная", path: "/" },
+          { name: "Каталог", path: "/catalog" },
+          ...trail.map((item, i) => ({
+            name: item.name,
+            path: `/catalog/${categoryPath(trail.slice(0, i + 1))}`,
+          })),
+        ])}
+      />
+
       <Breadcrumbs labels={Object.fromEntries(trail.map((item) => [item.slug, item.name]))} />
 
       <section className="container">

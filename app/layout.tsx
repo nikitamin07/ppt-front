@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Inter, Oswald } from "next/font/google";
 import "@/app/styles/globals.css";
 import { cn } from "@/shared/lib/utils";
-import { SITE_NAME, SITE_URL } from "@/shared/lib/seo";
+import { organizationJsonLd, SITE_NAME, SITE_URL } from "@/shared/lib/seo";
+import { JsonLd } from "@/shared/ui/json-ld";
 import { TrackVisit } from "@/shared/lib/react";
 import { CustomCursor } from "@/shared/ui/custom-cursor";
 import { Header } from "@/widgets/header";
@@ -25,8 +26,6 @@ const title = "ППТ.бел — материалы для строительс�
 const description =
   "Пенопласт, минеральная вата, сухие строительные смеси. В наличии, с доставкой по Беларуси.";
 
-// canonical и og:url тут не задаём: они бы унаследовались страницами, которые их не
-// переопределили, и объявили бы каждую такую страницу копией главной.
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title,
@@ -42,10 +41,7 @@ export default function RootLayout({
   return (
     <html lang="ru" className={cn("h-full", "antialiased", inter.variable, oswald.variable)}>
       <body className="min-h-full flex flex-col bg-background text-foreground font-sans">
-        {/* Синхронный инлайн-скрипт до разбора остального body: класс успевает встать
-            раньше первого кадра, и стартовые состояния анимаций приходят из CSS,
-            а не выставляются JS уже после покраски. Без JS класса нет — контент виден. */}
-        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js-anim')" }} />
+        <JsonLd data={organizationJsonLd()} />
         <TrackVisit />
         <CustomCursor />
         <Header />

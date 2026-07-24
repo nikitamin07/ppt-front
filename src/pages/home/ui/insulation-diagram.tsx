@@ -7,15 +7,13 @@ const LAYERS = [
 //  Схема разреза стены со слоями утепления — чертёжный визуал
 export function InsulationDiagram() {
   return (
-    <svg viewBox="-20 -14 170 240" className="h-full w-full" aria-hidden>
+    <svg viewBox="-30 -6 190 230" className="h-full w-full" aria-hidden>
       <defs>
         <pattern id="hatch" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)">
           <line x1="0" y1="0" x2="0" y2="6" stroke="var(--color-ink)" strokeOpacity="0.15" strokeWidth="1.5" />
         </pattern>
       </defs>
 
-      {/* Слои стены. Красим не по порядку: утеплитель (оранжевый) рисуем последним,
-          чтобы его обводка легла поверх соседних слоёв на стыках, а не пряталась под ними. */}
       {[LAYERS[0], LAYERS[2], LAYERS[1]].map((layer) => (
         <g key={layer.label} data-diagram-layer style={{ transformOrigin: `${layer.x}px 20px` }}>
           <rect
@@ -31,7 +29,6 @@ export function InsulationDiagram() {
         </g>
       ))}
 
-      {/* Подписи слоёв */}
       {LAYERS.map((layer, i) => (
         <g key={`label-${layer.label}`} data-diagram-label>
           <line

@@ -43,8 +43,6 @@ export function CategoryTree({ categories }: CategoryTreeProps) {
 
   return (
     <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
-      {/* data-reveal-stagger: каскад играет сразу при монтировании, а блок стоит
-          в первом экране — стартовую прозрачность обязан отрисовать сервер. */}
       <div ref={leftRef} data-reveal-stagger className="flex flex-1 flex-col gap-6">
         {left.map((category) => (
           <CategoryCard key={category.id} category={category} />

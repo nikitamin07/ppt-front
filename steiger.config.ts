@@ -8,6 +8,7 @@ export default defineConfig([
     files: ["./src/shared/**"],
     rules: {
       "fsd/public-api": "off",
+      'fsd/insignificant-slice': 'off',
     },
   },
   {
