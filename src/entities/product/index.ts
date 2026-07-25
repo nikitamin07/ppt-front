@@ -4,6 +4,7 @@ export type {
   ProductManufacturer,
   ProductAttributeValue,
   ProductVolumePrice,
+  ProductComment,
   ProductMeta,
   Attribute,
 } from "./model/types";

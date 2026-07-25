@@ -1,25 +1,28 @@
 "use client";
 
 import { useState } from "react";
-import { ProductSpecs, type ProductAttributeValue } from "@/entities/product";
+import { ProductSpecs, type ProductAttributeValue, type ProductComment } from "@/entities/product";
+import { ProductReviews } from "@/features/product-review";
 import { cn } from "@/shared/lib/utils";
 
 interface ProductTabsProps {
+  productId: number;
   attributes: ProductAttributeValue[];
   description: string | null;
+  comments: ProductComment[];
 }
 
-type TabId = "specs" | "description";
+type TabId = "specs" | "description" | "reviews";
 
-/** Характеристики и описание под одним переключателем; характеристики открыты по умолчанию. */
-export function ProductTabs({ attributes, description }: ProductTabsProps) {
+/** Характеристики, описание и отзывы под одним переключателем; первая непустая открыта по умолчанию. */
+export function ProductTabs({ productId, attributes, description, comments }: ProductTabsProps) {
   const tabs: { id: TabId; label: string }[] = [];
   if (attributes.length > 0) tabs.push({ id: "specs", label: "Характеристики" });
   if (description) tabs.push({ id: "description", label: "Описание" });
+  // Вкладка отзывов есть всегда — с неё оставляют отзыв, даже когда одобренных ещё нет.
+  tabs.push({ id: "reviews", label: "Отзывы" });
 
-  const [active, setActive] = useState<TabId>(tabs[0]?.id ?? "specs");
-
-  if (tabs.length === 0) return null;
+  const [active, setActive] = useState<TabId>(tabs[0]?.id ?? "reviews");
 
   return (
     <section className="container">
@@ -49,8 +52,10 @@ export function ProductTabs({ attributes, description }: ProductTabsProps) {
       <div id={`panel-${active}`} role="tabpanel" aria-labelledby={`tab-${active}`} className="mt-8 max-w-3xl">
         {active === "specs" ? (
           <ProductSpecs attributes={attributes} />
-        ) : (
+        ) : active === "description" ? (
           <p className="text-base leading-relaxed text-ink">{description}</p>
+        ) : (
+          <ProductReviews productId={productId} comments={comments} />
         )}
       </div>
     </section>

@@ -101,8 +101,6 @@ export async function ProductDetailPage({ trail, productSlug }: ProductDetailPag
           {product.name}
         </h1>
 
-        {/* До lg — две колонки: фото и цена в ряд, калькулятор переносится ниже.
-            Без калькулятора картинка на lg сохраняет ту же ширину — треть ряда. */}
         <div
           className={cn(
             "mt-8 grid gap-10 md:grid-cols-2",
@@ -138,7 +136,12 @@ export async function ProductDetailPage({ trail, productSlug }: ProductDetailPag
         </div>
       </section>
 
-      <ProductTabs attributes={product.attributes} description={product.description} />
+      <ProductTabs
+        productId={product.id}
+        attributes={product.attributes}
+        description={product.description}
+        comments={product.comments}
+      />
 
       <CatalogGrid products={similarProducts} title="Похожие товары" viewAllHref={`/catalog/${categoryPath(trail)}`} />
     </>

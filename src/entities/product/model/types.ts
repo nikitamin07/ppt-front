@@ -29,6 +29,15 @@ export interface ProductManufacturer {
   name: string;
 }
 
+// Отзыв о товаре: приходит уже отмодерированным, новые сверху. created_at — дата (YYYY-MM-DD).
+export interface ProductComment {
+  id: number;
+  author: string;
+  rating: number; // 1–5
+  body: string;
+  created_at: string;
+}
+
 /**
  * Товар в списке (/products, /featured, /filter) — без description
  * и attributes: полный товар только в Product.
@@ -83,4 +92,6 @@ export interface Product extends ProductListItem {
   cubes_per_pack: number | null;
   // Толщина товара в мм для калькулятора: считает бэкенд. null — калькулятора у категории нет.
   thickness: number | null;
+  // Отзывы: только отмодерированные, новые сверху. [] когда одобренных нет.
+  comments: ProductComment[];
 }
