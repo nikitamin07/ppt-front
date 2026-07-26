@@ -3,9 +3,9 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   output: "standalone",
   images: {
-    // Пассивный лоадер — см. shared/lib/image-loader.ts, почему remotePatterns тут не подходит.
-    loader: "custom",
-    loaderFile: "./src/shared/lib/image-loader.ts",
+    // Бэкенд отдаёт по одному оптимизированному WebP на изображение (без вариантов размеров).
+    // Ресайзить нечего — unoptimized убирает srcSet и лоадер, <img> идёт за картинкой напрямую.
+    unoptimized: true,
   },
 };
 
