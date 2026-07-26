@@ -10,7 +10,7 @@ import { useScrollReveal, useStaggerReveal } from "@/shared/lib/react";
 
 interface RevealProps {
   className?: string;
-  /** Задержка старта в секундах — чтобы соседние блоки не проявлялись синхронно. */
+  /** Задержка старта в секундах */
   delay?: number;
   children: ReactNode;
 }
@@ -28,15 +28,15 @@ export function Reveal({ className, delay, children }: RevealProps) {
 
 interface RevealStaggerProps {
   className?: string;
-  /** Семантика контейнера: список преимуществ — это ul, а не div. */
   as?: "div" | "ul";
+  stagger?: number; 
   children: ReactNode;
 }
 
 /** Каскадное появление прямых детей контейнера. */
-export function RevealStagger({ className, as, children }: RevealStaggerProps) {
-  const divRef = useStaggerReveal<HTMLDivElement>();
-  const listRef = useStaggerReveal<HTMLUListElement>();
+export function RevealStagger({ className, as, stagger, children }: RevealStaggerProps) {
+  const divRef = useStaggerReveal<HTMLDivElement>({stagger: stagger});
+  const listRef = useStaggerReveal<HTMLUListElement>({stagger: stagger});
 
   // Два хука вместо приведения типов: неиспользованный ref остаётся пустым,
   // его эффект выходит на первой же строке.

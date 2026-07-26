@@ -24,6 +24,20 @@ const WAREHOUSE_HOURS = [
   { days: "Сб–Вс", hours: "9:00–16:00" },
 ] as const;
 
+// Населённые пункты, куда развозим регулярно — Минский район и область.
+const DELIVERY_AREAS = [
+  "Ждановичи", "Сёмково", "Новинки", "Ратомка", "Заславль", "Радошковичи", "Красное",
+  "Молодечно", "Вишнёвка", "Паперня", "Лусково", "Валерьяново", "Боровляны",
+  "Острошицкий Городок", "Логойск", "Янушковичи", "Плещеницы", "Колодищи", "Слобода",
+  "Королёво", "Смолевичи", "Жодино", "Борисов", "Новосады", "Зеленый Бор",
+  "Большой Тростенец", "Обчак", "Привольный", "Замосточье", "Смиловичи", "Червень",
+  "Заречье", "Драчково", "Гатово", "Мачулищи", "Михановичи", "Дружный", "Марьина Горка",
+  "Сеница", "Прилуки", "Самохваловичи", "Атолино", "Хотляны", "Богатырево", "Озерцо",
+  "Помыслище", "Фаниполь", "Черкассы", "Дзержинск", "Станьково", "Боровое", "Скирмантово",
+  "Тарасово", "Хатежино", "Новоселье", "Старое Село", "Чачково", "Аксаковщина", "Раков",
+  "Пугачи", "Ивенец", "Воложин", "Березинское",
+] as const;
+
 export function DeliveryPage() {
   return (
     <>
@@ -78,6 +92,30 @@ export function DeliveryPage() {
             </p>
           </div>
         </div>
+      </section>
+
+      <section className="container">
+        <div className="border-b border-line pb-5">
+          <p className="eyebrow text-xs">География</p>
+          <h2 className="mt-2 font-heading text-2xl font-semibold text-ink sm:text-3xl">Куда развозим</h2>
+        </div>
+
+        <p className="mt-5 max-w-4xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+          Регулярно возим материал в эти населённые пункты Минского района и области. Если вашего
+          адреса нет в списке — уточните по телефону, доставляем по всей Беларуси.
+        </p>
+
+        <RevealStagger className="mt-6 flex flex-wrap gap-2" stagger={0.03}>
+          {DELIVERY_AREAS.map((area) => (
+            <span
+              key={area}
+              className="flex items-center gap-1.5 border border-line bg-card px-3 py-1.5 text-sm text-ink"
+            >
+              <MapPinIcon className="size-3.5 shrink-0 text-safety" />
+              {area}
+            </span>
+          ))}
+        </RevealStagger>
       </section>
 
       <section className="container">
