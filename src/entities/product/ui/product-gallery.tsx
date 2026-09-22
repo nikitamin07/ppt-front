@@ -43,16 +43,14 @@ function Thumbs({ images, active, onSelect, className }: ThumbsProps) {
   );
 }
 
-/** Фото товара: крупный кадр открывается во весь экран, миниатюра встаёт на его место. */
 export function ProductGallery({ images, name }: ProductGalleryProps) {
   const [active, setActive] = useState(0);
 
-  // Фото не загрузили — заглушка без галереи: открывать нечего.
-  if (images.length === 0) {
+  if (images.length < 2) {
     return (
       <div className="relative aspect-square w-full overflow-hidden border border-line">
         <Image
-          src={NO_IMAGE_SRC}
+          src={images.length === 1 ? (assetUrl(images[0]) ?? NO_IMAGE_SRC) : NO_IMAGE_SRC}
           alt={name}
           fill
           sizes="(min-width: 1024px) 30vw, 100vw"
@@ -64,7 +62,6 @@ export function ProductGallery({ images, name }: ProductGalleryProps) {
   }
 
   const current = assetUrl(images[active]) ?? NO_IMAGE_SRC;
-  // Одно фото — ряд миниатюр повторял бы его самого.
   const showThumbs = images.length > 1;
 
   return (

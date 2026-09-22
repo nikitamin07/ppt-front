@@ -1,13 +1,15 @@
+import Image from "next/image";
 import { notFound } from "next/navigation";
-import { MapPinIcon, TruckIcon } from "lucide-react";
+import { FactoryIcon, MapPinIcon, TruckIcon } from "lucide-react";
 import { categoryPath, type CategoryListItem } from "@/entities/category";
+import { getManufacturers } from "@/entities/manufacturer";
 import { getProductBySlug, getProducts, ProductGallery, ProductPriceBlock } from "@/entities/product";
 import { CalcValueForm } from "@/features/calc-value";
 import { OrderCallbackDialog } from "@/features/order-callback";
 import { ApiError, assetUrl } from "@/shared/api";
 import { CONTACTS } from "@/shared/config";
 import { absoluteUrl, breadcrumbJsonLd } from "@/shared/lib/seo";
-import { cn } from "@/shared/lib/utils";
+import { cn, stripHtml } from "@/shared/lib/utils";
 import { JsonLd } from "@/shared/ui/json-ld";
 import { PhoneLink } from "@/shared/ui/phone-link";
 import { Breadcrumbs } from "@/widgets/breadcrumbs";
@@ -26,7 +28,7 @@ export async function ProductDetailPage({ trail, productSlug }: ProductDetailPag
 
   // Оба запроса зависят только от адреса, поэтому идут разом: карточка товара —
   // самый долгий запрос на сайте, ждать за ним ещё один незачем.
-  const [product, similarProducts] = await Promise.all([
+  const [product, similarProducts, manufacturers] = await Promise.all([
     getProductBySlug(categorySlug, productSlug).catch((error: unknown) => {
       if (error instanceof ApiError && error.status === 404) return null;
       // Обрыв сети или 500 — это не «товара нет»: молча подменять их на 404 нельзя.
@@ -38,9 +40,15 @@ export async function ProductDetailPage({ trail, productSlug }: ProductDetailPag
     getProducts({ category: categorySlug })
       .then((items) => items.filter((item) => item.slug !== productSlug).slice(0, 4))
       .catch(() => []),
+    // Справочник, кэшируется на 7 дней — товар несёт только id/name производителя, логотип берём отсюда.
+    getManufacturers().catch(() => []),
   ]);
 
   if (!product) notFound();
+
+  const manufacturerLogo = product.manufacturer
+    ? (assetUrl(manufacturers.find((m) => m.id === product.manufacturer!.id)?.logo_url ?? null) ?? null)
+    : null;
 
   const effectivePrice = product.discount_price ?? product.price;
   // isCalculative считает бэкенд — своих условий не добавляем. Ступенчатая цена исключена
@@ -60,7 +68,8 @@ export async function ProductDetailPage({ trail, productSlug }: ProductDetailPag
           "@context": "https://schema.org",
           "@type": "Product",
           name: product.name,
-          description: product.description || product.name,
+          // description теперь HTML из RichEditor — в JSON-LD нужен обычный текст.
+          description: (product.description && stripHtml(product.description)) || product.name,
           url: absoluteUrl(productUrl),
           ...(productImages.length > 0 && { image: productImages }),
           ...(product.manufacturer && { brand: { "@type": "Brand", name: product.manufacturer.name } }),
@@ -94,23 +103,36 @@ export async function ProductDetailPage({ trail, productSlug }: ProductDetailPag
       />
 
       <section className="container">
-        {product.manufacturer ? (
-          <p className="font-label text-sm text-muted-foreground">{product.manufacturer.name}</p>
-        ) : null}
         <h1 className="mt-1 font-heading text-3xl font-semibold text-balance text-ink sm:text-4xl">
           {product.name}
         </h1>
 
         <div
           className={cn(
-            "mt-8 grid gap-10 md:grid-cols-2",
-            showCalculator ? "lg:grid-cols-3" : "lg:grid-cols-[1fr_2fr]",
+            "mt-8 grid gap-6 xl:gap-10 md:grid-cols-[0.8fr_1.2fr]",
+            showCalculator ? "lg:grid-cols-[0.9fr_1.1fr_280px] xl:grid-cols-[1fr_432px_300px]" : "lg:grid-cols-[1fr_2fr]",
           )}
         >
           <ProductGallery images={product.image_urls} name={product.name} />
 
-          <div>
+          <div className="xs:max-w-108">
             <ProductPriceBlock product={product} />
+            {product.manufacturer ? (
+              <p className="flex items-center gap-3 mt-4">
+                <FactoryIcon className="size-4 shrink-0 text-safety" />
+                <span>Производитель:</span>
+                {manufacturerLogo ? (
+                  <Image
+                    src={manufacturerLogo}
+                    alt={product.manufacturer.name}
+                    width={32}
+                    height={32}
+                    className="h-8 w-auto object-contain"
+                  />
+                ) : null}
+                <span className="text-muted-foreground font-label">{product.manufacturer.name}</span>
+              </p>
+            ) : null}
             <p className="flex items-start gap-3 my-4">
               <MapPinIcon className="mt-0.5 size-4 shrink-0 text-safety" />
               Самовывоз: {CONTACTS.address}, {CONTACTS.workHours}

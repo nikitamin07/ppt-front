@@ -16,6 +16,11 @@ export function plural(count: number, forms: { one: string; few: string; many: s
   return rule === "one" || rule === "few" ? forms[rule] : forms.many;
 }
 
+/** Убирает теги из HTML админки для полей, где нужен обычный текст (JSON-LD, сниппеты). */
+export function stripHtml(html: string): string {
+  return html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+}
+
 /** Обрезает текст для <meta name="description">: схлопывает переносы строк, не рвёт слово. */
 export function truncateForMeta(text: string, maxLength = 160): string {
   const flat = text.replace(/\s+/g, " ").trim();

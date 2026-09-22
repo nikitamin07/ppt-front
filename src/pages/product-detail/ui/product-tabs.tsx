@@ -8,6 +8,7 @@ import { cn } from "@/shared/lib/utils";
 interface ProductTabsProps {
   productId: number;
   attributes: ProductAttributeValue[];
+  /** Сырой HTML из RichEditor админки (авторам доверяем) — рендерится через dangerouslySetInnerHTML. */
   description: string | null;
   comments: ProductComment[];
 }
@@ -26,7 +27,7 @@ export function ProductTabs({ productId, attributes, description, comments }: Pr
 
   return (
     <section className="container">
-      <div role="tablist" className="flex border-b border-line">
+      <div role="tablist" className="flex border-b border-line w-fit xs:w-full">
         {tabs.map((tab) => (
           <button
             key={tab.id}
@@ -37,7 +38,7 @@ export function ProductTabs({ productId, attributes, description, comments }: Pr
             aria-controls={`panel-${tab.id}`}
             onClick={() => setActive(tab.id)}
             className={cn(
-              "-mb-px border-b-2 px-5 py-3 font-label text-sm font-semibold uppercase tracking-[0.15em] transition-colors",
+              "-mb-px border-b-2 p-2 xs:px-5 xs:py-3 font-label text-sm font-semibold uppercase tracking-[0.15em] transition-colors",
               "focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-safety",
               active === tab.id
                 ? "border-safety text-ink"
@@ -53,7 +54,7 @@ export function ProductTabs({ productId, attributes, description, comments }: Pr
         {active === "specs" ? (
           <ProductSpecs attributes={attributes} />
         ) : active === "description" ? (
-          <p className="text-base leading-relaxed text-ink">{description}</p>
+          <div className="prose-post" dangerouslySetInnerHTML={{ __html: description ?? "" }} />
         ) : (
           <ProductReviews productId={productId} comments={comments} />
         )}

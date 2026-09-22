@@ -4,6 +4,8 @@
 @import "shadcn/tailwind.css";
 
 @theme inline {
+  --breakpoint-xs: 450px;
+
   /* --- SHADCN --- */
   --font-heading: var(--font-heading);
   --font-sans: var(--font-sans);
@@ -87,7 +89,8 @@
   & ul {
     @apply mt-4 flex list-disc flex-col gap-2 pl-5 marker:text-safety;
   }
-  & strong {
+  & strong,
+  & b {
     @apply font-semibold text-ink;
   }
   & a {

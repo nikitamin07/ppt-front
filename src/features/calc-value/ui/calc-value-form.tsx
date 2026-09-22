@@ -34,7 +34,6 @@ export function CalcValueForm({ price, unit, cubesPerPack, thickness }: CalcValu
     cost: number;
   } | null>(null);
 
-  // Запятая — привычный десятичный разделитель, но Number её не понимает.
   const toNumber = (value: string) => Number(value.replace(",", "."));
   const format = (value: number) => value.toLocaleString("ru-RU", { maximumFractionDigits: 2 });
   const ready = FIELDS.every((field) => toNumber(values[field.key]) > 0);
@@ -43,13 +42,12 @@ export function CalcValueForm({ price, unit, cubesPerPack, thickness }: CalcValu
     event.preventDefault();
     const area = calculateArea(toNumber(values.height), toNumber(values.width));
     const volume = calculateVolume(area, thickness);
-    // Кубами торгуют по объёму, упаковками — по числу упаковок, оно и идёт в цену.
     const packs = cubesPerPack ? calculatePacks(volume, cubesPerPack) : null;
     setResult({ area, volume, packs, cost: calculateCost(packs ?? volume, price) });
   }
 
   return (
-    <form onSubmit={submit} className="border border-line bg-paper p-5">
+    <form onSubmit={submit} className="border border-line bg-paper p-5 w-full xs:max-w-108 md:mx-auto col-span-full lg:col-span-1">
       <p className="eyebrow text-xs">Расчёт по размерам</p>
 
       <div className="mt-4 flex flex-col gap-3">
@@ -71,7 +69,6 @@ export function CalcValueForm({ price, unit, cubesPerPack, thickness }: CalcValu
         ))}
       </div>
 
-      {/* Толщина не вводится — показываем, с какой считаем, иначе итог берётся из ниоткуда. */}
       <p className="mt-3 flex items-baseline justify-between gap-4 text-sm">
         <span className="text-muted-foreground">Толщина материала</span>
         <span className="font-semibold text-ink tabular-nums">{thickness} мм</span>

@@ -1,17 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import { StarIcon } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
-import { Checkbox } from "@/shared/ui/checkbox";
 import { Input } from "@/shared/ui/input";
 import { submitProductReview } from "../api";
 
 interface ProductReviewFormProps {
   productId: number;
-  /** Успешная отправка — родитель прячет форму и показывает благодарность. */
   onSuccess: () => void;
 }
 
@@ -22,8 +19,6 @@ export function ProductReviewForm({ productId, onSuccess }: ProductReviewFormPro
   const [body, setBody] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [honeypot, setHoneypot] = useState("");
-  const [consent, setConsent] = useState(false);
-  // время монтирования формы — отзывы быстрее ~1.5с считаем ботом
   const mountedAtRef = useRef<number | null>(null);
   useEffect(() => {
     mountedAtRef.current = Date.now();
@@ -31,7 +26,7 @@ export function ProductReviewForm({ productId, onSuccess }: ProductReviewFormPro
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!consent || rating < 1) return;
+    if (rating < 1) return;
     if (honeypot || !mountedAtRef.current || Date.now() - mountedAtRef.current < 1500) {
       onSuccess();
       return;
@@ -99,17 +94,7 @@ export function ProductReviewForm({ productId, onSuccess }: ProductReviewFormPro
         onChange={(e) => setBody(e.target.value)}
         className="w-full min-w-0 resize-y border border-line bg-paper px-3.5 py-2.5 text-sm text-ink transition-colors outline-none placeholder:text-muted-foreground focus:border-safety"
       />
-      <label className="flex cursor-pointer items-start gap-2.5 text-xs text-muted-foreground/70">
-        <Checkbox checked={consent} onCheckedChange={(checked) => setConsent(checked === true)} className="mt-0.5" />
-        <span>
-          Отправляя форму, вы соглашаетесь на{" "}
-          <Link href="/privacy" className="underline underline-offset-2 hover:text-ink">
-            обработку персональных данных
-          </Link>
-          .
-        </span>
-      </label>
-      <Button type="submit" disabled={status === "loading" || !consent || rating < 1} className="self-start">
+      <Button type="submit" disabled={status === "loading" || rating < 1} className="self-start">
         {status === "loading" ? "Отправка..." : "Отправить отзыв"}
       </Button>
       {status === "error" ? (

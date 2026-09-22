@@ -55,7 +55,7 @@ export function ProductReviews({ productId, comments }: ProductReviewsProps) {
               <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                 <span className="font-heading font-semibold text-ink">{comment.author}</span>
                 <Stars rating={comment.rating} />
-                <span className="ml-auto text-xs tabular-nums text-muted-foreground">
+                <span className="w-full xs:w-auto xs:ml-auto text-xs tabular-nums text-muted-foreground">
                   {dateFormat.format(new Date(comment.created_at))}
                 </span>
               </div>

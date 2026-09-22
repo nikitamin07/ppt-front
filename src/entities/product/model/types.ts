@@ -78,6 +78,7 @@ export interface ProductMeta {
 
 /** Полный товар — только с эндпоинта /products/{categorySlug}/{productSlug}. */
 export interface Product extends ProductListItem {
+  /** HTML из RichEditor админки — рендерится через dangerouslySetInnerHTML, как Post.content. */
   description: string;
   // Динамический массив характеристик «ключ-значение» для этого товара
   attributes: ProductAttributeValue[];

@@ -53,7 +53,7 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-4">
-          <OrderCallbackDialog className="hidden sm:inline-flex" />
+          <OrderCallbackDialog className="hidden xs:inline-flex" />
           <Dialog open={mobileOpen} onOpenChange={setMobileOpen}>
             <DialogTrigger
               aria-label={mobileOpen ? "Закрыть меню" : "Открыть меню"}
