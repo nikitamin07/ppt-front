@@ -1,12 +1,9 @@
-// Браузер — относительный /api (nginx проксирует); сервер — API_URL_INTERNAL:
-// там относительный URL невозможен. Детали — CLAUDE.md, «API layer».
+// относительный /api (nginx проксирует)
 const API_BASE_URL =
   typeof window === "undefined"
     ? process.env.API_URL_INTERNAL || process.env.NEXT_PUBLIC_API_URL || "http://localhost/api"
     : process.env.NEXT_PUBLIC_API_URL || "/api";
 
-// Origin для бэкендовских файлов (/storage/...): в dev на :3000
-// без него <img src> бил бы в dev-сервер и давал 404.
 const ASSET_ORIGIN = (process.env.NEXT_PUBLIC_API_URL || "/api").replace(/\/api\/?$/, "");
 
 export function assetUrl(path: string | null): string | null {
@@ -27,10 +24,12 @@ export class ApiError extends Error {
 }
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const internalToken = typeof window === "undefined" ? process.env.INTERNAL_API_TOKEN : undefined;
   const res = await fetch(`${API_BASE_URL}${path}`, {
     ...init,
     headers: {
       "Content-Type": "application/json",
+      ...(internalToken && { "X-Internal-Token": internalToken }),
       ...init?.headers,
     },
   });
@@ -45,12 +44,11 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 /** Секунды жизни кэша для справочников: дерево категорий, производители, теги. */
-export const REFERENCE_TTL = 60 * 60 * 24 * 7;
+export const REFERENCE_TTL = 60 * 60 * 24;
 
 export function apiGet<T>(
   path: string,
   params?: Record<string, string | number | undefined>,
-  /** Кэшировать ответ на N секунд. Только на сервере — в браузере fetch это поле игнорирует. */
   revalidate?: number,
 ): Promise<T> {
   const query = params
