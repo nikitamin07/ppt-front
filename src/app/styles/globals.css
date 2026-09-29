@@ -349,53 +349,47 @@
   }
 }
 
-/* Стартовое состояние анимаций. Его обязан отрисовать сервер: JS выполняется после
-   первой покраски, и выставленный из эффекта opacity:0 давал бы мигание
-   «видно → спряталось → проявилось». Только прозрачность: сдвиг и масштаб ставит
-   сам gsap, элемент в этот момент уже невидим, поэтому скачка не видно.
-
-   scripting: enabled вместо класса от инлайн-скрипта. Класс пришлось бы вешать на
-   <html>, чьим className владеет React, — это ломало гидратацию, и тогда не
-   запускался ни один эффект, включая саму анимацию. Здесь DOM не трогаем вообще.
-   Без JS и при reduced-motion запрос не совпадает, контент виден целиком; старые
-   браузеры без поддержки scripting тоже показывают всё сразу. */
 @media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
-  :is(
-    [data-hero-eyebrow],
-    [data-hero-line],
-    [data-hero-sub],
-    [data-hero-cta],
-    [data-hero-stat],
-    [data-hero-caption],
-    [data-diagram-layer],
-    [data-diagram-label],
-    [data-diagram-dimension]
-  ) {
+  [data-hero-caption] {
     opacity: 0;
   }
 
-  /* Каскад, попадающий в первый экран (сетка категорий в каталоге). Ниже сгиба
-     атрибут не нужен: там блок прячется раньше, чем до него доскроллят. */
+  @media (min-width: 768px) {
+    :is(
+      [data-hero-eyebrow],
+      [data-hero-line],
+      [data-hero-sub],
+      [data-hero-cta],
+      [data-hero-stat],
+      [data-diagram-layer],
+      [data-diagram-label],
+      [data-diagram-dimension]
+    ) {
+      opacity: 0;
+    }
+  }
+
   [data-reveal-stagger] > * {
     opacity: 0;
   }
 
-  /* Страховка: если gsap почему-то не отработал (упавший чанк, сорванная гидратация),
-     раскрываем сами, чистым CSS. Задержка больше интро (~2.7с), поэтому рабочую
-     анимацию не трогает — к этому моменту gsap уже поставил opacity:1. caption
-     исключён: им управляет скролл-пиннинг, до скролла он и должен быть скрыт. */
-  :is(
-    [data-hero-eyebrow],
-    [data-hero-line],
-    [data-hero-sub],
-    [data-hero-cta],
-    [data-hero-stat],
-    [data-diagram-layer],
-    [data-diagram-label],
-    [data-diagram-dimension]
-  ),
   [data-reveal-stagger] > * {
     animation: reveal-failsafe 0.4s linear 3.2s forwards;
+  }
+
+  @media (min-width: 768px) {
+    :is(
+      [data-hero-eyebrow],
+      [data-hero-line],
+      [data-hero-sub],
+      [data-hero-cta],
+      [data-hero-stat],
+      [data-diagram-layer],
+      [data-diagram-label],
+      [data-diagram-dimension]
+    ) {
+      animation: reveal-failsafe 0.4s linear 3.2s forwards;
+    }
   }
 }
 
@@ -408,12 +402,11 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* 'nbrb' спереди — только знак ƃ рисуется им (unicode-range), остальной текст не меняется. */
+  /* знак ƃ */
   --font-involve: 'nbrb', 'Involve', ui-sans-serif, system-ui, sans-serif;
   --font-heading: var(--font-involve);
   --font-sans: 'nbrb', var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 
-  /* Индустриальная палитра: бетон/крафт + графит + строительный оранжевый */
   --color-ink: #1b1b18;
   --color-paper: #f2f0ea;
   --color-line: #ddd9cd;

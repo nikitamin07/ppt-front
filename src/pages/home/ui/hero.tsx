@@ -42,7 +42,7 @@ export function Hero({ productsCount, categoriesCount }: HeroProps) {
   // useGSAP избегает двойной вызов эффектов в Strict Mode
   useGSAP(
     () => {
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      if (window.matchMedia("(prefers-reduced-motion: reduce), (max-width: 767px)").matches) {
         setStatsActive(true);
         return;
       }
@@ -87,7 +87,7 @@ export function Hero({ productsCount, categoriesCount }: HeroProps) {
     { scope: rootRef },
   );
 
-  // Рулетка: hero пинится, корпус пробегает по нижней кромке,
+  // Рулетка: hero пиннится, корпус пробегает по нижней кромке,
   // за ним дорисовывается разметка, затем скролл продолжается.
   useGSAP(
     () => {
@@ -132,17 +132,13 @@ export function Hero({ productsCount, categoriesCount }: HeroProps) {
           );
       };
 
-      // Пин вставляет распорку и меняет высоту документа. Пока браузер восстанавливает
-      // позицию скролла, эти двое дерутся, и страницу уводит вниз. Ждём load: к этому
-      // моменту позиция уже восстановлена и высота стабильна.
+      // Пин вставляет распорку и меняет высоту документа
       if (document.readyState === "complete") {
         build();
       } else {
         window.addEventListener("load", build, { once: true });
       }
 
-      // Таймлайн рождается вне колбэка, поэтому контекст useGSAP его не подхватит —
-      // убираем вручную вместе с его триггером.
       return () => {
         window.removeEventListener("load", build);
         tl?.scrollTrigger?.kill();

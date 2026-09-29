@@ -60,11 +60,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     
     ...products
       .filter((product) => product.category_path)
-      .map((product) => ({ url: url(`/catalog/${product.category_path}/${product.slug}`) })),
+      .map((product) => ({
+        url: url(`/catalog/${product.category_path}/${product.slug}`),
+        lastModified: product.updated_at,
+      })),
 
     ...posts.map((post) => ({
       url: url(`/poleznaya-informatsiya/${post.slug}`),
-      lastModified: post.published_at,
+      lastModified: post.updated_at,
     })),
 
     ...tags.map((tag) => ({ url: url(`/poleznaya-informatsiya/tema/${tag.slug}`) })),

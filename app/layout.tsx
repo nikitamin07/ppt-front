@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { preload } from "react-dom";
 import { Inter, Oswald } from "next/font/google";
 import "@/app/styles/globals.css";
 import { cn } from "@/shared/lib/utils";
@@ -38,6 +39,9 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+  preload("/fonts/Involve-Bold.woff2", { as: "font", type: "font/woff2", crossOrigin: "anonymous" });
+  
   return (
     <html lang="ru" className={cn("h-full", "antialiased", inter.variable, oswald.variable)}>
       <body className="min-h-full flex flex-col bg-background text-foreground font-sans">

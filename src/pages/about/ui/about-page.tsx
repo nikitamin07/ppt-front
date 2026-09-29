@@ -4,11 +4,13 @@ import {
   BoxIcon,
   BrickWallIcon,
   CalculatorIcon,
+  ClockIcon,
   FileCheckIcon,
   HeadsetIcon,
   LayersIcon,
   LayoutGridIcon,
   LifeBuoyIcon,
+  MapPinIcon,
   PercentIcon,
   PhoneCallIcon,
   ShieldCheckIcon,
@@ -19,7 +21,9 @@ import {
 import { Breadcrumbs } from "@/widgets/breadcrumbs";
 import { AnimatedLink } from "@/shared/ui/animated-link";
 import { OrderCallbackDialog } from "@/features/order-callback";
-import { RevealStagger } from "@/shared/ui/reveal";
+import { CornerFrame } from "@/shared/ui/corner-frame";
+import { PhoneLink } from "@/shared/ui/phone-link";
+import { Reveal, RevealStagger } from "@/shared/ui/reveal";
 import { CONTACTS } from "@/shared/config";
 import { CompanyPassport } from "./company-passport";
 
@@ -192,6 +196,38 @@ export function AboutPage() {
             </div>
           </div>
         </div>
+      </section>
+
+      <section className="container">
+        <Reveal className="relative">
+          <CornerFrame>
+            <iframe
+              title="Склад ППТ.бел на карте Yandex"
+              src="https://yandex.by/map-widget/v1/-/CCU74CcJ1C"
+              allowFullScreen
+              loading="lazy"
+              className="block h-80 w-full border border-line sm:h-104"
+            />
+          </CornerFrame>
+
+          <div className="border border-t-0 border-line bg-paper p-6 sm:p-8 lg:absolute lg:top-8 lg:left-8 lg:w-88 lg:border-t lg:shadow-[0_8px_24px_-12px_rgba(27,27,24,0.35)]">
+            <p className="eyebrow text-xs">Склад в Минске</p>
+            <h2 className="mt-2 font-heading text-xl font-semibold text-ink sm:text-2xl">
+              Приезжайте — покажем материал вживую
+            </h2>
+            <ul className="mt-5 flex flex-col gap-3 text-sm text-ink">
+              <li className="flex items-start gap-3">
+                <MapPinIcon className="mt-0.5 size-4 shrink-0 text-safety" />
+                {CONTACTS.address}
+              </li>
+              <li className="flex items-start gap-3">
+                <ClockIcon className="mt-0.5 size-4 shrink-0 text-safety" />
+                <span>Пн–Пт 9:00–19:00, Сб–Вс 9:00–16:00</span>
+              </li>
+            </ul>
+            <PhoneLink phone={CONTACTS.phones[0]} className="mt-5" iconClassName="size-4 text-safety" />
+          </div>
+        </Reveal>
       </section>
     </>
   );
